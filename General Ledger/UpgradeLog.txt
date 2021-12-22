@@ -1,0 +1,222 @@
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\General Ledger.vbproj 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\General Ledger.vbproj was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Forms\frmExport.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Forms\frmExport.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Forms\frmPreview.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Forms\frmPreview.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptAgingAnalysis.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptAgingAnalysis.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptConstructionLetter.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptConstructionLetter.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptCustomerLedger.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptCustomerLedger.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptCustomerStatement.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptCustomerStatement.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDateWIseReceiptReport.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDateWIseReceiptReport.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDemandNotice1.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDemandNotice1.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDemandNotice1SkyMark.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDemandNotice1SkyMark.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDemandNotice2.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDemandNotice2.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDemandNotice2SkyMark.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDemandNotice2SkyMark.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDemandNotice3.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDemandNotice3.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDemandNotice3SkyMark.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDemandNotice3SkyMark.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDueforService.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDueforService.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDueforService1.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDueforService1.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDueForService2.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDueForService2.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDueForService3.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDueForService3.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDueForService4.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDueForService4.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDueForService5.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptDueForService5.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptFinalNotice.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptFinalNotice.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptFinalNoticeSkyMark.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptFinalNoticeSkyMark.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptGeneralLedger.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptGeneralLedger.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptGRNProduct.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptGRNProduct.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptHBFCLoan.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptHBFCLoan.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptHBFCLoan1.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptHBFCLoan1.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptHBFCLoan2.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptHBFCLoan2.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptHBFCLoan3.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptHBFCLoan3.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptHBFCLoan4.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptHBFCLoan4.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptInventorySummaryReport.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptInventorySummaryReport.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptIssueProduct.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptIssueProduct.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptMonthWiseRecovery.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptMonthWiseRecovery.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptPaymentPlan.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptPaymentPlan.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptPriceList.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptPriceList.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptProductLedger.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptProductLedger.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptProductValuation.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptProductValuation.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptPurchaseBillProduct.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptPurchaseBillProduct.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptPurchaseOrderProduct.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptPurchaseOrderProduct.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptPurRequisitionProduct.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptPurRequisitionProduct.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptReceipt.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptReceipt.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptReceiptCourtyard.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptReceiptCourtyard.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptReceiptReport.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptReceiptReport.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptReceiptReportEmpire.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptReceiptReportEmpire.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptReceiptSkymark.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptReceiptSkymark.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptRecoveryReport.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptRecoveryReport.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptRecoveryReportEmpire.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptRecoveryReportEmpire.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptRecoveryReportForecast.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptRecoveryReportForecast.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptRecoveryReportProvisionalEmpire.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptRecoveryReportProvisionalEmpire.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptRecoveryReportProvisionalEmpireOld.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptRecoveryReportProvisionalEmpireOld.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptRecoveryReportTillDateEmpire.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptRecoveryReportTillDateEmpire.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptReminderNotice1.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptReminderNotice1.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptServiceRecoveryReport.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptServiceRecoveryReport.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptToken.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptToken.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptVoucher.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptVoucher.vb was updated successfully 
+Updating E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptWelcomeLetter.vb 
+E:\Gtech\Projects\Projects Vb.Net\JAFCO CONSTRUCTION\General Ledger\General Ledger\Reports\rptWelcomeLetter.vb was updated successfully 
+Installing System.Buffers version 4.5.1 to General Ledger
+Package System.Buffers version 4.5.1 installed successfully.
+Installing System.Memory version 4.5.4 to General Ledger
+Package System.Memory version 4.5.4 installed successfully.
+Installing System.Numerics.Vectors version 4.5.0 to General Ledger
+ERROR:
+ Failed to add reference. The package 'System.Numerics.Vectors' tried to add a framework reference to 'System.Numerics' which was not found in the GAC. This is possibly a bug in the package. Please contact the package owners for assistance. 
+Installing System.Runtime.CompilerServices.Unsafe version 4.7.1 to General Ledger
+Package System.Runtime.CompilerServices.Unsafe version 4.7.1 installed successfully.
+Installing System.ValueTuple version 4.5.0 to General Ledger
+Package System.ValueTuple version 4.5.0 installed successfully.
+Installing Portable.BouncyCastle version 1.8.2 to General Ledger
+Package Portable.BouncyCastle version 1.8.2 installed successfully.
+Installing System.Text.Json version 4.7.2 to General Ledger
+Package System.Text.Json version 4.7.2 installed successfully.
+Installing Microsoft.Bcl.AsyncInterfaces version 1.1.0 to General Ledger
+Package Microsoft.Bcl.AsyncInterfaces version 1.1.0 installed successfully.
+Installing System.Threading.Tasks.Extensions version 4.5.4 to General Ledger
+Package System.Threading.Tasks.Extensions version 4.5.4 installed successfully.
+Installing System.Text.Encodings.Web version 4.7.1 to General Ledger
+Package System.Text.Encodings.Web version 4.7.1 installed successfully.
+Installing DocumentFormat.OpenXml version 2.8.1 to General Ledger
+ERROR:
+ Failed to add reference. The package 'System.IO.Compression.ZipFile' tried to add a framework reference to 'System.IO.Compression.FileSystem' which was not found in the GAC. This is possibly a bug in the package. Please contact the package owners for assistance. 
+Installing System.IO.Compression version 4.3.0 to General Ledger
+Package System.IO.Compression version 4.3.0 installed successfully.
+Installing System.IO.Packaging version 4.4.0 to General Ledger
+ERROR:
+ Failed to add reference. The package 'System.IO.Compression.ZipFile' tried to add a framework reference to 'System.IO.Compression.FileSystem' which was not found in the GAC. This is possibly a bug in the package. Please contact the package owners for assistance. 
+Installing Gcef.Data.VBFunctionLib version 3.0.0 to General Ledger
+Package Gcef.Data.VBFunctionLib version 3.0.0 installed successfully.
+Installing Gcef.Data.ExpressionInfo version 3.0.0 to General Ledger
+Package Gcef.Data.ExpressionInfo version 3.0.0 installed successfully.
+Installing Gcef.Data.DataEngine version 3.0.0 to General Ledger
+Package Gcef.Data.DataEngine version 3.0.0 installed successfully.
+Installing GrapeCity.Documents.Common version 3.2.0.550 to General Ledger
+Package GrapeCity.Documents.Common version 3.2.0.550 installed successfully.
+Installing GrapeCity.Documents.Common.Windows version 3.2.0.550 to General Ledger
+Package GrapeCity.Documents.Common.Windows version 3.2.0.550 installed successfully.
+Installing GrapeCity.Documents.DX.Windows version 3.2.0.550 to General Ledger
+Package GrapeCity.Documents.DX.Windows version 3.2.0.550 installed successfully.
+Installing GrapeCity.Documents.Imaging version 3.2.0.550 to General Ledger
+Package GrapeCity.Documents.Imaging version 3.2.0.550 installed successfully.
+Installing GrapeCity.Documents.Pdf version 3.2.0.550 to General Ledger
+Package GrapeCity.Documents.Pdf version 3.2.0.550 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Rdl version 2.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Rdl version 2.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Rendering version 2.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Rendering version 2.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Drawing.Gdi version 2.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Drawing.Gdi version 2.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Drawing.Gc version 2.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Drawing.Gc version 2.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Document.Drawing.Gc version 1.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Document.Drawing.Gc version 1.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Document.Drawing.Gdi version 1.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Document.Drawing.Gdi version 1.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Document version 1.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Document version 1.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Export.Pdf.Section version 1.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Export.Pdf.Section version 1.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Export.Tiff.Section version 1.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Export.Tiff.Section version 1.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Export.Image.Page version 2.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Export.Image.Page version 2.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Export.Pdf.Page version 2.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Export.Pdf.Page version 2.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Export.Svg.Page version 2.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Export.Svg.Page version 2.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Export.Html.Page version 2.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Export.Html.Page version 2.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Export.Text.Page version 2.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Export.Text.Page version 2.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Export.Excel.Page version 2.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Export.Excel.Page version 2.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Export.Word.Page version 2.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Export.Word.Page version 2.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.Scripting version 2.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.Scripting version 2.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Core.DataProviders version 2.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Core.DataProviders version 2.0.0 installed successfully.
+Installing Grapecity.DataVisualization.Chart version 0.3.304 to General Ledger
+Package Grapecity.DataVisualization.Chart version 0.3.304 installed successfully.
+Installing GrapeCity.ActiveReports version 15.0.0 to General Ledger
+Package GrapeCity.ActiveReports version 15.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Document version 15.0.0 to General Ledger
+ERROR:
+ Failed to add reference. The package 'System.Numerics.Vectors' tried to add a framework reference to 'System.Numerics' which was not found in the GAC. This is possibly a bug in the package. Please contact the package owners for assistance. 
+Installing GrapeCity.ActiveReports.Chart version 15.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Chart version 15.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Chart.Win version 15.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Chart.Win version 15.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Export.Rdf version 15.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Export.Rdf version 15.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Export.Image version 15.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Export.Image version 15.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Export.Excel version 15.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Export.Excel version 15.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Export.Word version 15.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Export.Word version 15.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Export.Html version 15.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Export.Html version 15.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Export.Xml version 15.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Export.Xml version 15.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Export.Pdf version 15.0.0 to General Ledger
+Package GrapeCity.ActiveReports.Export.Pdf version 15.0.0 installed successfully.
+Installing GrapeCity.ActiveReports.Viewer.Win version 15.0.0 to General Ledger
+ERROR:
+ Failed to add reference. The package 'Microsoft.CSharp' tried to add a framework reference to 'Microsoft.CSharp' which was not found in the GAC. This is possibly a bug in the package. Please contact the package owners for assistance. 
+Installing GrapeCity.ActiveReports.Viewer.Common version 15.0.0 to General Ledger
+ERROR:
+ Failed to add reference. The package 'Microsoft.CSharp' tried to add a framework reference to 'Microsoft.CSharp' which was not found in the GAC. This is possibly a bug in the package. Please contact the package owners for assistance. 

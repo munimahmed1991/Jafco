@@ -1,0 +1,1211 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GrapeCity.ActiveReports.Export.Xml</name>
+    </assembly>
+    <members>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.CanvasItemHandler">
+            <summary>
+            Prepares the CanvasItems of the page for exporting.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.CanvasItemHandler.BuildPageObjects(GrapeCity.ActiveReports.Export.Xml.Section.CanvasItemHandler.CanvasItemHandlerContext)">
+            <summary>
+            Extracts the CanvasItems from a Page and aggregates them into a list of PageObjects suitable 
+            for exporting to text.
+            </summary>
+            <param name="handlerContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.CanvasItemHandler.TwipsBoundsToInchesBounds(System.Drawing.Rectangle)">
+            <summary>
+            Converts the specified Rectangle in twips units to a RectangleF with inches units.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.CanvasItemHandler.InchesBoundsToTwipsBounds(System.Drawing.RectangleF)">
+            <summary>
+            Converts the specified RectangleF in inches units to a Rectangle with twips units.
+            </summary>
+            <param name="boundsInInches">A RecantleF using inches for it's measurement units.</param>
+            <returns>A Recangle using twips for units.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.CanvasItemHandler.TwipsToInches(System.Int32)">
+            <summary>
+            Converts the specified inches value to twips units.
+            </summary>
+            <param name="twips">The value in twips to be converted.</param>
+            <returns>The equivelent value in inches.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.CanvasItemHandler.InchesToTwips(System.Single)">
+            <summary>
+            Converts the specified inches value to twips units.
+            </summary>
+            <param name="inches">The value in inches to be converted.</param>
+            <returns>The equivelent value in twips.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.CanvasItemHandler.PixelsToTwips(System.Single,System.Single)">
+            <summary>
+            Converts pixels to twips with the specified dpi.
+            </summary>
+            <param name="dpi">The pixels/dots per inch value to be used for the conversion.</param>
+            <param name="pixels">The value in pixels to convert.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.CanvasItemHandler.CanvasItemHandlerContext">
+            <summary>
+            Honlds basic state information passed from the <see cref="T:GrapeCity.ActiveReports.Export.Xml.Section.TextExport"/> to the <see cref="T:GrapeCity.ActiveReports.Export.Xml.Section.CanvasItemHandler"/>.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.CanvasItemHandler.CanvasItemHandlerContext.CurrentPage">
+            The CurrentPage that the <see cref="!:CanvasItems"/> are being exported from.
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.CanvasItemHandler.CanvasItemHandlerContext.PageObjectOffset">
+            The amount to offset each pageobject by.
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.CanvasItemHandler.CanvasItemHandlerContext.#ctor(GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage,System.Drawing.PointF,GrapeCity.ActiveReports.Core.Document.ITextLayoutService)">
+            <summary>
+            Initializes a new instance of the <see cref="!:CanvasItemHandlercontext"/>.
+            </summary>
+            <param name="currentPage">The current page being exported.</param>
+            <param name="pageObjectOffset">An offset to offset each pageobject by. This is useful for exporting items in a table/tablecell.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.DescriptionRes">
+            <summary>
+            base class for Description Attribute
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Section.DescriptionRes.Description">
+            <summary>
+            Description for Resource
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.EncodingTypeConverter">
+            <summary>
+            Encoding property converter.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.ObjLine.SortObjLineByTopAscending">
+            <summary>
+            Used for sorting ObjLine in a collection by their top value in ascending order.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.ObjLine.SortObjLineByTopAscending.Singleton">
+            <summary>
+            Provides a single instance of SortObjLineByTopAscending to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.ObjLine.SortObjLineByTopAscending.#ctor">
+            <summary>
+            Initializes a new instance of the SortObjLineByTopAscending class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.ObjLine.SortObjLineByTopAscending.Compare(System.Object,System.Object)">
+            <summary>
+            Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.
+            </summary>
+            <param name="x">First object to compare. </param>
+            <param name="y">Second object to compare. </param>
+            <returns>
+            Less than zero		x is less than y. 
+            Zero				x equals y. 
+            Greater than zero	x is greater than y. 
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.PageObject">
+            <summary>
+            Summary description for PageObject.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.itemLen">
+            string length for type 0
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByHeightDecending">
+            <summary>
+            Used for sorting PageObjects in a collection by height descending.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByHeightDecending.Singleton">
+            <summary>
+            Provides a single instance of SortPageObjectsByHeightDecending to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByHeightDecending.#ctor">
+            <summary>
+            Initializes a new instance of the SortPageObjectsByHeightDecending class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByHeightDecending.Compare(GrapeCity.ActiveReports.Export.Xml.Section.PageObject,GrapeCity.ActiveReports.Export.Xml.Section.PageObject)">
+            <summary>
+            Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.
+            </summary>
+            <param name="x">First object to compare. </param>
+            <param name="y">Second object to compare. </param>
+            <returns>
+            Less than zero		x is less than y. 
+            Zero				x equals y. 
+            Greater than zero	x is greater than y. 
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByBottomAscending">
+            <summary>
+            Used for sorting PageObjects in a collection by their bounds' bottom value in asscending order.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByBottomAscending.Singleton">
+            <summary>
+            Provides a single instance of SortPageObjectsByBottomAscending to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByBottomAscending.#ctor">
+            <summary>
+            Initializes a new instance of the SortPageObjectsByBottomAscending class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByBottomAscending.Compare(GrapeCity.ActiveReports.Export.Xml.Section.PageObject,GrapeCity.ActiveReports.Export.Xml.Section.PageObject)">
+            <summary>
+            Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.
+            </summary>
+            <param name="x">First object to compare. </param>
+            <param name="y">Second object to compare. </param>
+            <returns>
+            Less than zero		x is less than y. 
+            Zero				x equals y. 
+            Greater than zero	x is greater than y. 
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByBottomDecending">
+            <summary>
+            Used for sorting PageObjects in a collection by their bounds' bottom value in descending order.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByBottomDecending.Singleton">
+            <summary>
+            Provides a single instance of SortPageObjectsByBottomDecending to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByBottomDecending.#ctor">
+            <summary>
+            Initializes a new instance of the SortPageObjectsByBottomDecending class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByBottomDecending.Compare(GrapeCity.ActiveReports.Export.Xml.Section.PageObject,GrapeCity.ActiveReports.Export.Xml.Section.PageObject)">
+            <summary>
+            Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.
+            </summary>
+            <param name="x">First object to compare. </param>
+            <param name="y">Second object to compare. </param>
+            <returns>
+            Less than zero		x is less than y. 
+            Zero				x equals y. 
+            Greater than zero	x is greater than y. 
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByLeftAscending">
+            <summary>
+            Used for sorting PageObjects in a collection by their left value in ascending order.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByLeftAscending.Singleton">
+            <summary>
+            Provides a single instance of SortPageObjectsByBottomDecending to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByLeftAscending.#ctor">
+            <summary>
+            Initializes a new instance of the SortPageObjectsByBottomDecending class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.PageObject.SortPageObjectsByLeftAscending.Compare(GrapeCity.ActiveReports.Export.Xml.Section.PageObject,GrapeCity.ActiveReports.Export.Xml.Section.PageObject)">
+            <summary>
+            Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.
+            </summary>
+            <param name="x">First object to compare. </param>
+            <param name="y">Second object to compare. </param>
+            <returns>
+            Less than zero		x is less than y. 
+            Zero				x equals y. 
+            Greater than zero	x is greater than y. 
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.ResCategoryAttribute">
+            <summary>
+            ResCategoryAttribute overrides and provides an implementation of the CategoryAttribute class's GetLocalizedString method.
+            This class aids in localizing.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.ResCategoryAttribute.#ctor(System.String)">
+            <summary>
+            The Category the property should be in.
+            </summary>
+            <param name="category">The LocalStrings key to be used as the category key.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.ResCategoryAttribute.GetLocalizedString(System.String)">
+            <summary>
+            Returns the localized Category string.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.Span">
+            <summary>
+            Used as a logical vertical span of intersecting items in the layout algorithm.  
+            It is a vertical span that no horizontal gaps between PageObjects occur in.
+            It is a raw port of c++.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.Span.GetPageObject(System.Int32)">
+            <summary>
+            Returns the PageObject at the specified index in <see cref="F:GrapeCity.ActiveReports.Export.Xml.Section.Span.objects"/>.
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.Span.sortHeightDescending">
+            <summary>
+            Sorts the PageObject elements in <see cref="F:GrapeCity.ActiveReports.Export.Xml.Section.Span.objects"/> by their height value in descending order.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.TableHandler">
+            <summary>
+            Provides handling for the Table,Row,and Cell CanvasItems in ARNET2.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.TextExport">
+            <summary>
+            The ActiveReports for .NET Text Export Component.
+            </summary>
+            <remarks>
+            	<para>
+            		The default character encoding used for the TextExport is ASCII.  If your 
+            		reports may contain internationalized characters then consider using the 
+            		<see cref="P:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.Encoding"/> property to specify the <see cref="T:System.Text.UTF8Encoding"/> 
+            		or <see cref="T:System.Text.UnicodeEncoding"/> instead.  The current Encoding�s 
+            		preamble is written out according to the rules of <see cref="T:System.IO.StreamWriter"/>.
+            	</para>
+            </remarks>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.arEngineTextPadding">
+            <summary>
+            This is the value used in AREngine as padding between the original bounds of the text box (which are what the rectangle/backcolor uses) and the bounding rectangle for text records.
+            Units are in inches.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.InitStringFormat">
+            <summary>
+            Returns a <see cref="T:System.Drawing.StringFormat"/> initialized for measuring text records in AR.NET.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.encoding">
+            <summary>
+            Private storage for the Encoding property.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.EncodingDefault">
+            <summary>
+            Default value for Encoding property.
+            Must change DefaultValue attribute for this property also !
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.pageDelimiter">
+            <summary>
+            Private storage for the PageDelimiter property.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.PageDelimiterDefault">
+            <summary>
+            Default value for the PageDelimiter property.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.textDelimiter">
+            <summary>
+            Private storage for the TextDelimiter property.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.TextDelimiterDefault">
+            <summary>
+            Default value for the TextDelimiter property.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.QuotationSymbolDefault">
+            <summary>
+            Default value for the QuotationSymbol property.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.supressEmptyLines">
+            <summary>
+            Private storage for the SupressEmptyLines property.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.SuppressEmptyLinesDefault">
+            <summary>
+            Default value for the SupressEmptyLines property.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Xml.Section.TextExport"/> class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.Encoding">
+            <summary>
+            Sets or returns the character encoding used for the outputted text.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.PageDelimiter">
+            <summary>
+            Sets or returns the text inserted between pages.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.TextDelimiter">
+            <summary>
+            Sets or returns the text inserted between text fields.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.QuotationSymbol">
+            <summary>
+            Gets or sets the quotation symbol.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.SuppressEmptyLines">
+            <summary>
+            Determines whether empty lines will be inserted for layout purposes.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.Pagination">
+            <summary>
+            Gets or sets the value indicates should pagination be used for resulted text document or not
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.Export(GrapeCity.ActiveReports.Document.SectionDocument,System.String,System.String)">
+            <summary>
+            Exports the specified document to a text format file.
+            </summary>
+            <param name="document">
+            The ActiveReports Document object to export.
+            </param>
+            <param name="filePath">
+            The file name and path to save the main html file to.
+            </param>
+            <param name="pageRange">
+            A range of page numbers to export seperated by a comma.  Between each comma can have a single page number, or range of pages with a hyphen between the starting and ending page numbers in the range.
+            </param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.Export(GrapeCity.ActiveReports.Document.SectionDocument,System.String)">
+            <summary>
+            Exports the specified document to a text format file.
+            </summary>
+            <param name="document">
+            The ActiveReports Document object to export.
+            </param>
+            <param name="filePath">
+            The file name and path to save the main html file to.
+            </param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.Export(GrapeCity.ActiveReports.Document.SectionDocument,System.IO.Stream)">
+            <summary>
+            Exports the specified document to the specified stream in Rich Text Format.
+            </summary>
+            <param name="document">
+            The ActiveReports Document object to export.
+            </param>
+            <param name="outputStream">The Stream to write the text to.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.Export(GrapeCity.ActiveReports.Document.SectionDocument,System.IO.Stream,System.String)">
+            <summary>
+            Exports the specified document to the specified stream in text format.
+            </summary>
+            <param name="document">
+            The ActiveReports Document object to export.
+            </param>
+            <param name="outputStream">The Stream to write the text to.</param>
+            <param name="pageRange">
+            A range of page numbers to export seperated by a comma.  Between each comma can have a single page number, or range of pages with a hyphen between the starting and ending page numbers in the range.
+            </param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.CommonExport(GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredDocument,System.IO.StreamWriter,GrapeCity.ActiveReports.Core.Document.ITextLayoutService)">
+            <summary>
+            Performs the export logic for a document that is common to all of the export method overloads.
+            </summary>
+            <param name="outputStream">The <see cref="T:System.IO.StreamWriter"/> to write the text to.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.GenPage(GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage,System.Text.StringBuilder,GrapeCity.ActiveReports.Core.Document.ITextLayoutService)">
+            <summary>
+            Exports the specified page to the specified StringBuilder.
+            </summary>
+            <param name="page">The Page object to be exported</param>
+            <param name="buffer">The target buffer for the output.</param>
+            <param name="referenceGraphics">A graphics used for measuring text. Passed in for performance optimization.</param>
+            <param name="stringFormat">A StringFormat used for measuring text. Passed in for performance optimization.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.TextExport.BuildTextWidths(System.Collections.Generic.IList{GrapeCity.ActiveReports.Export.Xml.Section.PageObject},GrapeCity.ActiveReports.Core.Document.ITextLayoutService)">
+            <summary>
+            Enumerates PageObject elemnts of specified ArrayList and sets the m_textwidthtwips property to the actual width of it's contained text.
+            </summary>
+            <param name="pageObjects">The collection of pageobjects the text width is to be set for.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Section.TextExportException">
+            <summary>
+            Thrown when a general TextExport specific error occurs.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.TextExportException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Xml.Section.TextExportException"/> class with a specified error message.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.TextExportException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Xml.Section.TextExportException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The Exception instance that caused the current exception.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Section.TextExportException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Xml.Section.TextExportException"/> class with serialized data.
+            </summary>
+            <param name="info"></param>
+            <param name="context"></param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.AR.TextResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.ArgumentCannotBeEmpty">
+            <summary>
+              Looks up a localized string similar to Argument cannot be empty..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.BadRelativePath">
+            <summary>
+              Looks up a localized string similar to There was a problem converting the specified file path to an absolute file path..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.Category_TextExport_Encoding">
+            <summary>
+              Looks up a localized string similar to ActiveReports.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.Category_TextExport_PageDelimiter">
+            <summary>
+              Looks up a localized string similar to ActiveReports.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.Category_TextExport_QuotationSymbol">
+            <summary>
+              Looks up a localized string similar to ActiveReports.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.Category_TextExport_SupressEmptyLines">
+            <summary>
+              Looks up a localized string similar to ActiveReports.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.Category_TextExport_TextDelimiter">
+            <summary>
+              Looks up a localized string similar to ActiveReports.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.Desc_TextExport_Encoding">
+            <summary>
+              Looks up a localized string similar to Sets or returns the character encoding used for the outputted text..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.Desc_TextExport_PageDelimiter">
+            <summary>
+              Looks up a localized string similar to Sets or returns the text inserted between pages..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.Desc_TextExport_QuotationSymbol">
+            <summary>
+              Looks up a localized string similar to Sets or returns the qualifier character to put around results..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.Desc_TextExport_SupressEmptyLines">
+            <summary>
+              Looks up a localized string similar to Determines whether empty lines will be inserted for layout purposes..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.Desc_TextExport_TextDelimiter">
+            <summary>
+              Looks up a localized string similar to Sets or returns the text inserted between text fields..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.Description_TextExport">
+            <summary>
+              Looks up a localized string similar to ActiveReports Text (.txt) Export Component.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.EncodingTypeConverterArgumentError">
+            <summary>
+              Looks up a localized string similar to Encoding property destinationType is null..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.ErrorUnexpectedCommon">
+            <summary>
+              Looks up a localized string similar to An unexpected error has occurred in while exporting the specified document.  Additional information. Please see the inner exception for additional information..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.AR.TextResources.NoPages">
+            <summary>
+              Looks up a localized string similar to The document contains no pages to export..
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.DDR.AssemblyResources.Resources">
+            <summary>
+            Resource manager for xml rendering assembly.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Xml.DDR.AssemblyResources.Resources._stringsManager">
+            <summary>
+            Use the <see cref="P:GrapeCity.ActiveReports.Export.Xml.DDR.AssemblyResources.Resources.StringsManager"/> property.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.DDR.AssemblyResources.Resources.#ctor">
+            <summary>
+            Prevents external callers from creating instances of this class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.DDR.AssemblyResources.Resources.StringsManager">
+            <summary>
+            Returns the resource manager that string values are stored in.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.DDR.AssemblyResources.Resources.GetString(GrapeCity.ActiveReports.Export.Xml.DDR.AssemblyResources.ResourceKey)">
+            <summary>
+            Returns the string resource identified by the specified key.
+            </summary>
+            <param name="key">The <see cref="T:GrapeCity.ActiveReports.Export.Xml.DDR.AssemblyResources.ResourceKey"/> to use to obtain the resource.</param>
+            <returns>The string resource.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.DDR.AssemblyResources.Resources.GetString(GrapeCity.ActiveReports.Export.Xml.DDR.AssemblyResources.ResourceKey,System.Object[])">
+            <summary>
+            Returns the formatted string resource identified by the specified key.
+            </summary>
+            <param name="key">The <see cref="T:GrapeCity.ActiveReports.Export.Xml.DDR.AssemblyResources.ResourceKey"/> to use to obtain the resource.</param>
+            <param name="args">Any arguments that the string resource is expecting (resource string values should be fitted with one or more "{n}" format specifier place holder(s)).</param>
+            <returns>The formatted string resource.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.DDR.DataElementNameValidator.ValidateReportItems(System.Collections.Generic.IEnumerable{GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReportItem})">
+            <summary>
+            Validation DataElementName property of report items.
+            </summary>
+            <param name="reportItems">Report Items</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.DDR.DataElementNameValidator.CollectReportItems(System.Collections.Generic.IEnumerable{GrapeCity.ActiveReports.Extensibility.Rendering.Components.IRenderComponent},System.Collections.Generic.IList{GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReportItem})">
+            <summary>
+            Collect nested items to list.
+            </summary>
+            <param name="renderComponents">Components of parent report item </param>
+            <param name="reportItems">List with nested items.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.DDR.DataElementNameValidator.DistinctEqualityComparer">
+            <summary>
+            Distinct comparer to exclude identical elements
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Page.XmlRenderingExtension">
+            <summary>
+            Implementation of <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.IRenderingExtension" />. Allows to render <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport" /> to XML file.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Page.XmlRenderingExtension.Render(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider)">
+            <summary>
+            Renders <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport" /> to specified <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider" />.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Page.XmlRenderingExtension.Render(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Renders <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport" /> to specified <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider" /> applying specified settings.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Page.XmlRenderingExtension.GetSupportedSettings">
+            <summary>
+            Gets supported settings of <see cref="T:GrapeCity.ActiveReports.Export.Xml.Page.XmlRenderingExtension" />.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Page.XmlRenderingExtension.GetSupportedSettings(System.Boolean)">
+            <summary>
+            Gets supported settings of <see cref="T:GrapeCity.ActiveReports.Export.Xml.Page.XmlRenderingExtension" />.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Page.EncodingNameConverter">
+            <summary>
+            Type converter for Encoding property. Used instead of show enum in property editor,
+            since UTF-8 can't be member of enumeration.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Xml.Page.Settings">
+            <summary>
+            Specifies the available setting names used with the <see cref="T:GrapeCity.ActiveReports.Export.Xml.Page.XmlRenderingExtension"/>.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Page.Settings.#ctor">
+            <summary>
+            Allows internal callers to create instances of this class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.OutputHiddenMatrixMembersPropertyName">
+            <summary>
+            Specifies a setting name that determines if any hidden members in a Matrix ReportItem are written out.
+            Possible values: 
+            <list type="bullet">
+            <item>
+            <description>yes</description>
+            </item>
+            <item>
+            <description>no</description>
+            </item>
+            </list>
+            Default: yes
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.EncodingPropertyName">
+            <summary>
+            Specifies the setting name that determines the text encoding to use.
+            </summary>
+            <remarks>
+            Valid values are the code page name of the preferred encoding. For example: utf-8, utf-16, utf-32, iso-8859-1, iso-2022-jp, etc...
+            Default: utf-8
+            </remarks>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.XslStylesheetPropertyName">
+            <summary>
+            Specifies the full path and filename of an Xsl Stylesheet to use during the rendering process.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.SuggestedFileExtensionPropertyName">
+            <summary>
+            Used when an Xsl Stylesheet is used to determine the file type to use with the FileStreamProvider
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.OutputTextboxConstantValuesPropertyName">
+            <summary>
+            Specifies the setting name that determines if a <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.Components.ITextBox"/> that has a value that is 
+            literal will write that value.
+            Possible values: 
+            <list type="bullet">
+            <item>
+            <description>yes</description>
+            </item>
+            <item>
+            <description>no</description>
+            </item>
+            </list>
+            Default: no
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.Encoding">
+            <summary>
+            Returns the value of the current Encoding setting.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.XslStylesheet">
+            <summary>
+            Gets or sets the path of the Xsl Stylesheet used during the rendering process.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.SuggestedFileExtension">
+            <summary>
+            Gets or sets the filename provided by the Export Dialog
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.WriteEmptyAttributes">
+            <summary>
+            Returns the value of the current WriteEmptyAttributes setting.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.OutputHiddenMatrixMembers">
+            <summary>
+            Returns the value of the current ExpandMatrix setting.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.OutputTextboxConstantValues">
+            <summary>
+            Returns the value of the current OutputTextboxConstantValue setting.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.OutputHiddenMatrixMembersDefaultValue">
+            <summary>
+            Specifies the default value for <see cref="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.OutputHiddenMatrixMembers"/>.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.OutputTextboxConstantValuesDefaultValue">
+            <summary>
+            Specifies the default value for <see cref="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.OutputTextboxConstantValues"/>.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.WriteEmptyAttributesDefaultValue">
+            <summary>
+            Specifies the default value for <see cref="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.WriteEmptyAttributes"/>.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.EncodingDefaultValue">
+            <summary>
+            Specifies the default value for the <see cref="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.Encoding"/> property.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.XslStylesheetDefaultValue">
+            <summary>
+            Specifies the default value for the <see cref="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.XslStylesheet"/> property.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Xml.Page.Settings.DefaultDateFormat">
+            <summary>
+            Internal value for date settings
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Page.Settings.ToBoolean(System.String)">
+            <summary>
+            Converts the specified string value to a boolean.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Page.Settings.ApplySettings(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Applies any settings passed in the NameValueCollection settings parameters.
+            </summary>
+            <param name="settings">A <see cref="T:System.Collections.Specialized.NameValueCollection"/> containing new settings.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Page.Settings.ToString">
+            <summary>
+            Returns a <see cref="T:System.String" /> that represents this instance.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Page.Settings.GetSettings">
+            <summary>
+            Returns a <see cref="T:System.Collections.Specialized.NameValueCollection" /> containing the settings for the rendering extension.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Xml.Page.Settings.op_Implicit(GrapeCity.ActiveReports.Export.Xml.Page.Settings)~System.Collections.Specialized.NameValueCollection">
+            <summary>
+            Performs an implicit conversion from <see cref="T:GrapeCity.ActiveReports.Export.Xml.Page.Settings"/> to <see cref="T:System.Collections.Specialized.NameValueCollection"/>.
+            </summary>
+            <param name="settings">The settings.</param>
+            <returns>The result of the conversion.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Text.Page.ConfigurableRenderingExtension`1">
+            <summary>
+            For internal use. Base class for configurable rendering extension.
+            </summary>
+            <typeparam name="TSettings"></typeparam>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Text.Page.ConfigurableRenderingExtension`1.GetSupportedSettings">
+            <summary>
+            Returns new instance of <see cref="T:GrapeCity.ActiveReports.Export.Text.Page.ConfigurableRenderingExtension`1.Settings"/> with supported default properties.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Text.Page.ConfigurableRenderingExtension`1.GetSupportedSettings(System.Boolean)">
+            <summary>
+            Returns new instance of <see cref="T:GrapeCity.ActiveReports.Export.Text.Page.ConfigurableRenderingExtension`1.Settings"/> with supported default properties.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Text.Page.ConfigurableRenderingExtension`1.SettingsBase">
+            <summary>
+            For internal use. Base class for rendering extension settings
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Text.Page.ConfigurableRenderingExtension`1.SettingsBase.op_Implicit(GrapeCity.ActiveReports.Export.Text.Page.ConfigurableRenderingExtension{`0}.SettingsBase)~System.Collections.Specialized.NameValueCollection">
+            <summary>
+            implicit conversion from SettingsBase to NameValueCollection
+            </summary>
+            <param name="settings">settings</param>
+            <returns></returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Text.Page.CsvRenderingExtension">
+            <summary>
+            Provides export of Page and RDL reports to CSV format.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Text.Page.CsvRenderingExtension.Settings">
+            <summary>
+            CsvRenderingExtension settings class
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Text.Page.CsvRenderingExtension.Settings.#ctor">
+            <summary>
+            Initializes new Settings instance with default properties values.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Text.Page.CsvRenderingExtension.Settings.ColumnsDelimiter">
+            <summary>
+            The string to be placed between fields in data row.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Text.Page.CsvRenderingExtension.Settings.RowsDelimiter">
+            <summary>
+            The string to be placed between data rows.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Text.Page.CsvRenderingExtension.Settings.QuotationSymbol">
+            <summary>
+            The quotation symbol.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Text.Page.CsvRenderingExtension.Settings.Encoding">
+            <summary>
+            The result file encoding.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Text.Page.CsvRenderingExtension.Settings.NoHeader">
+            <summary>
+            Determines whether CSV Header should be omitted.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Text.Page.CsvRenderingExtension.Render(GrapeCity.ActiveReports.Export.Text.Page.CsvRenderingExtension.Settings,GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider,GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport)">
+            <summary>
+            Renders specified report
+            </summary>
+            <param name="settings">settings for output stream</param>
+            <param name="streams">output stream</param>
+            <param name="report">the report</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Text.Page.EncodingTypeConverter">
+            <summary>
+            Encoding property converter.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Text.Page.EscapedTypeConverter">
+            <summary>
+            Escapes and unescapes some symbols (like tab, new line and etc) to be edit in property grid.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Text.Page.JsonRenderingExtension">
+            <summary>
+            Provides export of Page and RDL reports to JSON format.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Text.Page.JsonRenderingExtension.Settings">
+            <summary>
+            JsonRenderingExtensions settings class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Text.Page.JsonRenderingExtension.Settings.#ctor">
+            <summary>
+            Initializes new Settings instance with default properties values.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Text.Page.JsonRenderingExtension.Settings.Formatted">
+            <summary>
+            Specifies whether to format the output json text to be more readable.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Text.Page.JsonRenderingExtension.Settings.QuotePropertyNames">
+            <summary>
+            Specifies whether property names should be enclosed in quotation marks.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Text.Page.JsonRenderingExtension.Render(GrapeCity.ActiveReports.Export.Text.Page.JsonRenderingExtension.Settings,GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider,GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport)">
+            <summary>
+            Renders specified report
+            </summary>
+            <param name="settings">settings for output stream</param>
+            <param name="streams">output stream</param>
+            <param name="report">the report</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Text.Page.RenderingExtensionBase`1">
+            <summary>
+            For internal use only. Base class for simple rendering extension.
+            </summary>
+            <typeparam name="TSettings"></typeparam>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Text.Page.RenderingExtensionBase`1.Render(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider)">
+            <summary>
+            Renders the specified report.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Text.Page.RenderingExtensionBase`1.Render(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Renders the specified report with the specified settings.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Text.Page.RenderingExtensionBase`1.ApplySettings(System.Object,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Applys settings for the rendering extension.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Text.Page.RenderingExtensionBase`1._defaults">
+            <summary>
+            The default settings.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Text.Page.RenderingExtensionBase`1.Defaults">
+            <summary>
+            Gets the default settings.
+            </summary>
+        </member>
+        <member name="T:DataDynamics.Diagnostics.InternalTracer">
+            <summary>
+            Provides a common way to trace messages that do not show up easily to our users.
+            Support personel or the developer can use the TraceSwitch in a config file (web.config for exe config) to turn tracing on and off.
+            </summary>
+        </member>
+        <member name="F:DataDynamics.Diagnostics.InternalTracer.traceSwitchString">
+            <summary>
+            Put this string in a config file under configuration\system.diagnostics\switches\add to turn on tracing.
+            Then add a listenter under configuration\system.diagnostics\trace\listeners.
+            </summary>
+        </member>
+        <member name="F:DataDynamics.Diagnostics.InternalTracer.tracingSwitch">
+            <summary>
+            Used with this class's LogMessage method to indicate if tracing is turned on or not. 
+            I'm using guid strings to keep prying eyes from understanding what's going on, and an attempt ot prevent users from easily turning tracing on.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.Diagnostics.InternalTracer.Trace(System.String)">
+            <summary>
+            Provides tracing when defined appropriately in an application configuration file.
+            </summary>
+            <param name="message">The trace message to be written to a trace listener.</param>
+            <remarks>
+            This could be used with support and an appropriate app.config file to implement tracing when output is messed up for unknown reasons.
+            I've applied these debugger attributes to it to attempt to keep it out of call stacks and debuggers stepping though it.
+            If this method is found to be a sevear performance hinderence (presumably via profiling), then we should be able to uncomment the ConditionalAttribute below and only have it included in DEBUG builds only.
+            </remarks>
+        </member>
+        <member name="M:DataDynamics.Diagnostics.InternalTracer.Trace(System.String,System.Object[])">
+            <summary>
+            Provides tracing with string.format like capabilities.
+            </summary>
+        </member>
+        <member name="T:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils">
+            <summary>
+            Provides utility functions useful when parsing CanvasItem records in a Canvas/Page.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.AreBoundsClose(System.Drawing.RectangleF,System.Drawing.RectangleF)">
+            <summary>
+            Returns true if the bounds are within 1000'th of an inch of each other.
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.OutsideRect(System.Drawing.RectangleF,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Returns true if element is entirely outside rectangle. False if inside or intersecting.
+            </summary>
+            <param name="pcr">Clip rect.</param>
+            <param name="elementX">x coordinate for element.</param>
+            <param name="elementY">y coordinate for element.</param>
+            <param name="elementWidth">width for element.</param>
+            <param name="elementHeight">height for element.</param>
+            <returns>True if element is entirely outside rectangle, otherwise returns false.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.InsideRect(System.Drawing.RectangleF,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Returns true if the specified element is entirely inside the specified rectangle (or exactly the same bounds); false if outside or intersecting.
+            </summary>
+            <param name="pcr">Clip rect</param>
+            <param name="x">Line x coordinate.</param>
+            <param name="y">Line y coordinate.</param>
+            <param name="w">Line width.</param>
+            <param name="h">Line height.</param>
+            <returns>True if the specified element is entirely inside the specified rectangle; false if outside or intersecting.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.ClipLine(System.Drawing.RectangleF,GrapeCity.ActiveReports.Document.Section.LineItem@,GrapeCity.ActiveReports.Document.Section.LineItem)">
+            <summary>
+            This function takes a line and a clipping rectangle, and outputs a clipped line in the pNew argument.
+            </summary>
+            <param name="pCR">The clipping rectangle.</param>
+            <param name="pNew">The new, clipped line will be returned in this argument.</param>
+            <param name="pOld">The old line you want clipped.</param>
+            <returns>
+            Returns true when the line is entirely outside of the cliprect and therefore not renderable.  
+            If the line intersects the cliprect, then ClipLine(..) will generate a line that does fit entirely inside the cliprect and set it to pNew, and true will be returned.
+            If the line is entirely inside the cliprect, then ClipLine simply sets pNew to pOld and returns false.
+            </returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.IntersectLines(System.Drawing.PointF@,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Returns true if lines intersect, false if not, sets ppointout to point of intersection.
+            </summary>
+            <param name="ppointout">
+            If lines intersect, this will be the point of intersection.
+            </param>
+            <param name="x1">X1 coordinate for first line.</param>
+            <param name="y1">Y1 coordinate for first line.</param>
+            <param name="x2">X2 coordinate for first line.</param>
+            <param name="y2">Y2 coordinate for first line.</param>
+            <param name="x3">X1 coordinate for second line.</param>
+            <param name="y3">Y1 coordinate for second line.</param>
+            <param name="x4">X2 coordinate for second line.</param>
+            <param name="y4">Y2 coordinate for second line.</param>
+            <returns>True if lines intersect, false if not.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.ClipShapeBounds(System.Drawing.RectangleF@,System.Drawing.RectangleF)">
+            <summary>
+            Clips the specified bounds for a shape based on the specified clipRect.
+            </summary>
+            <param name="itemBounds">The bounds for the item. Upon return of this function this value will have the clipped bounds.</param>
+            <param name="clipRect">The clipping rectangle according to which itemBounds will be clipped.</param>
+            <returns>
+            True if the item should be rendered according to the new bounds, or false if the item should not be rendered at all.
+            </returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.ClipImage(System.Drawing.Image@,System.Drawing.RectangleF@,System.Drawing.RectangleF)">
+            <summary>
+            Clips the specified image if necessary.
+            </summary>
+            <param name="sourceImage"></param>
+            <param name="imageBounds"></param>
+            <param name="clipRect"></param>
+            <returns>
+            True if you should render the specified image.  Note that the location and actual image arguments may have been changed by this function.
+            False, indicates that you should not render the specified image due to the cliprect.  This would normally indicate that the image is entirely outside of the cliprect.
+            </returns>
+        </member>
+        <member name="F:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.DEFAULTPIXELSPERINCH">
+            <summary>
+            Number of pixels per inch used in unit default conversions. 
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.InchesToPixels(System.Single,System.Single)">
+            <summary>
+            Returns the specified inch value in pixel units.
+            </summary>
+            <param name="inches">The value in inches to convert.</param>
+            <param name="dpi">The pixels/dots per inch value to be used for the conversion.</param>
+            <returns>The value in pixels.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.InchesToPixels(System.Single)">
+            <summary>
+            Returns the specifed inch value in pixel units with pixels per inch/dpi value of <see cref="F:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.DEFAULTPIXELSPERINCH"/>.
+            </summary>
+            <param name="inches">The value in inches to convert.</param>
+            <returns>The value in pixels.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.InitStringFormat">
+            <summary>
+            Returns a <see cref="T:System.Drawing.StringFormat"/> initialized for measuring text records in AR.NET.  This is typically what would be used with CanvasUtils.GetClippedTextLines.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.MeasureString(System.Drawing.Graphics,System.String,System.Drawing.Font,System.Drawing.SizeF,System.Drawing.StringFormat,System.Single,GrapeCity.ActiveReports.PaddingEx,System.Int32@,System.Int32@,System.Single)">
+            <summary>
+            RS: CR 23121 - String measurer that takes into account the character spacing
+            </summary>
+            <param name="gRef"></param>
+            <param name="text"></param>
+            <param name="font"></param>
+            <param name="size"></param>
+            <param name="stringFormat"></param>
+            <param name="characterSpacing"></param>
+            <param name="charactersFitted"></param>
+            <param name="padding"></param>
+            <param name="linesFilled"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.GetClippedTextLines(System.String,System.Drawing.Graphics,System.Drawing.StringFormat,System.Drawing.RectangleF@,DataDynamics.ActiveReports.Export.InternalC.ExportContext,System.Single@,System.Func{System.Int32,System.String,DataDynamics.ActiveReports.Export.InternalC.ExportContext,System.Int32})">
+            <summary>
+            Divides the specified text into lines using \n as line dividers.  Also clips the text according to the cliprect specified in context.
+            </summary>
+            <param name="text">The text to be divided into lines and clipped.</param>
+            <param name="referenceGraphics">A graphics used for measuring text. Passed in for performance optimization.</param>
+            <param name="stringFormat">A StringFormat used for measuring text. Passed in for performance optimization.</param>
+            <param name="controlRect">The bounds of the text record from the RDF DrawText2 item.</param>
+            <param name="context">The context providing information such as font, colors, and cliprect.</param>
+            <param name="outLineHeightInches">Since this function has to calculate the line height anyway, it will return the lineheight it calculated.</param>
+            <param name="handleWrapMode">The action for manual WrapMode handling if it was not been performed before.</param>
+            <returns>Null if text is entirely clipped. Or an array of lines of text clipped based on the specified ExportContext.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.DeflateRect(System.Drawing.RectangleF,GrapeCity.ActiveReports.PaddingEx)">
+            <summary>
+            Deflates the padding from the rect
+            </summary>
+            <param name="rect"></param>
+            <param name="padding"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DataDynamics.ActiveReports.Export.InternalC.ExportContext">
+            <summary>
+            This class is basically the same as RenderContext in ActiveReports, but customized for contextual information specific to Exports and not a Graphics.  
+            Much of the functionality is exactly the same as RenderContext.
+            However, RenderContext is tightly coupled with each of the CanvasItem's and uses CanvasItem.Render to maintain/update RenderContext, which also does rendering to a Grahpics, which is inappropriate and inefficient for Excel or any Export filter. 
+            </summary>
+            <remarks>
+            Differences between ExportContext and RenderContext:
+            - The current cliprect is manged by ExportContext here, not Graphics like RenderContext. 
+            - The ClipStack is a stack of RectangleF structs, and not System.Drawing.Drawing2D.Region.  All our clips are rectangles in RDF and I think regions were only used in RenderContext because that's what Graphics uses and rendercontext stores it's "current cliprect" on the Grahpics, not RenderContext.
+            </remarks>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.#ctor(GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage)">
+            <summary>
+            Creates an instance of the ExportContext.
+            </summary>
+            <param name="page">The DataDynamics.ActiveReports.Page object that this context is relative to. All fonts (see <see cref="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.SelectFont(System.Int16)"/>) are slected from the Page's Fonts collection.</param>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.GetDefaultFontWithPointUnit">
+            <summary>
+            Clone font for azure while sizeinpoints throw outofmemory exception.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.PushClipRect">
+            <summary>
+            Takes the current clipRect (in CurrentClipRect property) and pushes it onto the ClipStack.  
+            The current cliprect is still maintained as the "current cliprect".
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.PopClipRect">
+            <summary>
+            Takes the last cliprect put onto the stack and sets it as the current cliprect.
+            If there are no cliprects on the stack then the current cliprect is cleared, and IsClipActive is set to false.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.IntersectClipRect(System.Drawing.RectangleF)">
+            <summary>
+            Uses member method RectangleF.Intersect on the currentCliprect to calculate the intersecting clipping rectangle and sets that resulting clip rect as the current clip rect available via the ClipRect property.
+            </summary>
+            <param name="intersectClip">The clipping rectangle to intersect the current clipping rectangle with.</param>
+        </member>
+        <member name="P:DataDynamics.ActiveReports.Export.InternalC.ExportContext.ClipRect">
+            <summary>
+            Returns the current cliprect bounding the output device/surface.
+            </summary>
+        </member>
+        <member name="P:DataDynamics.ActiveReports.Export.InternalC.ExportContext.ClipStack">
+            <summary>
+            Returns the Stack of RectangleF structs.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.Clone">
+            <summary>
+            Returns an instance of ExportContext that contains an exact replica of the data on this object.
+            ** Note this method does not copy the m_theFonts font follection.  
+            Only .Font/m_theFont. For performance reasons, and because I don't see why it's needed in most cases where you would clone this class.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.SelectFont(System.Int16)">
+            <summary>
+            Sets the Font property's value to the font at the specified Index.
+            </summary>
+            <param name="fontIndex"></param>
+        </member>
+        <member name="P:DataDynamics.ActiveReports.Export.InternalC.ExportContext.CharacterSpacing">
+            <summary>
+            Determines the intercharacter spacing in inches
+            </summary>
+        </member>
+        <member name="P:DataDynamics.ActiveReports.Export.InternalC.ExportContext.LineSpacing">
+            <summary>
+            Determines the interline spacing in inches
+            </summary>
+        </member>
+        <member name="T:AssemblyNames">
+            <summary>
+            Contains strong assembly names and such
+            </summary>
+        </member>
+    </members>
+</doc>

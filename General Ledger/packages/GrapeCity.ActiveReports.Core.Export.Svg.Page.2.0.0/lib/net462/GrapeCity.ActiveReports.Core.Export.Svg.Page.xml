@@ -1,0 +1,712 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GrapeCity.ActiveReports.Core.Export.Svg.Page</name>
+    </assembly>
+    <members>
+        <member name="T:GrapeCity.ActiveReports.Export.Svg.Page.Internal.SvgRenderer">
+            <summary>
+            Allows to render to SVG.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Svg.Page.SvgRenderersFactory">
+            <summary>
+            Factory with SVG based image renderer.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Svg.Page.SvgRenderingExtension">
+            <summary>
+            <see cref="!:IRenderingExtension" /> implementation to create a SVG.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Svg.Page.SvgRenderingExtension.Render(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,System.Func{System.String,System.IO.Stream})">
+            <summary>
+            Renders report.
+            </summary>
+            <param name="getStream">The provides a new <see cref="T:System.IO.Stream"/> to use to write the data to.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Svg.Page.SvgRenderingExtension.Render(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,System.Func{System.String,System.IO.Stream},System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Renders report.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Svg.Page.SvgRenderingExtension.Render(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,System.Func{System.String,System.IO.Stream},GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings)">
+            <summary>
+            Renders report.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Svg.Page.SvgRenderingExtension.Render(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,System.Func{System.String,System.IO.Stream},GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings,System.Threading.CancellationToken)">
+            <summary>
+            Renders report.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings">
+            <summary>
+            SVG settings.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings"/> class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings.#ctor(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings"/> class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings.DrawTextAsPath">
+            <summary>
+            Direct2D compatible output: https://docs.microsoft.com/en-us/windows/desktop/Direct2D/svg-support.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings.CompressAttributes">
+            <summary>
+            Compress attributes to optimize XML size.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings.EmbedImages">
+            <summary>
+            Embed images.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings.Title">
+            <summary>
+            SVG document title.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings.IncludePageMargins">
+            <summary>
+            Drop pages margins or not.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings.InteractivitySupport">
+            <summary>
+            Renders interactivity as SGV elements or as "interactivity areas" with special custom attributes.
+            So customer can listen click event and check for attributes.
+            <remarks>
+            <html>
+            <title>test</title>
+            <script type = "text/javascript" >
+            window.addEventListener("load", function() {
+              var svg = document.getElementsByTagName("svg")[0];
+              svg.addEventListener("click", function(evt)
+              {
+                if (!evt.target || !evt.target.attributes || !evt.target.attributes["arsvg:data-action-type"])
+                  return;
+                if (evt.target.attributes["arsvg:data-action-type"].value === "hyperlink")
+            	  alert(evt.target.attributes["arsvg:data-action-data"].value);
+              });
+            });
+            </script>
+            <body>
+              <svg width = "6cm" height="5cm" viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:arsvg="http://activereports.grapecity.com/2017/svg">
+                <circle cx = "300" cy="225" r="100" fill="red" style="cursor:pointer" arsvg:data-action-type="hyperlink" arsvg:data-action-page="1" arsvg:data-action-data="http://google.com" />
+              </svg>
+            </body>
+            </html>
+            </remarks>
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings.PageSettings">
+            <summary>
+            Page settings.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings.GrapeCity#ActiveReports#Extensibility#Rendering#ISettings#GetSettings">
+            <summary>
+            Returns a <see cref="T:System.Collections.Specialized.NameValueCollection" /> containing the settings for the rendering extension.
+            </summary>        
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Svg.Page.SvgSettings.GrapeCity#ActiveReports#Extensibility#Rendering#ISettings#ApplySettings(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Apply settings for the rendering extension.
+            </summary>
+            <param name="settings">Settings for the rendering extension.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Svg.Svg.SvgGenerator">
+            <summary>
+            SVG generator based on SvgNet remake for GcCommon.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Svg.Svg.SvgImageManager.LoadGcImage(GrapeCity.ActiveReports.Extensibility.Rendering.ImageInfo,System.String)">
+            <summary>
+            Loader to load images.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Svg.SvgDocument.Title">
+            <summary>
+            Sets document title. 
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Svg.SvgDocument.LinkProvider">
+            <summary>
+            Sets external link provider (in such case rendering should manage image streams manually).
+            </summary>
+            <exception cref="!:SvgException"></exception>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Svg.SvgDocument.StartRendering(System.Boolean,System.Func{System.Int32},GrapeCity.ActiveReports.Svg.SvgSmoothingMode)">
+            <summary>
+            Started rendering.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Svg.SvgDocument.SetSize(System.Single,System.Single)">
+            <summary>
+            Sets final scene size.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Svg.SvgDocument.Close(System.IO.Stream,System.Boolean)">
+            <summary>
+            Completed rendering.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Svg.SvgSmoothingMode">
+            <summary>
+            Specifies if, and how, smoothing is applied to lines, curves and filled area edges.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Svg.SvgSmoothingMode.CrispEdges">
+            <summary>
+            Specifies default mode.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Svg.SvgSmoothingMode.OptimizeSpeed">
+            <summary>
+            Specifies a higher speed rendering which has a lower rendering quality.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Svg.SvgSmoothingMode.GeometricPrecision">
+            <summary>
+            Specifies high qulaity rendering which has a lower rendering speed.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Svg.SvgSmoothingMode.Auto">
+            <summary>
+            Specifies an browser-specific mode.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Svg.SvgGraphics">
+            <summary>
+            This is an GcGraphics implementation that builds up an SVG scene. Use it like a regular <c>GcGraphics</c> object.
+            <para>
+            SvgGraphics has to do quite a lot of work to convert instructions to SVG equivalents. Some things are approximated and slight differences will
+            be noticed. Also, in several places does not do what it is supposed. In these cases SvgGraphics does do the right thing, so the result will be different.
+            </para>
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Svg.SvgGraphics.WriteSVGString(System.IO.Stream,System.Boolean,System.Boolean)">
+            <summary>
+            Get a string containing an SVG document. It calls <c>WriteSVGString</c> on the <see cref="T:SvgNet.SvgElement"/>
+            at the root of this <c>SvgGraphics</c> and returns the resulting string.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Svg.SvgGraphics.SetSize(System.Single,System.Single)">
+            <summary>
+            Sets final scene size.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Svg.SvgGraphics.AddInteractiveArea(System.Drawing.RectangleF,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Adds interactivity area to throw DOM events.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Svg.SvgGraphics.AddView(System.String,System.Drawing.RectangleF)">
+            <summary>
+            Adds named view region. Note: it doesn't support transformation!
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Svg.SvgGraphics.BeginContainer">
+            <summary>
+            The effect of calling <c>BeginContainer</c> is to create a new SVG group.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Svg.SvgGraphics.BeginAnchorContainer(System.String,System.String)">
+            <summary>
+            The effect of calling <c>BeginAnchorContainer</c> is to create a new SVG <b>A</b> element group.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Svg.SvgGraphics.EndContainer">
+            <summary>
+            The effect of calling this method is to pop out of the closest SVG group.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Svg.SvgImage">
+            <summary>
+            SVG implementation of <see cref="T:GrapeCity.Documents.Drawing.IImage"/>.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Svg.SvgImage.FromStream(System.IO.Stream)">
+            <summary>
+            Creates an image from a stream.
+            </summary>
+            <param name="stream">The source stream.</param>
+            <returns>The newly created image object.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Svg.SvgImage.FromFile(System.String)">
+            <summary>
+            Creates an image from a file.
+            </summary>
+            <param name="fileName">The file name.</param>
+            <returns>The newly created image object.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Svg.SvgImage.FromBytes(System.Byte[])">
+            <summary>
+            Creates an image from a byte array.
+            </summary>
+            <param name="data">The image data.</param>
+            <returns>The newly created image object.</returns>
+        </member>
+        <member name="T:SvgNet.IElementWithText">
+            <summary>
+            Interface for SvgElements that have a text node.
+            </summary>
+        </member>
+        <member name="T:SvgNet.IElementWithXRef">
+            <summary>
+            Interface for SvgElements that xlink to another element.
+            </summary>
+        </member>
+        <member name="T:SvgNet.IElementContainer">
+            <summary>
+            Interface for SvgElements that can be container.
+            </summary>
+        </member>
+        <member name="P:SvgNet.IElementContainer.Parent">
+            <summary>
+            The element whose child this element is; can be null, because SvgElements may only be inserted into a full SVG tree
+            long after they are created.
+            </summary>
+        </member>
+        <member name="M:SvgNet.IElementContainer.AddChild(SvgNet.SvgElement)">
+            <summary>
+            Adds a child, and sets the child's parent to this element.
+            </summary>
+            <param name="ch"></param>
+        </member>
+        <member name="P:SvgNet.IElementContainer.Children">
+            <summary>
+            Gets children.
+            </summary>
+        </member>
+        <member name="M:SvgNet.IElementContainer.ClearChildren">
+            <summary>
+            Clears all children.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElement">
+            <summary>
+            The base class for SVG elements.  It represents some part of an SVG document, either an element (rect, circle etc) or a text item.  Duties include:
+            <list type="bulleted">
+            <item>
+            <description>
+            Maintains a list of child elements and a list of attributes.
+            </description>
+            </item>
+            <item>
+            <description>
+            Writes itself and its children to an Xml document.
+            </description>
+            </item>
+            <item>
+            <description>
+            Reads itself and its children from an Xml document.
+            </description>
+            </item>
+            </list>
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgElement.WriteXmlElements(System.Xml.XmlDocument,System.Xml.XmlElement,System.Boolean)">
+            <summary>
+            Given an XML document and a parent node, write out this node and its descendants as XmlElements.
+            </summary>
+            <param name="doc">A document</param>
+            <param name="parent">A node, or null if this element is to be the root element</param>
+        </member>
+        <member name="M:SvgNet.SvgElement.ToString">
+            <summary>
+            A simple ToString() for use in debugging.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SvgNet.SvgElement.WriteSVGString(System.IO.Stream,System.Collections.Generic.IDictionary{System.String,System.Collections.Generic.HashSet{System.String}},System.Boolean,System.Action)">
+            <summary>
+            Get a string that contains a complete SVG document.  XML version, DOCTYPE etc are included.
+            </summary>
+            <returns></returns>
+            <param name="compressAttributes">Should usually be set true.  Causes the XML output to be optimized so that 
+            long attributes like styles and transformations are represented with entities.</param>
+        </member>
+        <member name="P:SvgNet.SvgElement.Children">
+            <summary>
+            An ArrayList containing this element's children
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgElement.Name">
+            <summary>
+            The name of the XML element that this SVG element represents.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgFactory">
+            <summary>
+            Static methods to produce/write/copy Svg documents reside in this class.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgFactory.CompressXML(System.Xml.XmlDocument,System.Xml.XmlElement)">
+            <summary>
+            Helper function to compress long xml attributes into entities.
+            <para>
+            This would work on any XML, it is not SVG specific, so it should eventually be in some 'xml tools' class.
+            </para>
+            </summary>
+            <param name="doc"></param>
+            <param name="el"></param>
+            <returns>A string of entities which can be inserted into the DOCTYPE when the document is written.</returns>
+        </member>
+        <member name="M:SvgNet.SvgFactory.RecCompXML(System.Collections.Generic.IDictionary{System.String,System.String},System.Collections.Generic.IDictionary{System.String,SvgNet.SvgFactory.EntitySingleton},System.Xml.XmlDocument,System.Xml.XmlElement,System.Int32@)">
+            <summary>
+            Used by CompressXML
+            </summary>
+            <param name="entities">Map of attribute to entity name</param>
+            <param name="singletons">Map of attribute to number of occurrences -- could be used to improve algorithm</param>
+            <param name="doc"></param>
+            <param name="el"></param>
+            <param name="idx">Number that is incremented to provide new entity names</param>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgEllipseElement">
+            <summary>
+            Represents an <c>ellipse</c> element.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgGroupElement">
+            <summary>
+            Represents a <c>g</c> element.  It has no particular properties of its own.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgElements.SvgGroupElement.Parent">
+            <summary>
+            The element whose child this element is; can be null, because SvgElements may only be inserted into a full SVG tree
+            long after they are created.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgElements.SvgGroupElement.AddChild(SvgNet.SvgElement)">
+            <summary>
+            Adds a child, and sets the child's parent to this element.
+            </summary>
+            <param name="ch"></param>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgSwitchElement">
+            <summary>
+            Represents a <c>switch</c> element.  It has no particular properties of its own.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgClipPathElement">
+            <summary>
+            Represents a <c>clippath</c> element.  It has no particular properties of its own.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgAElement">
+            <summary>
+            Represents an <c>a</c> element.  It has an xref and a target.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgDefsElement">
+            <summary>
+            Represents a <c>defs</c> element.  It has no particular properties of its own.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgLinearGradient">
+            <summary>
+            Represents an SVG linearGradient element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgRadialGradient">
+            <summary>
+            Represents an svg radialGradient element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgStopElement">
+            <summary>
+            Represents an SVG stop element, which specifies one color in a gradient.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgPatternElement">
+            <summary>
+            Represents an SVG pattern element, which defines a fill pattern by defining a viewport onto a subscene.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgMaskElement">
+            <summary>
+            Represents an SVG mask element.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgLineElement">
+            <summary>
+            Represents a <c>line</c> element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgPathElement">
+            <summary>
+            Represents a <c>path</c> element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgPolygonElement">
+            <summary>
+            Represents a <c>polygon</c> element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgPolylineElement">
+            <summary>
+            Represents a <c>polyline</c> element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgRectElement">
+            <summary>
+            Represents a <c>rect</c> element
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgElements.SvgRectElementWithAttributes.Item(System.String)">
+            <summary>
+            A quick way to get and set attributes.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgStyledTransformedElement">
+            <summary>
+            This is an SvgElement that can have a CSS style and an SVG transformation list.  It contains special properties to make reading and setting the style
+            and the transformation easier.  All SVG elements that actually represent visual entities or groups of entities are <c>SvgStyledTransformedElements</c>.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgElements.SvgStyledTransformedElement.WriteXmlElements(System.Xml.XmlDocument,System.Xml.XmlElement,System.Boolean)">
+            <summary>
+            Overridden in this class to provide special handling for the style and transform attributes,
+            which are often long and complicated.  For instance, it may be desirable for styles to be written as entities or as separate
+            attributes.
+            </summary>
+            <param name="doc"></param>
+            <param name="parent"></param>
+        </member>
+        <member name="P:SvgNet.SvgElements.SvgStyledTransformedElement.Style">
+            <summary>
+            Provides an easy way to get the attribute called "style" as an <c>SvgStyle</c> object.  If no such attribute has been set, one is created when
+            this property is read.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgElements.SvgStyledTransformedElement.Transform">
+            <summary>
+            Provides an easy way to get the attribute called "transform" as an <c>SvgTransformList</c> object.  If no such attribute has been set, one is created when
+            this property is read.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgSvgElement">
+            <summary>
+            Represents a <c>svg</c> element
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgViewElement">
+            <summary>
+            Represents a <c>view</c> element: https://www.w3.org/TR/SVG11/linking.html#ViewElement.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgSymbolElement">
+            <summary>
+            Represents an SVG <c>symbol</c> element.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgUseElement">
+            <summary>
+            Represents an SVG <c>use</c> element.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgImageElement">
+            <summary>
+            Represents an SVG <c>image</c> element.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.TextNode">
+            <summary>
+            Represents the text contained in a title, desc, text, or tspan element.  Maps to an XmlText object in an XML document.  It is inherited from
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgElements.TextNode.WriteXmlElements(System.Xml.XmlDocument,System.Xml.XmlElement,System.Boolean)">
+            <summary>
+            Overridden to simply create an XML text node below the parent.
+            </summary>
+            <param name="doc"></param>
+            <param name="parent"></param>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgTextElement">
+            <summary>
+            Represents a <c>text</c> element.  The SVG text element is unusual in that it expects actual XML text nodes below
+            it, rather than consisting only of attributes and child elements  (other elements like this are title, desc, and tspan).
+            <c>SvgTextElement</c> therefore has to be serialized
+            to XML slightly differently.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgTspanElement">
+            <summary>
+            Represents a <c>tspan</c> element.  The tspan element is unique in that it expects actual XML text nodes below
+            it, rather than consisting only of attributes and child elements.  <c>SvgTextElement</c> therefore has to be serialized
+            to XML slightly differently.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgElements.SvgTitleElement">
+            <summary>
+            Represents an SVG <c>desc</c> element.  As with the SvgTextElement, the payload is in the enclosed text rather than in attributes and 
+            subelements, so we need to specially add text when serializing.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgPath">
+            <summary>
+            Path wrapper implementation.
+            </summary>
+        </member>
+        <member name="F:SvgNet.SvgPath.Epsilon">
+            <summary>
+            Is used to compare float numbers. 
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgPath.Segment">
+            <summary>
+            Segment description.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgPath.SegmentType">
+            <summary>
+            Segment type.
+            </summary>
+        </member>
+        <member name="F:SvgNet.SvgPath.SegmentType.MoveTo">
+            <summary>
+            Moves to point.
+            </summary>
+        </member>
+        <member name="F:SvgNet.SvgPath.SegmentType.LineTo">
+            <summary>
+            Adds line from last point to point.
+            </summary>
+        </member>
+        <member name="F:SvgNet.SvgPath.SegmentType.BezierTo">
+            <summary>
+            Adds bezier from last point to 2 control and end points.
+            </summary>
+        </member>
+        <member name="F:SvgNet.SvgPath.SegmentType.FigureEnd">
+            <summary>
+            Ends figure, close if necessary.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgPath.System#ICloneable#Clone">
+            <summary>
+            Clones path.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgPath.GrapeCity#Documents#Drawing#IPath#GetBounds(System.Numerics.Matrix3x2)">
+            <summary>
+            Evaluates the bounds of the figure specified by the given path.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgTypes.SvgStyle">
+            <summary>
+            Represents a CSS2 style, as applied to an SVG element.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.Clone">
+            <summary>
+            Creates a new style, but does not do a deep copy on the members in the style. Thus if any of these are
+            not strings, they may be left referred to by more than one style or element.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.#ctor(GrapeCity.Documents.Drawing.Pen)">
+            <summary>
+            Creates a style from a pen object.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.#ctor(GrapeCity.Documents.Drawing.SolidBrush)">
+            <summary>
+            Creates a style based on a solid brush object.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.#ctor(GrapeCity.Documents.Text.TextFormat)">
+            <summary>
+            Creates a style based on a text format object.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.Set(System.String,System.String)">
+            <summary>
+            Sets a style. The key must be a string but the value can be anything (e.g. SvgColor). If and when the element that owns this style is written out
+            to XML, <c>ToString</c> will be called on the value.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.Get(System.String)">
+            <summary>
+            Gets the value for a given key.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.ToString">
+            <summary>
+            Outputs a CSS string representation as used in SVG.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgTypes.SvgStyle.Keys">
+            <summary>
+            A basic way to enumerate the styles.
+            </summary>
+        </member>
+        <member name="P:SvgNet.SvgTypes.SvgStyle.Item(System.String)">
+            <summary>
+            A quick way to get and set style elements.
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgStyle.op_Addition(SvgNet.SvgTypes.SvgStyle,SvgNet.SvgTypes.SvgStyle)">
+            <summary>
+            Adds two SvgStyles together, resulting in a new object that contains all the attributes of both styles.
+            Attributes are copied deeply, i.e. cloned if they are <c>ICloneable</c>.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgTypes.SvgTransformList">
+            <summary>
+            Represents an SVG transform-list, as specified in section 7.6 of the SVG 1.1 standard.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgTypes.SvgLengthType">
+            <summary>
+            The various units in which an SvgLength can be specified.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgTypes.SvgLength">
+            <summary>
+            A length or coordinate component (in SVG 1.1 the specification says they are the same)
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgTypes.SvgColor">
+            <summary>
+            A color, as found in CSS2 and used in SVG. SvgColor stores
+            the string it was initialized from, so that when a color specified as 'black' is written out,
+            it will be written 'black' rather than '#000000'
+            </summary>
+        </member>
+        <member name="M:SvgNet.SvgTypes.SvgColor.ToString">
+            <summary>
+            If the SvgColor was constructed from a string, use that string; otherwise use rgb() form
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:SvgNet.SvgTypes.SvgPoints">
+            <summary>
+            A list of points, as specified in the SVG 1.1 spec section 9.8.  Only used in polygon and polyline elements.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgTypes.SvgNumList">
+            <summary>
+            A number list, as used in the SVG spec for e.g. the value of a viewBox attribute.  Basically a list of numbers in
+            any format separated by whitespace and commas.
+            </summary>
+        </member>
+        <member name="T:SvgNet.SvgTypes.SvgUriReference">
+            <summary>
+            Represents a URI reference within a style.  Local uri references are generally strings of the form
+            <c>url(#elementID)</c>.   This class should not be confused with <see cref="!:SvgXRef"/> which represents
+            the xlink:* properties of, for example, an <c>a</c> element.
+            </summary>
+        </member>
+    </members>
+</doc>

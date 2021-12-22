@@ -1,0 +1,2176 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GrapeCity.ActiveReports.Export.Html</name>
+    </assembly>
+    <members>
+        <member name="T:DataDynamics.Globalization.CodePageInfo">
+            <summary>
+            Provies information about and the conversion function(s) for each code page we support.
+            Currently only encoding (unicode to code page) functionality is supported, decodoing functionality could be added in the future.
+            </summary>
+        </member>
+        <member name="F:DataDynamics.Globalization.CodePageInfo.encoderFunction">
+            <summary>
+            The encoder function that does the encoding from Unicode to the specific code page encoding.
+            </summary>
+        </member>
+        <member name="F:DataDynamics.Globalization.CodePageInfo.decoderFunction">
+            <summary>
+            The decoder function that does the encoding from a specific code page encoding to Unicode.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.Globalization.CodePageInfo.#ctor(System.String,System.String,DataDynamics.Globalization.UnicodeToCodePageHandler,System.Int32)">
+            <summary>
+            Initializes an instance of the CodePageInfo class.
+            </summary>
+            <param name="isoName">Can be null or empty string if the code page is not an ISO code page.</param>
+            <param name="webName">
+            Must be provided, this is the "name" of the code page as specified by IANA (http://www.iana.org/assignments/character-sets).
+            </param>
+            <param name="encoderFunc">
+            The encoder that does the encoding from Unicode to the specific code page encoding.
+            </param>
+            <param name="maxBytesPerChar">The maximum bytes a single encoded character may require.  Each of the DD code page encoders have two public static fields revealing this value.  One field is for HTML encoded values, and one is without HTML encoding.</param>
+        </member>
+        <member name="M:DataDynamics.Globalization.CodePageInfo.#ctor(System.String,System.String,DataDynamics.Globalization.CodePageToUnicodeHandler,DataDynamics.Globalization.UnicodeToCodePageHandler,System.Int32)">
+            <summary>
+            Initializes an instance of the CodePageInfo class for decoder.
+            </summary>
+            <param name="isoName">Can be null or empty string if the code page is not an ISO code page.</param>
+            <param name="webName">
+            Must be provided, this is the "name" of the code page as specified by IANA (http://www.iana.org/assignments/character-sets).
+            </param>
+            <param name="decoderFunc">
+            The decoder that does the decoding from specific code page encoding to Unicode.
+            </param>
+            <param name="maxBytesPerChar">The maximum bytes a single encoded character may require.  Each of the DD code page deocoders have one public static fields revealing this value without HTML encoding.</param>
+            <param name="encoderFunc">The encoder function (Unicode > Code Page) if available for this code page.</param>
+        </member>
+        <member name="P:DataDynamics.Globalization.CodePageInfo.WebName">
+            <summary>
+            This is the name of the encoding as specified by IANA (http://www.iana.org/assignments/character-sets), it is often just the WebName.
+            This value is what would be used in the meta content-type element in the HEAD of an HTML document.  For example:
+            &lt;META content="text/html;charset=iso-2022-jp" http-equiv=Content-Type&gt;
+            </summary>
+        </member>
+        <member name="P:DataDynamics.Globalization.CodePageInfo.IsoName">
+            <summary>
+            The ISO name of the character set/code page.  Not always provided, as some code pages are not ISO code pages.
+            For example, they might be windows only code pages, or IBM only code pages.
+            </summary>
+        </member>
+        <member name="P:DataDynamics.Globalization.CodePageInfo.MaxBytesPerChar">
+            <summary>
+            Returns the maximum number of bytes a single character could take when encoded with this code page.
+            </summary>
+        </member>
+        <member name="T:DataDynamics.Globalization.UnicodeToCodePageHandler">
+            <summary>
+            This is the function signature/delegate to our "unicode to specific code page" functions.
+            </summary>
+            <param name="chars">The character array to encode.</param>
+            <param name="charIndex">The index of the first character in chars to encode.</param>
+            <param name="charCount">The number of characters to encode.</param>
+            <param name="bytes">The byte array where the encoding is stored.</param>
+            <param name="byteIndex">The index of the first element in bytes where the encoding is stored.</param>
+        </member>
+        <member name="T:DataDynamics.Globalization.CodePageToUnicodeHandler">
+            <summary>
+            This is the function signature/delegate to our "code page to unicode" functions.
+            </summary>
+            <param name="bytes">The byte array to decode.</param>
+            <param name="byteIndex">The index of the first byte in in bytes to decode.</param>
+            <param name="byteCount">The number of bytes to decode.</param>
+            <param name="chars">The char array where the decoding is stored.</param>
+            <param name="charIndex">The index of the first element in chars where the decoding is stored.</param>
+        </member>
+        <member name="T:DataDynamics.ActiveReports.Export.InternalC.ExportContext">
+            <summary>
+            This class is basically the same as RenderContext in ActiveReports, but customized for contextual information specific to Exports and not a Graphics.  
+            Much of the functionality is exactly the same as RenderContext.
+            However, RenderContext is tightly coupled with each of the CanvasItem's and uses CanvasItem.Render to maintain/update RenderContext, which also does rendering to a Grahpics, which is inappropriate and inefficient for Excel or any Export filter. 
+            </summary>
+            <remarks>
+            Differences between ExportContext and RenderContext:
+            - The current cliprect is manged by ExportContext here, not Graphics like RenderContext. 
+            - The ClipStack is a stack of RectangleF structs, and not System.Drawing.Drawing2D.Region.  All our clips are rectangles in RDF and I think regions were only used in RenderContext because that's what Graphics uses and rendercontext stores it's "current cliprect" on the Grahpics, not RenderContext.
+            </remarks>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.#ctor(GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage)">
+            <summary>
+            Creates an instance of the ExportContext.
+            </summary>
+            <param name="page">The DataDynamics.ActiveReports.Page object that this context is relative to. All fonts (see <see cref="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.SelectFont(System.Int16)"/>) are slected from the Page's Fonts collection.</param>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.PushClipRect">
+            <summary>
+            Takes the current clipRect (in CurrentClipRect property) and pushes it onto the ClipStack.  
+            The current cliprect is still maintained as the "current cliprect".
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.PopClipRect">
+            <summary>
+            Takes the last cliprect put onto the stack and sets it as the current cliprect.
+            If there are no cliprects on the stack then the current cliprect is cleared, and IsClipActive is set to false.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.IntersectClipRect(System.Drawing.RectangleF)">
+            <summary>
+            Uses member method RectangleF.Intersect on the currentCliprect to calculate the intersecting clipping rectangle and sets that resulting clip rect as the current clip rect available via the ClipRect property.
+            </summary>
+            <param name="intersectClip">The clipping rectangle to intersect the current clipping rectangle with.</param>
+        </member>
+        <member name="P:DataDynamics.ActiveReports.Export.InternalC.ExportContext.ClipRect">
+            <summary>
+            Returns the current cliprect bounding the output device/surface.
+            </summary>
+        </member>
+        <member name="P:DataDynamics.ActiveReports.Export.InternalC.ExportContext.ClipStack">
+            <summary>
+            Returns the Stack of RectangleF structs.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.Clone">
+            <summary>
+            Returns an instance of ExportContext that contains an exact replica of the data on this object.
+            ** Note this method does not copy the m_theFonts font follection.  
+            Only .Font/m_theFont. For performance reasons, and because I don't see why it's needed in most cases where you would clone this class.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.SelectFont(System.Int16)">
+            <summary>
+            Sets the Font property's value to the font at the specified Index.
+            </summary>
+            <param name="fontIndex"></param>
+        </member>
+        <member name="P:DataDynamics.ActiveReports.Export.InternalC.ExportContext.CharacterSpacing">
+            <summary>
+            Determines the intercharacter spacing in inches
+            </summary>
+        </member>
+        <member name="P:DataDynamics.ActiveReports.Export.InternalC.ExportContext.LineSpacing">
+            <summary>
+            Determines the interline spacing in inches
+            </summary>
+        </member>
+        <member name="T:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils">
+            <summary>
+            Provides utility functions useful when parsing CanvasItem records in a Canvas/Page.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.AreBoundsClose(System.Drawing.RectangleF,System.Drawing.RectangleF)">
+            <summary>
+            Returns true if the bounds are within 1000'th of an inch of each other.
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.OutsideRect(System.Drawing.RectangleF,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Returns true if element is entirely outside rectangle. False if inside or intersecting.
+            </summary>
+            <param name="pcr">Clip rect.</param>
+            <param name="elementX">x coordinate for element.</param>
+            <param name="elementY">y coordinate for element.</param>
+            <param name="elementWidth">width for element.</param>
+            <param name="elementHeight">height for element.</param>
+            <returns>True if element is entirely outside rectangle, otherwise returns false.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.InsideRect(System.Drawing.RectangleF,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Returns true if the specified element is entirely inside the specified rectangle (or exactly the same bounds); false if outside or intersecting.
+            </summary>
+            <param name="pcr">Clip rect</param>
+            <param name="x">Line x coordinate.</param>
+            <param name="y">Line y coordinate.</param>
+            <param name="w">Line width.</param>
+            <param name="h">Line height.</param>
+            <returns>True if the specified element is entirely inside the specified rectangle; false if outside or intersecting.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.ClipLine(System.Drawing.RectangleF,GrapeCity.ActiveReports.Document.Section.LineItem@,GrapeCity.ActiveReports.Document.Section.LineItem)">
+            <summary>
+            This function takes a line and a clipping rectangle, and outputs a clipped line in the pNew argument.
+            </summary>
+            <param name="pCR">The clipping rectangle.</param>
+            <param name="pNew">The new, clipped line will be returned in this argument.</param>
+            <param name="pOld">The old line you want clipped.</param>
+            <returns>
+            Returns true when the line is entirely outside of the cliprect and therefore not renderable.  
+            If the line intersects the cliprect, then ClipLine(..) will generate a line that does fit entirely inside the cliprect and set it to pNew, and true will be returned.
+            If the line is entirely inside the cliprect, then ClipLine simply sets pNew to pOld and returns false.
+            </returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.IntersectLines(System.Drawing.PointF@,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Returns true if lines intersect, false if not, sets ppointout to point of intersection.
+            </summary>
+            <param name="ppointout">
+            If lines intersect, this will be the point of intersection.
+            </param>
+            <param name="x1">X1 coordinate for first line.</param>
+            <param name="y1">Y1 coordinate for first line.</param>
+            <param name="x2">X2 coordinate for first line.</param>
+            <param name="y2">Y2 coordinate for first line.</param>
+            <param name="x3">X1 coordinate for second line.</param>
+            <param name="y3">Y1 coordinate for second line.</param>
+            <param name="x4">X2 coordinate for second line.</param>
+            <param name="y4">Y2 coordinate for second line.</param>
+            <returns>True if lines intersect, false if not.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.ClipShapeBounds(System.Drawing.RectangleF@,System.Drawing.RectangleF)">
+            <summary>
+            Clips the specified bounds for a shape based on the specified clipRect.
+            </summary>
+            <param name="itemBounds">The bounds for the item. Upon return of this function this value will have the clipped bounds.</param>
+            <param name="clipRect">The clipping rectangle according to which itemBounds will be clipped.</param>
+            <returns>
+            True if the item should be rendered according to the new bounds, or false if the item should not be rendered at all.
+            </returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.ClipImage(System.Drawing.Image@,System.Drawing.RectangleF@,System.Drawing.RectangleF)">
+            <summary>
+            Clips the specified image if necessary.
+            </summary>
+            <param name="sourceImage"></param>
+            <param name="imageBounds"></param>
+            <param name="clipRect"></param>
+            <returns>
+            True if you should render the specified image.  Note that the location and actual image arguments may have been changed by this function.
+            False, indicates that you should not render the specified image due to the cliprect.  This would normally indicate that the image is entirely outside of the cliprect.
+            </returns>
+        </member>
+        <member name="F:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.DEFAULTPIXELSPERINCH">
+            <summary>
+            Number of pixels per inch used in unit default conversions. 
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.InchesToPixels(System.Single,System.Single)">
+            <summary>
+            Returns the specified inch value in pixel units.
+            </summary>
+            <param name="inches">The value in inches to convert.</param>
+            <param name="dpi">The pixels/dots per inch value to be used for the conversion.</param>
+            <returns>The value in pixels.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.InchesToPixels(System.Single)">
+            <summary>
+            Returns the specifed inch value in pixel units with pixels per inch/dpi value of <see cref="F:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.DEFAULTPIXELSPERINCH"/>.
+            </summary>
+            <param name="inches">The value in inches to convert.</param>
+            <returns>The value in pixels.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.InitStringFormat">
+            <summary>
+            Returns a <see cref="T:System.Drawing.StringFormat"/> initialized for measuring text records in AR.NET.  This is typically what would be used with CanvasUtils.GetClippedTextLines.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.MeasureString(System.Drawing.Graphics,System.String,System.Drawing.Font,System.Drawing.SizeF,System.Drawing.StringFormat,System.Single,GrapeCity.ActiveReports.PaddingEx,System.Int32@,System.Int32@,System.Single)">
+            <summary>
+            RS: CR 23121 - String measurer that takes into account the character spacing
+            </summary>
+            <param name="gRef"></param>
+            <param name="text"></param>
+            <param name="font"></param>
+            <param name="size"></param>
+            <param name="stringFormat"></param>
+            <param name="characterSpacing"></param>
+            <param name="charactersFitted"></param>
+            <param name="padding"></param>
+            <param name="linesFilled"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.GetClippedTextLines(System.String,System.Drawing.Graphics,System.Drawing.StringFormat,System.Drawing.RectangleF@,DataDynamics.ActiveReports.Export.InternalC.ExportContext,System.Single@,System.Func{System.Int32,System.String,DataDynamics.ActiveReports.Export.InternalC.ExportContext,System.Int32})">
+            <summary>
+            Divides the specified text into lines using \n as line dividers.  Also clips the text according to the cliprect specified in context.
+            </summary>
+            <param name="text">The text to be divided into lines and clipped.</param>
+            <param name="referenceGraphics">A graphics used for measuring text. Passed in for performance optimization.</param>
+            <param name="stringFormat">A StringFormat used for measuring text. Passed in for performance optimization.</param>
+            <param name="controlRect">The bounds of the text record from the RDF DrawText2 item.</param>
+            <param name="context">The context providing information such as font, colors, and cliprect.</param>
+            <param name="outLineHeightInches">Since this function has to calculate the line height anyway, it will return the lineheight it calculated.</param>
+            <param name="handleWrapMode">The action for manual WrapMode handling if it was not been performed before.</param>
+            <returns>Null if text is entirely clipped. Or an array of lines of text clipped based on the specified ExportContext.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.DeflateRect(System.Drawing.RectangleF,GrapeCity.ActiveReports.PaddingEx)">
+            <summary>
+            Deflates the padding from the rect
+            </summary>
+            <param name="rect"></param>
+            <param name="padding"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DataDynamics.Shared.ImageTools">
+            <summary>
+            Provides some misc utility functions related to images.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.Shared.ImageTools.ContainsAlpha(System.Drawing.Image)">
+            <summary>
+            Returns true if the image has transparency/alpha in it.
+            </summary>
+            <param name="image">
+            The image to be tested for transparency.
+            </param>
+            <returns>True if the specified image contains any trancparency areas.</returns>
+        </member>
+        <member name="T:DataDynamics.Diagnostics.InternalTracer">
+            <summary>
+            Provides a common way to trace messages that do not show up easily to our users.
+            Support personel or the developer can use the TraceSwitch in a config file (web.config for exe config) to turn tracing on and off.
+            </summary>
+        </member>
+        <member name="F:DataDynamics.Diagnostics.InternalTracer.traceSwitchString">
+            <summary>
+            Put this string in a config file under configuration\system.diagnostics\switches\add to turn on tracing.
+            Then add a listenter under configuration\system.diagnostics\trace\listeners.
+            </summary>
+        </member>
+        <member name="F:DataDynamics.Diagnostics.InternalTracer.tracingSwitch">
+            <summary>
+            Used with this class's LogMessage method to indicate if tracing is turned on or not. 
+            I'm using guid strings to keep prying eyes from understanding what's going on, and an attempt ot prevent users from easily turning tracing on.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.Diagnostics.InternalTracer.Trace(System.String)">
+            <summary>
+            Provides tracing when defined appropriately in an application configuration file.
+            </summary>
+            <param name="message">The trace message to be written to a trace listener.</param>
+            <remarks>
+            This could be used with support and an appropriate app.config file to implement tracing when output is messed up for unknown reasons.
+            I've applied these debugger attributes to it to attempt to keep it out of call stacks and debuggers stepping though it.
+            If this method is found to be a sevear performance hinderence (presumably via profiling), then we should be able to uncomment the ConditionalAttribute below and only have it included in DEBUG builds only.
+            </remarks>
+        </member>
+        <member name="M:DataDynamics.Diagnostics.InternalTracer.Trace(System.String,System.Object[])">
+            <summary>
+            Provides tracing with string.format like capabilities.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.DescriptionRes">
+            <summary>
+            base class for Description Attribute
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.DescriptionRes.Description">
+            <summary>
+            Description for Resource
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlOutputType">
+            <summary>
+            Used with <see cref="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.OutputType"/> to specify the type of HTML output that is used to export documents.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlOutputType.DynamicHtml">
+            Uses absolutely positioned HTML elements to produce the most accurate browser output possible.  Supported by browsers that support absolute positioning (Internet Explorer and Netscape versions 4.0 and above, and Mozilla.
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlOutputType.LegacyHtml">
+            Uses traditional HTML tables to layout the document in HTML.  Provided to support legacy browsers.
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.BookmarkStyle">
+            <summary>
+            Values for HtmlExport.BookmarkStyle property.
+            </summary>
+            <remarks>More styles may be added in future.</remarks>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.BookmarkStyle.None">
+            <summary>
+            No bookmark page will be created.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.BookmarkStyle.Html">
+            <summary>
+            An HTML page containing bookmark links to the document's pages will be created if the ActiveReports' document originally contained bookmarks.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet">
+            <summary>
+            Values for HtmlExport.CharacterSet property.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.Big5">
+            <summary>
+            Known as "Chinese for Taiwan Multi-byte set".
+            Charset name is "Big5".
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.EucJp">
+            <summary>
+            Known as "Extended UNIX Code Packed Format for Japanese".
+            Charset name is "EUC-JP".
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.HzGb2312">
+            <summary>
+            Known as "ASCII Printable Characters-Based Chinese Character Encoding" per RFC1842 and RFC1843.
+            Charset name is "HZ-GB-2312".
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.Ibm850">
+            <summary>
+            Known only as "IBM850".
+            Charset name is "IBM850".
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.Iso2022Jp">
+            <summary>
+            Known as "Japanese Character Encoding for Internet Messages" per RFC1468.
+            Charset name is "ISO-2022-JP".
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.Iso2022Kr">
+            <summary>
+            Known as "Korean Character Encoding for Internet Messages" per RFC1557.
+            Charset name is "ISO-2022-KR".
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.Iso8859_1">
+            <summary>
+            Known as "Latin alphabet No. 1".
+            Charset name is "ISO-8859-1".
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.Iso8859_2">
+            <summary>
+            Known as "Latin alphabet No. 2".
+            Charset name is "ISO-8859-2".
+            </summary>		
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.Iso8859_5">
+            <summary>
+            Known as "Latin/Cyrillic alphabet".
+            Charset name is "ISO-8859-5".
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.Iso8859_6">
+            <summary>
+            Known as "Latin/Arabic alphabet".
+            Charset name is "ISO-8859-6".
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.Koi8r">
+            <summary>
+            Known as "Russian Net Character Set".
+            Charset name is "KOI8-R".
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.Ksc5601">
+            <summary>
+            Known as "Unified Hangeul" (Korean).
+            Charset name is "KSC5601".
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.ShiftJis">
+            <summary>
+            Characterset name is "shift-jis".
+            Known as "Shift-JIS" (Japanese).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.UnicodeUtf16">
+            <summary>
+            An encoding for the Unicode character set in little-endian byte order using UTF-16 encoding.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet.UnicodeUtf8">
+            <summary>
+            An encoding for the Unicode character set using UTF-8 encoding
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport">
+            <summary>
+            GrapeCity ActiveReports HTML export component.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.arEngineTextPadding">
+            <summary>
+            This is the value used in AREngine as padding between the original bounds of the text box (which are what the rectangle/backcolor uses) and the bounding rectangle for text records.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport"/> class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.Export(GrapeCity.ActiveReports.Document.SectionDocument,System.String)">
+            <summary>
+            Exports the specified document to html.
+            </summary>
+            <param name="document">
+            The ActiveReports Document object to export.
+            </param>
+            <param name="filePath">
+            The file name and path to save the main html file to.
+            If multiple filenames are generated (such as images, or table of contents pages) this argument's value will be used as a prefix for the other file names.
+            </param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.Export(GrapeCity.ActiveReports.Document.SectionDocument,System.String,System.String)">
+            <summary>
+            Exports the specified document to HTML.
+            </summary>
+            <param name="document">The <see cref="T:GrapeCity.ActiveReports.Document.SectionDocument"/> to export.</param>
+            <param name="filePath">
+            The file name and path to save the main html file to.
+            If multiple filenames are generated (such as images, or table of contents pages) this argument's value will be used as a prefix for the other file names.
+            </param>
+            <param name="pagesRange">
+            A range of page numbers to export seperated by a comma.  Between each comma can have a single page number, or range of pages with a hyphen between the starting and ending page numbers in the range.
+            </param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.Export(GrapeCity.ActiveReports.Document.SectionDocument,System.IO.Stream,System.String)">
+            <summary>
+            Exports the specified <see cref="T:GrapeCity.ActiveReports.Document.SectionDocument"/>to HTML in a MIME MHT format (as can be saved from Internet Explorer) which includes the HTML and all images in a single file.
+            </summary>
+            <param name="document">The <see cref="T:GrapeCity.ActiveReports.Document.SectionDocument"/> to export.</param>
+            <param name="outputStream">The destination <see cref="T:System.IO.Stream"/> to save the MHT file to.</param>
+            <param name="pagesRange">A range of page numbers to export seperated by a comma.  Between each comma can have a single page number, or range of pages with a hyphen between the starting and ending page numbers in the range.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.Export(GrapeCity.ActiveReports.Document.SectionDocument,GrapeCity.ActiveReports.Export.Html.IOutputHtml,System.String)">
+            <summary>
+            Provides advanced control over how the HtmlExport stores all output, including all html pages, images, bookmark pages, etc...
+            </summary>
+            <param name="document">
+            The ActiveReports Document to export to HTML.
+            </param>
+            <param name="outputHandler">An implementation of <see cref="T:GrapeCity.ActiveReports.Export.Html.IOutputHtml"/> that will receive all HTML output.</param>
+            <param name="pageRange">
+            A range of page numbers to export seperated by a comma.  Between each comma can have a single page number, or range of pages with a hyphen between the starting and ending page numbers in the range.
+            </param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.Export(GrapeCity.ActiveReports.Document.SectionDocument,System.IO.Stream)">
+            <summary>
+            Exports the specified <see cref="T:GrapeCity.ActiveReports.Document.SectionDocument"/>to HTML in a MIME MHT format (as can be saved from Internet Explorer) which includes the HTML and all images in a single file.
+            </summary>
+            <param name="document">The <see cref="T:GrapeCity.ActiveReports.Document.SectionDocument"/> to export.</param>
+            <param name="outputStream">The destination <see cref="T:System.IO.Stream"/> to save the MHT file to.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.OutputPageDimensionInfo(GrapeCity.ActiveReports.Export.Html.Section.HtmlTextWriter,GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage)">
+            <summary>
+            Outputs a style block with the @page CSS rule with the page size and margin information based on the size and margins of the specified page.
+            </summary>
+            <param name="htmlWriter">The <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlTextWriter"/> to write the style block to.</param>
+            <param name="page">The page to take size and margin information from.</param>
+            <remarks>
+            Based on CSS2 specs, you cannot define both page size AND orientation. You can only specify one or the other.  The spec notes that if the page would fit on the target media by rotating it 90�, then the user agent should do so.  So I opted for page size, since if it is landscape and it would fit, the agent is expected to rotate the page automatically.
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.ExportPageInternal(GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage,GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext,System.Int32,System.Boolean,GrapeCity.ActiveReports.Core.Document.ITextLayoutService,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Exports an individual page to the specified <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext"/>.
+            </summary>
+            <param name="page">The page to be exported.</param>
+            <param name="appendPageBreak">
+            Set to true if function should use CSS to append pagebreak at the end of hte page's table. Note that some browsers, especially older ones will ignore this CSS.
+            </param>
+            <param name="uniquePageNumber">The unique page number for the page being exported.  This number needs to be unique as it is used to generate bookmark links.</param>
+            <param name="renderContext">Contains the context information that each <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItem"/> will need to render.</param>
+            <returns>
+            A list of HtmlBookmark objects for this page.  The anchor elements for the bookmarks will have already been outputed in the html page.  The collection is returned so you can create a toc page.
+            </returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.CreateTocHtmlPage(System.Collections.ArrayList,GrapeCity.ActiveReports.Export.Html.IOutputHtml)">
+            <summary>
+            Creates a table of contents/bookmarks page.
+            </summary>
+            <param name="bookmarks">The bookmarks that the TocHtml page should be created from.</param>
+            <param name="outputHandler">The IOutputHtml to write the TOC page to.</param>
+            <returns>The filename that should be used to reference the TOC page. It is returned directly from the IOutputHtml implementaion specified as an argument to this function.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.CreateFrameset(System.String,System.String,GrapeCity.ActiveReports.Export.Html.IOutputHtml)">
+            <summary>
+            Creates a a frmaeset page
+            </summary>
+            <param name="mainHtmlPage">The name of the main HTML page.</param>
+            <param name="bookmarksFileName">The name of the bookmarks page.</param>
+            <param name="outputer">The output handler to handle resources requiring a seperate file such as the parent HTML frameset page.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.WriteHtmlHead(GrapeCity.ActiveReports.Export.Html.Section.HtmlTextWriter,System.Boolean,System.Boolean)">
+            <summary>
+            Returns the header portion for an html page.  Don't forget to write the closing HTML &amp; BODY elements !
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.LinkBookmarks(GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection,System.Collections.Generic.IList{GrapeCity.ActiveReports.Document.Section.Bookmark},System.Int32)">
+            <summary>
+            Attaches bookmarks from the specified page PageItems in the specified PageItem collection, and returns a collection of Bookmarks revealing the actual bookmark, and the pageitem it's attached to.
+            </summary>
+            <param name="pageItems"></param>
+            <param name="page"></param>
+            <param name="uniquePageNum">
+            Used to generate unique bookmark ID's accross an entire document, should be the page number.
+            </param>
+            <returns>
+            Returns a list of HtmlBookmarks (that can be used to build a TOC page) or null if no bookmarks are on the page.
+            </returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.IsTocLink(System.String)">
+            <summary>
+            Check if Link is TOC link
+            </summary>
+            <param name="link">Hyperlink</param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.GetTocAnchorLink(System.String)">
+            <summary>
+            Returns hyperlink to toc anchor
+            </summary>
+            <param name="tocLink">TOC link</param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.PageItemsFromPage(GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage,GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache,System.Boolean,GrapeCity.ActiveReports.Core.Document.ITextLayoutService)">
+            <summary>
+            Enumerates all CanvasItems in the specified Page object and returns a collection of PageItem objects representing the visible CanvasItems on that page.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.OutputType">
+            <summary>
+            Sets or returns the type of HTML output that is used to export documents.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.IncludePageMargins">
+            <summary>
+            Sets or returns whether the Page's margins are included in the output.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.RemoveVerticalSpace">
+            <summary>
+            Sets or returns whether completley empty vertical spacing will be removed from the output.  
+            </summary>
+            <remarks>
+            The property does not have an effect if you are using the default <see cref="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlOutputType.DynamicHtml"/> option.
+            This may improve pagination if you wish to print the HTML output from a browser with the <see cref="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlOutputType.LegacyHtml"/> option.
+            </remarks>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.MultiPage">
+            <summary>
+            Sets returns whether multiple HTML pages are generated for the document.  
+            If true, one HTML page will be generated for each page in the ActiveReports document.  
+            If false, (the default value) one HTML page is generated for the all pages in the ActieReports document.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.BookmarkStyle">
+            <summary>
+            Sets returns whether a page of bookmarks will be created if the ActiveReports document contains bookmarks.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.CreateFramesetPage">
+            <summary>
+            Sets or returns a value indicating that the HTML pages appear in a frame set where any bookmark entries appear on the left, and the report document contents appear on the right.  The resulting filename will use the specified filename with the extension ".frame.html".
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.IncludeHtmlHeader">
+            <summary>
+            Sets or returns a value indicating if the resulting HTML files will include normal HTML page headers such as the HTML, HEAD, and BODY elements.
+            </summary>
+            <remarks>
+            You can set this value to false if you want to use the resulting HTML output in the middle of another HTML page.
+            </remarks>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.Title">
+            <summary>
+            Title used in head of HTML pages.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.CharacterSet">
+            <summary>
+            Sets or returns the character set encoding that will be used in the outputted HTML pages.
+            The default character set is UTF8.
+            Setting this property will change the meta tag in the header of the resulting HTML pages to the appropriate IANA character set value for example:
+            &lt;META content="text/html;charset=ISO-8859-1" http-equiv=Content-Type&gt;.
+            Additionally, the inner text portion of the pages will be encoded according to the specific character set's encoding rules, as well as font names.
+            If you are exporting a Document without headers (IncludeHtmlHeader=false), then you must insert the appropriate meta tag to ensure the browser knows how the text is encoded.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.Pagination">
+            <summary>
+            Gets or sets the value indicates should pagination be used for resulted html document or not
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.AddMetadata(System.String,System.String)">
+            <summary>
+            Adds specified metadata property to be written as HTML meta.
+            </summary>
+            <param name="name">The property name.</param>
+            <param name="value">The property value.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.GetEncoding(GrapeCity.ActiveReports.Export.Html.Section.HtmlCharacterSet)">
+            <summary>
+            Initializes the Encoding object used with the HtmlTextWriter to generate the HTML stream.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.DEFAULTPIXELSPERINCH">
+            <summary>
+            Number of pixels per inch used in unit default conversions. 
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.PixelsToInches(System.Int32,System.Single)">
+            <summary>
+            Returns the specified pixel value in inches units.
+            </summary>
+            <param name="pixels">The value in pixels to convert.</param>
+            <param name="dpi">The pixels/dots per inch value to be used for the conversion.</param>
+            <returns>The value in inches.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache">
+            <summary>
+            Provides an easy way to cache images and detect and prevent duplicates.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache"/> class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache.Add(System.Drawing.Image,System.Drawing.Imaging.ImageFormat,System.String)">
+            <summary>
+            Adds the image's data to the cache and returns the index to the image's data within this cache.
+            </summary>
+            <param name="image">The image you want added in the cache.</param>
+            <param name="imageFormat">The <see cref="T:System.Drawing.Imaging.ImageFormat"/> you want to save the image as.</param>
+            <returns>
+            If the image is a duplicate of one already in the cache the specified image is not added again, and the index to the existing duplicate image is returned. 
+            If no duplicate of the specified image is in the cache, the specified image's data is added to the cache, and the index that image is returned.
+            </returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache.GetImageData(System.Int32)">
+            <summary>
+            Returns an array of byte containing the raw image data.
+            </summary>
+            <param name="imageIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache.GetFileName(System.Int32)">
+            <summary>
+            HtmlImageCache stores the filename for each image that has been assigned a filename already by an IOutputHtml implementaion.  
+            This is a key to how we prevent duplicate images.
+            </summary>
+            <param name="imageIndex"></param>
+            <returns>Null if no filename was assigned yet, or a filename if one has been assigned for the image at the specified index.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache.SetFileName(System.Int32,System.String)">
+            <summary>
+            HtmlImageCache stores the filename for each image that has been assigned a filename already by an IOutputHtml implementaion.  
+            </summary>
+            <param name="imageIndex"></param>
+            <param name="fileName"></param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache.CheckBoxRenderer">
+            <summary>
+            RS: CR 21420 - This class performs the checkbox image rendering and storage of already
+            rendered images
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache.CheckBoxRenderer.Render(System.Drawing.SizeF,System.Drawing.Color,System.Boolean)">
+            <summary>
+            Tries to render the specified checkbox image
+            If that image was rendered already than just returns the result
+            </summary>
+            <param name="size">The checkbox size</param>
+            <param name="color">The checkbox color</param>
+            <param name="isChecked">Checked state</param>
+            <returns></returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlBookmark">
+            <summary>
+            Summary description for HtmlBookmark.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlBookmark.#ctor(GrapeCity.ActiveReports.Export.Html.Section.PageItem,System.String)">
+            <summary>
+            Initializes a new instance of HtmlBookmark.
+            </summary>
+            <param name="linkedPageItem">The PageItem that is linked to this bookmark.</param>
+            <param name="caption">The caption displayed to the user for the bookmark link.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlBookmark.GetTocAnchorName(System.String)">
+            <summary>
+            Returns anchor name for toc link
+            </summary>
+            <param name="label">TOC label</param>
+            <returns></returns>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlBookmark.UniqueId">
+            <summary>
+            An integral unique id for the bookmark.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlBookmark.LinkedPageItem">
+            <summary>
+            The PageItem that will "render" the bookmark item as an anchor element (&lt;a name=...&gt;) in the document.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlBookmark.AnchorName">
+            <summary>
+            Returns the name of the anchor used in the anchor element as a placeholder for this bookmark.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlBookmark.PageName">
+            <summary>
+            Sets or returns the name of the html page/file containing this bookmark.  Will be used to build the TOC page links to the anchors.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlBookmark.AnchorFullName">
+            <summary>
+            Gets the anchor's full name (with page name) for this bookmark.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlBookmark.Caption">
+            <summary>
+            Sets or returns the caption for this bookmark.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlExportException">
+            <summary>
+            The exception that is thrown when an error occurs in the ActiveReports HTML export assembly.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExportException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the HtmlExportException class with a specified error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception. If the innerException parameter is not a null reference, the current exception is raised in a catch block that handles the inner exception.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlExportException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the HtmlExportException class with a specified error message.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlTableCell">
+            <summary>
+            Used to build a HTML TD element string
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlTableCell.#ctor">
+            <summary>
+            Initializes a new instance of the HtmlTableCell class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlTableCell.InnerHtml">
+            <summary>
+            Specifies an html string to be placed inside the TD tag.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlTableCell.BuildStyleAttribute(GrapeCity.ActiveReports.Export.Html.Section.HtmlTextWriter)">
+            <summary>
+            Returns a style attribute in CSS format based on the Style property.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlTableCell.Style">
+            <summary>
+            Sets/gets Style information for the cell.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlTableCell.RowSpanCount">
+            <summary>
+            This value is used in the RowSpan attribute of the TD element.
+            </summary>
+            <remarks>
+            The implied/default and minimum value for this attribute is 1.  
+            </remarks>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlTableCell.ColSpanCount">
+            <summary>
+            This value is used in the ColSpan attribute of the TD element.
+            </summary>
+            <remarks>
+            The implied/default and minimum value for this attribute is 1.  
+            </remarks>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlTableCell.Width">
+            <summary>
+            Used as the "width" attribute for the TD element.  Should be "suggested width" in pixels.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlTableCell.Height">
+            <summary>
+            Used as the "height" attribute for the TD element.  Should be "suggested height" in pixels.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlUtils">
+            <summary>
+            Provides utility functions specific to HTML.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlUtils.HtmlEncode(System.String)">
+            <summary>
+            Encodes the specified string to be suitable for puttin into an HTML document. 
+            So that unicode characters and characters like &gt;, &lt;, and &quot; are properly displayed in HTML browsers.
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlUtils.HtmlEncode(System.String,System.IO.TextWriter)">
+            <summary>
+            Encodes the specified string to be suitable for puttin into an HTML document. 
+            So that unicode characters and characters like &gt;, &lt;, and &quot; are properly displayed in HTML browsers.
+            </summary>
+            <param name="s"></param>
+            <param name="output"></param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.LayoutColumn">
+            <summary>
+            A logical column in a table or grid.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.LayoutColumn.Position">
+            <summary>
+            Sets or returns the X position that this column is at.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.LayoutColumn.Width">
+            <summary>
+            Sets or returns the width of this column.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.LayoutColumn.Right">
+            <summary>
+            Returns the right bound of this column (defined by Position+Width).
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.SortLayoutColumnsLeftToRightComparer">
+            <summary>
+            Sorts LayoutColumn objects based on Position property from left to right (lowest value to highest).
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.SortLayoutColumnsLeftToRightComparer.Compare(System.Object,System.Object)">
+            <summary>
+            Compares the Position property of the two specified LayoutColumn objects.
+            </summary>
+            <param name="x">First LayoutColumn to compare.</param>
+            <param name="y">Second LayoutColumn to compare.</param>
+            <returns>
+            Less than zero if x is to the right of y.
+            Greater than zero if x is to the left of y.
+            Zero if x and y are at the same location.
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.LayoutRow">
+            <summary>
+            A logical row used to build a table or grid.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.LayoutRow.#ctor">
+            <summary>
+            Initializes a new instance of the LayoutRow class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.LayoutRow.Position">
+            <summary>
+            Sets the Y position that this row is at.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.LayoutRow.Height">
+            <summary>
+            Sets or returns the Height of this row.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.LayoutRow.Bottom">
+            <summary>
+            Returns the bottom bound of the row (defined by Position+Height).
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.LayoutRow.PageItems">
+            <summary>
+            Returns the collection of PageItem objects that start on this row.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.LayoutRow.GetRowSpanForColumn(System.Int32)">
+            <summary>
+            Rreturns whether a "row span" is set at a specified column in this row.
+            </summary>
+            <param name="columnIndex"></param>
+            <returns></returns>
+            <remarks>
+            By default all values are false.  
+            When a PageItem spans multiple LayoutRow objects, use this member to indicate the rows below the start of the PageItem that the PageItem is "spanning" or covering.
+            </remarks>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.LayoutRow.IsRowEmpty">
+            <summary>
+            Returns true if the row has no pageitems, and no styles applied to it's cells.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.LayoutRow.SetRowSpanForColumn(System.Int32,System.Boolean)">
+            <summary>
+            Sets whether a "row span" is set at a specified column in this row.
+            </summary>
+            <param name="columnIndex">The column index indicating which column in this row the row span is set on.</param>
+            <param name="value">True indicates that a "row span" is set at the specified column, false indicates no row span is set.</param>
+            <remarks>
+            When a PageItem spans multiple LayoutRow objects, use this member to indicate the rows below the start of the PageItem that the PageItem is "spanning" or covering.
+            </remarks>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.SortLayoutRowsTopToBottomComparer">
+            <summary>
+            Sorts LayoutRow objects based on Position property top-to-bottom (lowest value to highest).
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.SortLayoutRowsTopToBottomComparer.Compare(System.Object,System.Object)">
+            <summary>
+            Compares the Position property of the two specified LayoutRow objects.
+            </summary>
+            <param name="x">First LayoutRow to compare.</param>
+            <param name="y">Second LayoutRow to compare.</param>
+            <returns>
+            Less than zero if x is lower or to the right of y.
+            Greater than zero if x is above or to the left of y.
+            Zero if x and y are at the same location.
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.VerticalSpan">
+            <summary>
+            Summary description for VerticalSpan.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.VerticalSpan.pageItems">
+            private storage for PageItems property.
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.VerticalSpan.#ctor(System.Single,System.Single)">
+            <summary>
+            Initializes a new instance of the VerticalSpan class.
+            </summary>
+            <param name="bottom">The initial value for the <see cref="P:GrapeCity.ActiveReports.Export.Html.Section.VerticalSpan.Bottom"/> property.</param>
+            <param name="top">The initial value for the <see cref="P:GrapeCity.ActiveReports.Export.Html.Section.VerticalSpan.Top"/> property.</param>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.VerticalSpan.PageItems">
+            <summary>
+            Returns the collection of PageItems in this span.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.VerticalSpan.Bottom">
+            <summary>
+            Sets or returns the bottom location (the highest Y value) of the <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.VerticalSpan"/>.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.VerticalSpan.Top">
+            <summary>
+            Sets or returns the top location (the lowest Y value) of the <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.VerticalSpan"/>.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.OutputHtmlFiles">
+            <summary>
+            OutputHtmlFiles is an implementation of IHandleHtmlOutput that directs the HtmlExport object's output to files.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.OutputHtmlFiles.htmlExport">
+            <summary>
+            The HtmlExport instance that is requesting the file output.  
+            Can be used to check property settings on HtmlExport.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.OutputHtmlFiles._fileInfo">
+            <summary>
+            Represents the main file that the user specified to write to.  
+            Although, this class might write several files in the same folder.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.OutputHtmlFiles.htmlFileCountPostFix">
+            <summary>
+            Used to count HTML files and keep filenames unique per report.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.OutputHtmlFiles.imageFileCountPostFix">
+            <summary>
+            Used to count image files and keep filenames unique per report.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.OutputHtmlFiles.#ctor(System.String,GrapeCity.ActiveReports.Export.Html.Section.HtmlExport)">
+            <summary>
+            Initializes an instance of the OutputHtmlFiles class using the specified filePath as the base html page.  
+            </summary>
+            <param name="filePath">
+            The file path to the main/starting HTML page.
+            Other file names (such as linked in images and table of contents pages) will use this filepath as a prefix.
+            </param>
+            <param name="htmlExport">The parent <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport"/> object this object is working with.</param>
+            <remarks>
+            When this class is created, it demands permission to write files in the parent folder of the specified file.  
+            If permision is not granted, a SecurityException will be thrown.
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.OutputHtmlFiles.GrapeCity#ActiveReports#Export#Html#IOutputHtml#OutputHtmlData(GrapeCity.ActiveReports.Export.Html.HtmlOutputInfoArgs)">
+            <summary>
+            Handles all outputed data from the HtmlExport.
+            </summary>
+            <param name="info">
+            Provides information about the data being exported.  Provides a stream of the actual data being exported, and indicates what the data is (image, html page, etc..).
+            </param>
+            <returns>The filename the HTML Export should use to link to the data from other HTML pages.  For example, if the data is an image, the HTML export will use the return value as the img element's src attribute to display the image.  So if an implementation of this function saves the image data to a file, then it should return the name of the file.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.OutputHtmlFiles.GrapeCity#ActiveReports#Export#Html#IOutputHtml#Finish">
+            <summary>
+            Implementation of IOutputHtml.Finish().  Does nothing at this time.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.OutputHtmlFiles.GenNewFileName(System.String,System.Int32,System.Boolean)">
+            <summary>
+            Generates a filename using the specified extension, the original file's directory 
+            (the file that was specified in this object's constructor), and the original filename 
+            as a prefix (without the original filename's extension) and apeniding the specified uniquePostFix number.
+            </summary>
+            <param name="fileExtensionWithDot">The file extension to use.</param>
+            <param name="includeFolderPath">True if the folder path should be in the returned filename.</param>
+            <param name="uniquePostFix">
+            The integral postfix to apply to the end of the filename, but before the extension.  
+            The caller should use this to generate appropriately unique filenames.
+            If this number is negative, the postfix numer will not be used in the filename.
+            </param>
+            <returns>
+            The filename.
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.OutputMht">
+            <summary>
+            OutputHtmlFiles is an implementation of IOutputHtml that directs the HtmlExport object's output to files.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.OutputMht.#ctor(System.IO.Stream,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.OutputMht"/> class.
+            </summary>
+            <param name="targetStream">The <see cref="T:System.IO.Stream"/> that the MHT data should be written to.</param>
+            <param name="multiPartDocumentSubject">
+            This is the "subject" header of the mimemultipart document.  
+            Typically this would be the title of a main web page in an MHT (Document.Name).  
+            You can leave it empty or just throw a silly value in here but do not leave it null.
+            </param>
+            <exception cref="T:System.ArgumentNullException">Occurs when either the targetStream or multiPartDocumentSubject argument is null.</exception>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.OutputMht.OutputHtmlData(GrapeCity.ActiveReports.Export.Html.HtmlOutputInfoArgs)">
+            <summary>
+            Implementation of IOutputHtml.OutputHtmlData.  This method is where the MHT is built.
+            </summary>
+            <param name="info">
+            Information about the output
+            </param>
+            <returns>
+            The implementation of OutputHtmlData should use the data passed in the info argument and store it as the implentator requires.  
+            The return value should be a "file name" that the calling HtmlExport class can use to place links in the main HTML page to the data.
+            For example, as an HTML page is being created and an image is encountered that will be outputed as an HTML <em>img</em> the HtmlExport object will call this method to provide the data to the implentor, and the return value from OutputHtmlData (i.e. the filename) will be used as the <em>src</em> attribute's value.
+            When the HTML page is ready, OutputHtmlData will be called again to pass the actual HTML page's data, in this case the filename returned by the OutputHtmlData implementation will not be used.
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext">
+            <summary>
+            Container for objects needed for <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItem"/> objects to render.
+            Used for rendering page items.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.HtmlOutputter">
+            Returns the <see cref="T:GrapeCity.ActiveReports.Export.Html.IOutputHtml"/> implementation that handles outputting images and HTML.
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.ImageCache">
+            Returns the <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache"/> object that handles a cache of images, and provides a way to eliminate outputting a duplicate image multiple times using the <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache.GetFileName(System.Int32)"/> and <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache.SetFileName(System.Int32,System.String)"/> functions of <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlImageCache"/> class.
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.HtmlWriter">
+            If the PageItem needs to render contents into a cell inside of it's render method (such as PageItemImage and PageItemText), it should write the HTML contents using this HtmlWriter.
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.CurrentPage">
+            Returns a reference to the page currently being exported. This is useful to determine margin information and page size information.
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.IncludePageMargins">
+            The current value of <see cref="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.IncludePageMargins"/>.
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.RemoveVerticalSpace">
+            The current value of <see cref="P:GrapeCity.ActiveReports.Export.Html.Section.HtmlExport.RemoveVerticalSpace"/>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.RenderStrategy">
+            The <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy"/> that is currently rendering. For example, <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.HtmlTableCell"/> uses this to render PageItems.
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext._activelyRenderingTableCells">
+            <summary>
+            Contains a stack of the currently rendering table cells, all instances are PageCell. 
+            </summary>
+            <remarks>
+            The PageCell at the top of the stack is the currently rendering cell.
+            The PageCell at the bottom of the stack is the outter most cell, currently being rendered.
+            This stack can be used to obtain the current offset required for the contents of the cells.
+            </remarks>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.IsRenderingTableCell">
+            Returns true if the current output is being rendered as the content of an RDF table cell (note not necessarily an HTML table cell, but the content of the table cell in the RDF format).
+            Use <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.BeginRenderingTableCell(GrapeCity.ActiveReports.Document.Section.PageCell)" />, <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.EndRenderingTableCell" /> to control this value.
+            <remarks>Supports nested table rendering.</remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.BeginRenderingTableCell(GrapeCity.ActiveReports.Document.Section.PageCell)">
+            <summary>
+            Indicates that the upcoming rendering (before the next call to EndRenderingTableCell) will be the content of a cell.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.EndRenderingTableCell">
+            <summary>
+            Negates the last call to <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.BeginRenderingTableCell(GrapeCity.ActiveReports.Document.Section.PageCell)"/>.
+            </summary>
+            <returns>
+            True if <see cref="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.IsRenderingTableCell"/> is still true after the call to this method.
+            </returns>
+            <remarks>Supports nested table rendering.</remarks>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.CurrentTableCellOffset">
+            <summary>
+            Returns the current offset that should be used to offset all drawing items in the current cell.
+            <see cref="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.IsRenderingTableCell"/> must be true for use of this to make sense, however, it will return zero if no cell is currently being rendered.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemRoundRectEx.IsOverlapPermitted">
+            <summary>
+            Returns true if this type of PageItem is permitted to overlap other PageItems.
+            </summary>
+            <returns>True if this type of PageItem is permitted to overlap other PageItems.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.PageItem">
+            <summary>
+            PageItem is like a CanvasItem but always has a visible rectangle, and contains any export specific members or helper functions.  
+            Some CanvasItems don't have this info (Alignments, Colors, Pens, etc..).
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.PageItem.#ctor(System.Drawing.RectangleF,DataDynamics.ActiveReports.Export.InternalC.ExportContext,System.String)">
+            <summary>
+            Creates a PageItem with the specified bounds and style/context. 
+            </summary>
+            <param name="bounds">This should be the same value as the CanvasItem's size and location.  It is passed in seperately so we don't have to determine the type of the CanvasItem and cast it to a type so that we can get the Bounds information.</param>
+            <param name="styleContext">We use Clone to make a copy of the specified ExportContext and store it with this canvasitem.</param>
+            <param name="hyperlink">The hyperlink for this <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItem"/> (an empty string can be specified).</param>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItem.Bounds">
+            <summary>
+            Gets or sets the size and location of the PageItem.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItem.Style">
+            <summary>
+            Sets or returns style information about this PageItem.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItem.Bookmarks">
+            <summary>
+            Sets or returns the HtmlBookmark object that this PageItem should render an anchor for.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItem.Hyperlink">
+            <summary>
+            Sets or returns the hyperlink for this pageitem.  
+            </summary>
+            <remarks>When the PageItem is rendered it should put link so that the contents of the pageitem could be selected to navigate to the specified hyperlink.</remarks>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItem.HasHyperlink">
+            <summary>
+            Returns true if the specified PageItem has a hyperlink.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItem.IsTextRecord">
+            <summary>
+            Returns true if this PageItem represents test in the output.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItem.IsOverlapPermitted">
+            <summary>
+            Returns true if this type of PageItem is permitted to overlap other PageItems.
+            </summary>
+            <returns>True if this type of PageItem is permitted to overlap other PageItems.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsTopToBottomLeftToRightComparer">
+            <summary>
+            Sorts PageObjects top-to-bottom, then left-to-right. 
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsTopToBottomLeftToRightComparer.Singleton">
+            <summary>
+            Provides a single instance of <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsTopToBottomLeftToRightComparer"/> to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsTopToBottomLeftToRightComparer.Compare(System.Object,System.Object)">
+            <summary>
+            Compares the top value, then if top is equal then the left value of two specified PageItems.
+            </summary>
+            <param name="x">First PageItem to compare.</param>
+            <param name="y">Second PageItem to compare.</param>
+            <returns>
+            Less than zero if x is lower or to the right of y.
+            Greater than zero if x is above or to the left of y.
+            Zero if x and y are at the same location.
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsOnLayoutRowComparer">
+            <summary>
+            Suitable for sorting pageitems inside a layoutrow.  Customized for HTML output by forcing overlap-permitted PageItems at the same location as PageItems that cannot overlap to come first (i.e. fillrects come before other PageItems at same location).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsOnLayoutRowComparer.Singleton">
+            <summary>
+            Provides a single instance of <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsOnLayoutRowComparer"/> to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsOnLayoutRowComparer.Compare(System.Object,System.Object)">
+            <summary>
+            Compares the left values, **If left is the same, then PageItems that are permitted to overlap come first.
+            </summary>
+            <param name="x">First PageItem to compare.</param>
+            <param name="y">Second PageItem to compare.</param>
+            <returns>
+            Less than zero if x is less than (left of) y.
+            Greater than zero if x is greater than (right of) y.
+            Zero if x and y are at the same location.
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsTopToBottomComparer">
+            <summary>
+            Sorts PageObjects top-to-bottom.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsTopToBottomComparer.Singleton">
+            <summary>
+            Provides a single instance of <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsTopToBottomComparer"/> to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsTopToBottomComparer.Compare(System.Object,System.Object)">
+            <summary>
+            Compares the top value.
+            </summary>
+            <param name="x">First PageItem to compare.</param>
+            <param name="y">Second PageItem to compare.</param>
+            <returns>
+            Less than zero if x is lower than y.
+            Greater than zero if x is above y.
+            Zero if x and y are at the same location.
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsLeftToRightComparer">
+            <summary>
+            Sorts PageObjects left-to-right.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsLeftToRightComparer.Singleton">
+            <summary>
+            Provides a single instance of <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsLeftToRightComparer"/> to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsLeftToRightComparer.Compare(System.Object,System.Object)">
+            <summary>
+            Compares the Left value.
+            </summary>
+            <param name="x">First PageItem to compare.</param>
+            <param name="y">Second PageItem to compare.</param>
+            <returns>
+            Less than zero if x is to the right of y.
+            Greater than zero if x is to the left of y.
+            Zero if x and y are at the same location.
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsByBottomAscending">
+            <summary>
+            Used for sorting PageItems in a collection by their bounds' bottom value in asscending order.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsByBottomAscending.Singleton">
+            <summary>
+            Provides a single instance of <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsByBottomAscending"/> to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsByBottomAscending.#ctor">
+            <summary>
+            Initializes a new instance of the SortPageItemsByBottomAscending class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.SortPageItemsByBottomAscending.Compare(System.Object,System.Object)">
+            <summary>
+            Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.
+            </summary>
+            <param name="x">First object to compare. </param>
+            <param name="y">Second object to compare. </param>
+            <returns>
+            Less than zero		x is less than y. 
+            Zero				x equals y. 
+            Greater than zero	x is greater than y. 
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemBackColor">
+            <summary>
+            Summary description for PageItemBackColor.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemBackColor.OriginalBounds">
+            <summary>
+            Returns the original bounds of the original CanvasItem in the AR Page.
+            This can be used to get the unclipped bounds of the original CanvasItem.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemBackColor.IsOverlapPermitted">
+            <summary>
+            Returns true if this type of PageItem is permitted to overlap other PageItems.
+            </summary>
+            <returns>True if this type of PageItem is permitted to overlap other PageItems.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemEllipse">
+            <summary>
+            Summary description for PageItemEllipse.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemEllipse.IsOverlapPermitted">
+            <summary>
+            Returns true if this type of PageItem is permitted to overlap other PageItems.
+            </summary>
+            <returns>True if this type of PageItem is permitted to overlap other PageItems.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemImage">
+            <summary>
+            PageItem that represents images in the canvas.
+            </summary>
+            <remarks>
+            Implements IDisposable and Finalize to free the contained disposable Image object.
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemImage.#ctor(System.Drawing.RectangleF,DataDynamics.ActiveReports.Export.InternalC.ExportContext,GrapeCity.ActiveReports.Document.Section.ResourcedCanvasItem,System.Drawing.RectangleF,System.Nullable{System.Drawing.RectangleF})">
+            <summary>
+            Initializes a new instance of the PageItemImage class.
+            </summary>
+            <param name="bounds"></param>
+            <param name="styleContext"></param>
+            <param name="image"></param>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemImage.IsOverlapPermitted">
+            <summary>
+            Returns true if this type of PageItem is permitted to overlap other PageItems.
+            </summary>
+            <returns>True if this type of PageItem is permitted to overlap other PageItems.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection">
+            <summary>
+            A strongly typed collection for PageItem objects.
+            </summary>
+            <remarks>Implements IDisposable to free any PageItemImage/IDisposable PageItem objects.</remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection.Add(GrapeCity.ActiveReports.Export.Html.Section.PageItem)">
+            <summary>
+            Adds the specified PageItem to the collection.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection.Item(System.Int32)">
+            <summary>
+            Gets the specified PageItem at the specified index in the collection.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection.Contains(GrapeCity.ActiveReports.Export.Html.Section.PageItem)">
+            <summary>
+            Determines whether a PageItem is in this collection.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection.LastPageItemAdded">
+            <summary>
+            Returns the last PageItem added using the Add method.  
+            If no page items have been added this property may return null.
+            </summary>
+            <remarks>Calling the Clear or Removing the PageItem from the collection that is stored in this property resets this value to null.</remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection.OnClearComplete">
+            <summary>
+            Used to reset LastPageItemAdded.  Directly calls the base.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection.OnRemoveComplete(System.Int32,System.Object)">
+            <summary>
+            Used to reset LastPageItemAdded if the item being removed is the same as the LastPageItemAdded.  Directly calls the base.
+            </summary>
+            <param name="index"></param>
+            <param name="value"></param>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection.TallestPageItemHeight">
+            <summary>
+            Returns the height of the tallest pageitem non-backcolor in this collection.  If the pageitem is backcolor, it's height is not considered.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection.System#IDisposable#Dispose">
+            <summary>
+            IDisposable implementation to free contained IDisposable (PageItemImage) objects.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection.Dispose(System.Boolean)">
+            <summary>
+            IDisposable implementation to free contained IDisposable (PageItemImage) objects.
+            </summary>
+            <param name="disposing"></param>
+            <remarks>If you override this method be sure to call on this base classes implementation.</remarks>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemTable">
+            <summary>
+            Represents the <see cref="T:GrapeCity.ActiveReports.Document.Section.Table"/> CanvasItem.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemTable.Table">
+            <summary>
+            Returns the original <see cref="T:GrapeCity.ActiveReports.Document.Section.Table"/> CanvasItem represented by this PageItem.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemText">
+            <summary>
+            Will represent the various text records in RDF (TextOut, DrawText, DrawText2, etc...).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.PageItemText._hardBackColor">
+            <summary>
+            Private storage for the HardBackColor property.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.PageItemText._hasHardBackColor">
+            <summary>
+            Indicates if the HardBackColor property has been set.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemText.GetTextFromCanvasItem(GrapeCity.ActiveReports.Document.Section.CanvasItem)">
+            <summary>
+            Returns the caption text for the specified canvasItem, or string.Empty if it's not a known textual record.
+            </summary>
+            <returns>
+            The caption text for text canvas records, but some records may have no caption (such as a shape or line).
+            </returns>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemText.HardBackColor">
+            <summary>
+            Specifies a a backcolor that should override any others.  We use this in PageItemsFromPage when we find a filled rectangle that closely matches the position of a text record.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemText.ClipTextForBounds(GrapeCity.ActiveReports.Core.Document.ITextLayoutService)">
+            <summary>
+            Clips text based on bounds and cliprect.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemText.Text">
+            <summary>
+            Returns the text that this PageItem is to display.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.PageItemText.RenderStyle(GrapeCity.ActiveReports.Export.Html.Section.HtmlTableCell)">
+            <summary>
+            This should always be called by HtmlTableCell and be called before REnder
+            </summary>
+            <param name="cell"></param>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.PageItemText.IsOverlapPermitted">
+            <summary>
+            Returns true if this type of PageItem is permitted to overlap other PageItems.
+            </summary>
+            <returns>True if this type of PageItem is permitted to overlap other PageItems.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.Rendering.DhtmlRenderStrategy">
+            <summary>
+            A <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy"/> that renders using DHTML (uses divs &amp; spans with absolutely positioning).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.Rendering.DhtmlRenderStrategy.PointsPerInch">
+            <summary>
+            Number of pixels per inch used in pdf conversions
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.DhtmlRenderStrategy.#ctor(GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext)">
+            <summary>
+            Initializes a new instance of the class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.DhtmlRenderStrategy.AddAbsolutePositionAttributes(System.Drawing.RectangleF,DataDynamics.ActiveReports.Export.InternalC.ExportContext,System.Boolean)">
+            <summary>
+            Uses <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlTextWriter.AddStyleAttribute(GrapeCity.ActiveReports.Export.Html.Section.HtmlTextWriterStyle,System.String)"/> on the specified htmlWriter to 
+            add the attributes that are common to all types of PageItems.
+            </summary>
+            <remarks>Expected to be called by a <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.DhtmlRenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemText)"/> implementation.</remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.DhtmlRenderStrategy.AddAbsolutePositionAndBorderAttributes(GrapeCity.ActiveReports.Export.Html.Section.PageItem)">
+            <summary>
+            Uses <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlTextWriter.AddStyleAttribute(GrapeCity.ActiveReports.Export.Html.Section.HtmlTextWriterStyle,System.String)"/> on the specified htmlWriter to 
+            add the attributes of line elements.
+            </summary>
+            <remarks>Expected to be called by a <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.DhtmlRenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemText)"/> implementation.</remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.DhtmlRenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemText)">
+            <summary>
+            <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemText)"/>
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.DhtmlRenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemImage,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemText)"/>
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.DhtmlRenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemBackColor)">
+            <summary>
+            <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemText)"/>
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.DhtmlRenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemTable,GrapeCity.ActiveReports.Core.Document.ITextLayoutService,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemText)"/>
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.DhtmlRenderStrategy.RenderCell(GrapeCity.ActiveReports.Core.Document.DDLib.Table.ITableCell,GrapeCity.ActiveReports.Core.Document.ITextLayoutService,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Renders a TableCell and it's contents.
+            </summary>
+            <param name="cell"></param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy">
+            <summary>
+            A <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy"/> that renders using a tabular layout using TABLE/TR/TD tags.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.RenderPageItems(GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection,System.Drawing.PointF,GrapeCity.ActiveReports.Core.Document.ITextLayoutService,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItems(GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection,System.Drawing.PointF,GrapeCity.ActiveReports.Core.Document.ITextLayoutService,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)"/>
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.OffsetPageItems(System.Collections.Generic.IEnumerable{GrapeCity.ActiveReports.Export.Html.Section.PageItem},System.Drawing.PointF)">
+            <summary>
+            Offsets each page item in the specified list by teh speciefied amount.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.BeginHtmlTableCellElement(GrapeCity.ActiveReports.Export.Html.Section.HtmlTableCell)">
+            <summary>
+            Renders a TD tag with all the necessary attributes.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.EndTableCellElement">
+            <summary>
+            Renders the end tag for a TD opened with <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.BeginHtmlTableCellElement(GrapeCity.ActiveReports.Export.Html.Section.HtmlTableCell)"/>.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemText)">
+            <summary>
+            <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemText)"/>
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemImage,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemText)"/>
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemBackColor)">
+            <summary>
+            <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemText)"/>
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemTable,GrapeCity.ActiveReports.Core.Document.ITextLayoutService,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemText)"/>
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.RenderCell(GrapeCity.ActiveReports.Core.Document.DDLib.Table.ITableCell,GrapeCity.ActiveReports.Core.Document.ITextLayoutService,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Renders a TableCell and it's contents.
+            </summary>
+            <param name="cell"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.OutputTableFromPageItems(GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection,GrapeCity.ActiveReports.Core.Document.ITextLayoutService,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Creates and outputs an HTML table based on the specified collection of PageItems.
+            </summary>
+            <param name="pageItems">The collection of PageItems to be outputted.</param>
+            <remarks>
+            The collection of PageItems is intended to be a vertical span of PageItems, but I supose it does not necessarily have to be.
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.OutputVerticalHtmlSpace(System.Single,GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext)">
+            <summary>
+            Outputs the specified amount of empty vertical space to the specified context.
+            </summary>
+            <param name="verticalSpace"></param>
+            <param name="context"></param>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.DEFAULTPIXELSPERINCH">
+            <summary>
+            Number of pixels per inch used in unit default conversions. 
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.InchesToPixels(System.Single,System.Single)">
+            <summary>
+            Returns the specifed inch value in pixel units.
+            </summary>
+            <param name="inches">The value in inches to convert.</param>
+            <param name="dpi">The pixels/dots per inch value to be used for the conversion.</param>
+            <returns>The value in pixels.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.InchesToPixels(System.Single)">
+            <summary>
+            Returns the specifed inch value in pixel units with pixels per inch/dpi value of <see cref="F:GrapeCity.ActiveReports.Export.Html.Section.Rendering.LegacyHtmlRenderStrategy.DEFAULTPIXELSPERINCH"/>.
+            </summary>
+            <param name="inches">The value in inches to convert.</param>
+            <returns>The value in pixels.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy">
+            <summary>
+            <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy"/> is the base class for different rendering implementations (DHTML or legacy HTML/tables).
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.#ctor(GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext)">
+            <summary>
+            Initializes an instance of the RenderStrategy with the specified <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext"/>. Also initializes the <see cref="F:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext.RenderStrategy"/> property.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">Thrown if the renderContext argument is null.</exception>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItems(GrapeCity.ActiveReports.Export.Html.Section.PageItemCollection,System.Drawing.PointF,GrapeCity.ActiveReports.Core.Document.ITextLayoutService,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Used to initiate the rendering of pageitems in the particular strategy.
+            </summary>
+            <param name="pageItems">The collection of PageItems to be rendered.</param>
+            <param name="offset">The amount to offset the location of each PageItem by before rendering.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemText)">
+            <summary>
+            Called to render each <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemText"/> instance.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemImage,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Called to render each <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemImage"/> instanc.e
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemBackColor)">
+            <summary>
+            Called to render each <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemBackColor"/> instance.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemTable,GrapeCity.ActiveReports.Core.Document.ITextLayoutService,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Called to render each <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemTable"/> instance.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemEllipse)">
+            <summary>
+            Called to render each <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemEllipse"/> instance.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemRoundRectEx)">
+            <summary>
+            Called to render each <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemRoundRectEx"/> instance.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemClippingBegin)">
+            <summary>
+            Called to render each <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemClippingBegin"/> instance.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderPageItem(GrapeCity.ActiveReports.Export.Html.Section.PageItemClippingEnd)">
+            <summary>
+            Called to render each <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemClippingEnd"/> instance.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.HtmlWriter">
+            <summary>
+            Returns the target HtmlTextWriter to render to.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderContext">
+            <summary>
+            Returns the current <see cref="T:GrapeCity.ActiveReports.Export.Html.Section.PageItemRenderContext"/>
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.BeginHyperlinkAnchor(System.String)">
+            <summary>
+            Begins an Anchor tag for a hyperlink.
+            </summary>
+            <param name="hyperLink"></param>
+            <remarks>
+            Don't forget to use <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.EndHyperlinkAnchor"/> to write the end tag!
+            <seealso cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.EndHyperlinkAnchor"/>
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.BeginHyperlinkAnchor(GrapeCity.ActiveReports.Export.Html.Section.PageItemText,System.String,System.Drawing.Color)">
+            <summary>
+            Begins an Anchor tag for a hyperlink.
+            </summary>
+            <param name="pi">PageItemText containg hyperlink and if possible bookmarks</param>
+            <param name="hyperLink"></param>
+            <param name="foreColor">forColor for hyperLink; default is blue</param>
+            <remarks>
+            Don't forget to use <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.EndHyperlinkAnchor"/> to write the end tag!
+            <seealso cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.EndHyperlinkAnchor"/>
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.EndHyperlinkAnchor">
+            <summary>
+            Calls <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlTextWriter.RenderEndTag"/> to end the hyperlink element written by <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.BeginHyperlinkAnchor(System.String)"/>.
+            </summary>
+            <remarks>
+            <seealso cref="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.BeginHyperlinkAnchor(System.String)"/>
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.RenderBookmarkAnchors(GrapeCity.ActiveReports.Export.Html.Section.PageItem)">
+            <summary>
+            Renders the Anchors for the bookmarks of the specified PageItem if there are any.
+            </summary>
+            <param name="pi"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.AddBorderStyleAttributes(GrapeCity.ActiveReports.Border)">
+            <summary>
+            Uses <see cref="M:GrapeCity.ActiveReports.Export.Html.Section.HtmlTextWriter.AddStyleAttribute(GrapeCity.ActiveReports.Export.Html.Section.HtmlTextWriterStyle,System.String)"/> to add add the necessary border 
+            information for the specified border to the current <see cref="P:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.HtmlWriter"/>.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.BorderLineStyleToHtml(GrapeCity.ActiveReports.BorderLineStyle)">
+            <summary>
+            Converts an AR <see cref="T:GrapeCity.ActiveReports.BorderLineStyle"/> to a combination of CSS1 "border-style" &amp; "border-width" values.
+            Intended to be used with a "short hand" border setting such as "border-bottom: thick solid red"
+            </summary>
+            <remarks>
+            See http://www.w3.org/TR/CSS1#border-style
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Section.Rendering.RenderStrategy.GetNumericValueString(GrapeCity.ActiveReports.Document.Section.NumericUnit)">
+            <summary>
+            Returns an HTML length value for the specified numeric value (eg: 1px, 1in, etc..).
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.Desc_HtmlExport">
+            <summary>
+              Looks up a localized string similar to ActiveReports HTML export component..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.Desc_HtmlExport_BookmarkStyle">
+            <summary>
+              Looks up a localized string similar to Sets returns whether a page of bookmarks will be created if the ActiveReports document contains bookmarks..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.Desc_HtmlExport_CharacterSet">
+            <summary>
+              Looks up a localized string similar to Sets or returns the character set encoding that will be used in the outputted HTML pages..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.Desc_HtmlExport_CreateFramesetPage">
+            <summary>
+              Looks up a localized string similar to Sets or returns a value indicating that the HTML pages appear in a frame set where any bookmark entries appear on the left, and the report document contents appear on the right.  The resulting filename will use the specified filename with the extension &quot;.frame.html&quot;..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.Desc_HtmlExport_IncludeHtmlHeader">
+            <summary>
+              Looks up a localized string similar to Sets or returns a value indicating if the resulting HTML files will include normal HTML page headers such as the HTML, HEAD, and BODY elements..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.Desc_HtmlExport_IncludePageMargins">
+            <summary>
+              Looks up a localized string similar to Sets or returns whether the Page&apos;s margins are included in the output..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.Desc_HtmlExport_MultiPage">
+            <summary>
+              Looks up a localized string similar to Sets returns whether multiple HTML pages are generated for the document..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.Desc_HtmlExport_OutputType">
+            <summary>
+              Looks up a localized string similar to Sets or returns the type of HTML output that is used to export documents..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.Desc_HtmlExport_RemoveVerticalSpace">
+            <summary>
+              Looks up a localized string similar to Sets or returns whether completley empty vertical spacing will be removed from the output..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.Desc_HtmlExport_ShapePainterMode">
+            <summary>
+              Looks up a localized string similar to Sets or returns the mode of HTML implementation technique that is used to export shapes(such as roundrect, ellipse, line)..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.Desc_HtmlExport_Title">
+            <summary>
+              Looks up a localized string similar to Title used in head of HTML pages..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.AR.HtmlResources.Message_FramesSupport">
+            <summary>
+              Looks up a localized string similar to You must use a browser that can display frames to see this page..
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Page.EmailRenderingExtension">
+            <summary>
+            Wrapper over HTML RE with pre-initialized mail message.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Page.EmailRenderingExtensionSettings">
+            <summary>
+            Contains settings specific to the EmailRenderingExtension.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Page.EmailRenderingExtensionSettings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Html.Page.EmailRenderingExtensionSettings"/> class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Page.EmailRenderingExtensionSettings.#ctor(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Html.Page.EmailRenderingExtensionSettings"/> class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Page.EmailRenderingExtensionSettings.GrapeCity#ActiveReports#Extensibility#Rendering#ISettings#GetSettings">
+            <summary>
+            Returns a <see cref="T:System.Collections.Specialized.NameValueCollection" /> containing the settings for the rendering extension.
+            </summary>        
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Page.EmailRenderingExtensionSettings.GrapeCity#ActiveReports#Extensibility#Rendering#ISettings#ApplySettings(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Apply settings for the rendering extension.
+            </summary>
+            <param name="settings">Settings for the rendering extension.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Page.HtmlRenderingExtension.Render(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider,GrapeCity.ActiveReports.Export.Html.Page.HtmlSettings,GrapeCity.ActiveReports.Export.Html.Page.SearchSettings,GrapeCity.ActiveReports.Export.Html.Page.ILinkProvider)">
+            <summary>
+            Renders the specified report.
+            </summary>
+            <param name="report">The report.</param>
+            <param name="streams">The stream provider.</param>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.Page.Settings">
+            <summary>
+            Settings for the Html rendering extension.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Page.Settings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Html.Page.Settings" /> class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Page.Settings.#ctor(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Html.Page.Settings" /> class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Page.Settings.Mode">
+            <summary>
+            Gets or sets the mode to use when rendering to html
+            </summary>
+            <value>A<see cref="T:GrapeCity.ActiveReports.Export.Html.Page.RenderMode" /> indicating the rendering mode to use.</value>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Page.Settings.LinkTarget">
+            <summary>
+            Gets or set the target for hyperlinks contained inside the report.By default this value is not set.
+            </summary>
+            <remarks>You can target a window by specifying the window name, or specify to open the target in a new window by setting the value to _blank.</remarks>
+            <remarks>Acceptable values are<i> WindowName</i>, _blank, _self, _parent, and _top.</remarks>
+            <value>A string value representing the LinkTarget.</value>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Page.Settings.MhtOutput">
+            <summary>
+            Gets or sets whether or not to output should be in Mht format.True indicates the output should be in Mht format; otherwise false. The default is false.
+            </summary>
+            <value>A boolean value indicating whether or not the output should be in Mht format.</value>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Page.Settings.Fragment">
+            <summary>
+            Gets or sets whether or not the full html text will be return or just the contents contained inside the body tag.True indicates only the content inside
+            the body tag will be return; otherwise false. The default is false.
+            </summary>
+            <value>A boolean value indicating whether or not to return the full html contents, or just the contents inside the body tag.</value>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Page.Settings.StyleStream">
+            <summary>
+            Gets or sets whether or not the CSS style information will be contained inside the html file, or inside a different stream. True indicates the CSS style information will be contained in its own stream; otherwise false. The default is true.
+            </summary>
+            <value>A boolean value indicating whether or not to write the CSS style information to a different stream, or embed it in the html file.</value>
+            <remarks>When this value is set to False the full report will be rendered before being returned.</remarks>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Page.Settings.EmbedImages">
+            <summary>
+            Gets or sets whether or not the images content will be contained inside the html file as Base64, or inside a different stream.
+            </summary>
+            <value>A boolean value indicating whether or not to write the images content to a different stream, or embed it in the html file.</value>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Page.Settings.OutputTOC">
+            <summary>
+            Indicates whether the report's TOC(is exists) should be added in the output.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.Page.Settings.RenderingEngine">
+            <summary>
+            Indicates whether we should use SVG internally or not.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Page.Settings.GrapeCity#ActiveReports#Extensibility#Rendering#ISettings#GetSettings">
+            <summary>
+            Returns a <see cref="T:System.Collections.Specialized.NameValueCollection" /> containing the settings for the rendering extension.
+            </summary>        
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Page.Settings.GrapeCity#ActiveReports#Extensibility#Rendering#ISettings#ApplySettings(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Apply settings for the rendering extension.
+            </summary>
+            <param name="settings">Settings for the rendering extension.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Page.Settings.op_Implicit(GrapeCity.ActiveReports.Export.Html.Page.Settings)~System.Collections.Specialized.NameValueCollection">
+            <summary>
+            Performs an implicit conversion from <see cref="T:GrapeCity.ActiveReports.Export.Html.Page.Settings"/> to <see cref="T:System.Collections.Specialized.NameValueCollection"/>.
+            </summary>
+            <param name="settings">The rendering extension settings.</param>
+            <returns>The result of the conversion.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Html.Page.Settings.GetHtmlRenderingSettings(System.Collections.Specialized.NameValueCollection,System.Boolean)">
+            <summary>
+            For internal use only.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Html.DDR.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.Desc_EmbedImages">
+            <summary>
+              Looks up a localized string similar to Set to True to embed images in the HTML file. The False setting writes images in a separate files..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.Desc_Fragment">
+            <summary>
+              Looks up a localized string similar to Set to True to return only the contents inside the body tags (so you can embed it within a Web page). False returns the full HTML text..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.Desc_LinkTarget">
+            <summary>
+              Looks up a localized string similar to Enter a value for a target for hyperlinks contained inside the report. A value of _blank opens a new window; _self opens in the same window..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.Desc_MhtOutput">
+            <summary>
+              Looks up a localized string similar to Set to True to save the report as a Web archive file with embedded images. False saves images as separate files..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.Desc_Mode">
+            <summary>
+              Looks up a localized string similar to Select Paginated to render each page as a section inside the HTML document, with page headers and footers. Galley renders one long page with a single page header and footer..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.Desc_OutputTOC">
+            <summary>
+              Looks up a localized string similar to Indicates if the table of contents should be included in the output if it exists..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.Desc_RenderingEngine">
+            <summary>
+              Looks up a localized string similar to Select &quot;Mixed&quot; to use SVG for improved graphic output. Select &quot;Html&quot; to use legacy HTML output..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.Desc_StyleStream">
+            <summary>
+              Looks up a localized string similar to Set to False to embed style information in the HTML file. The True setting writes cascading style sheet information in a separate *.css file..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.EmbedImagesName">
+            <summary>
+              Looks up a localized string similar to EmbedImages.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.False">
+            <summary>
+              Looks up a localized string similar to False.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.FragmentName">
+            <summary>
+              Looks up a localized string similar to Fragment.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.LinkTargetName">
+            <summary>
+              Looks up a localized string similar to LinkTarget.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.MhtOutputName">
+            <summary>
+              Looks up a localized string similar to MhtOutput.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.ModeName">
+            <summary>
+              Looks up a localized string similar to Mode.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.OutputName">
+            <summary>
+              Looks up a localized string similar to Output.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.OutputTOCName">
+            <summary>
+              Looks up a localized string similar to OutputTOC.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.RenderingEngine_Html">
+            <summary>
+              Looks up a localized string similar to Html.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.RenderingEngine_Mixed">
+            <summary>
+              Looks up a localized string similar to Mixed.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.RenderingEngineName">
+            <summary>
+              Looks up a localized string similar to RenderingEngine.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.RenderingName">
+            <summary>
+              Looks up a localized string similar to Rendering.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.RenderMode_Galley">
+            <summary>
+              Looks up a localized string similar to Galley.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.RenderMode_Paginated">
+            <summary>
+              Looks up a localized string similar to Paginated.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.StyleStreamName">
+            <summary>
+              Looks up a localized string similar to StyleStream.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Html.DDR.Resources.True">
+            <summary>
+              Looks up a localized string similar to True.
+            </summary>
+        </member>
+        <member name="T:AssemblyNames">
+            <summary>
+            Contains strong assembly names and such
+            </summary>
+        </member>
+    </members>
+</doc>

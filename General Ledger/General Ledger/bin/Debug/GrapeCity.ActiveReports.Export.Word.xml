@@ -1,0 +1,3257 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GrapeCity.ActiveReports.Export.Word</name>
+    </assembly>
+    <members>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.DescriptionRes">
+            <summary>
+            base class for Description Attribute
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.DescriptionRes.Description">
+            <summary>
+            Description for Resource
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.ImageInfo">
+            <summary>
+            Attempt to caches the images for rendeing in rtf.
+            each instance of ImageInfo when encountered will be in a hashmap off of export/helper object
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.ImageInfo.imageHash">
+            <summary>
+            hash of image property
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.ImageInfo.imageBytes">
+            <summary>
+            stiore the bytes in here, used to write a picture when time comes to render it to rtf
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.ImageInfo.byteLength">
+            <summary>
+            position of image in the rtf stream/stringBuilder, ass this one will be used to write
+            out teh picture once a page is done.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.ImageInfo.#ctor(System.String,System.Byte[],System.Int32,GrapeCity.ActiveReports.Export.Word.Section.ExportedImageType)">
+            <summary>
+            Initializes ImageInfo with image hash, image bytes, image position
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.ImageInfo.ByteLength">
+            <summary>
+            Will need this when writing it out to rtf.
+            when this call is instantiated, the value will be -1
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.ImageInfo.ImageBytes">
+            <summary>
+            Bytes to be converted into text
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.ImageInfo.ImageHash">
+            <summary>
+            image hash
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.ImageInfo.disposed">
+            <summary>
+            Keep track of Dispose pattern
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.ImageInfo.Dispose">
+            <summary>
+            Called through code
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.ImageInfo.Dispose(System.Boolean)">
+            <summary>
+            Dispose pattern implementation
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.ImageInfo.Finalize">
+            <summary>
+            Non user call
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.ImageCache">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.ImageCache.GenerateImageInfo(System.String,System.Int32,System.Drawing.Size)">
+            <summary>
+            
+            </summary>
+            <param name="hashValue"></param>
+            <param name="imageIndex"></param>
+            <param name="goalSizeInTwips"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.ImageCache.GenImageStringBytes(System.Int32,System.Int32,System.Int32,System.Int32,System.Byte[],GrapeCity.ActiveReports.Export.Word.Section.ExportedImageType)">
+            <summary>
+            \picwN		xExt field if the picture is a Windows metafile; picture width in pixels if the picture is a bitmap or from QuickDraw. The N argument is a long integer. 
+            \pichN		yExt field if the picture is a Windows metafile; picture height in pixels if the picture is a bitmap or from QuickDraw. The N argument is a long integer. 
+            \picwgoalN	Desired width of the picture in twips. The N argument is a long integer. 
+            \pichgoalN	Desired height of the picture in twips. The N argument is a long integer. 
+            1 HIMETRIC unit is 0.01 millimeters
+            1 millimeter is 56.69291338582676 twips
+            </summary>
+            <param name="w"></param>
+            <param name="h"></param>
+            <param name="picwgoal"></param>
+            <param name="pichgoal"></param>
+            <param name="data"></param>
+            <param name="exportedImageType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.ImageCache.GenImageStringBytesUseStream(System.Int32,System.Int32,System.Int32,System.Int32,System.Byte[],GrapeCity.ActiveReports.Export.Word.Section.ExportedImageType)">
+            <summary>
+            USE Stream if lenght of Data is more thatn 33000000 ( picked this number based on debugging)
+            stringBuilder was going nuts.
+            \picwN		xExt field if the picture is a Windows metafile; picture width in pixels if the picture is a bitmap or from QuickDraw. The N argument is a long integer. 
+            \pichN		yExt field if the picture is a Windows metafile; picture height in pixels if the picture is a bitmap or from QuickDraw. The N argument is a long integer. 
+            \picwgoalN	Desired width of the picture in twips. The N argument is a long integer. 
+            \pichgoalN	Desired height of the picture in twips. The N argument is a long integer. 
+            1 HIMETRIC unit is 0.01 millimeters
+            1 millimeter is 56.69291338582676 twips
+            </summary>
+            <param name="w"></param>
+            <param name="h"></param>
+            <param name="picwgoal"></param>
+            <param name="pichgoal"></param>
+            <param name="data"></param>
+            <param name="imageType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.ImageCache.Clear">
+            <summary>
+            this needs to be cleared
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.ObjLine.SortObjLineByTopAscending">
+            <summary>
+            Used for sorting ObjLine in a collection by their top value in ascending order.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.ObjLine.SortObjLineByTopAscending.Singleton">
+            <summary>
+            Provides a single instance of SortObjLineByTopAscending to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.ObjLine.SortObjLineByTopAscending.#ctor">
+            <summary>
+            Initializes a new instance of the SortObjLineByTopAscending class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.ObjLine.SortObjLineByTopAscending.Compare(System.Object,System.Object)">
+            <summary>
+            Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.
+            </summary>
+            <param name="x">First object to compare. </param>
+            <param name="y">Second object to compare. </param>
+            <returns>
+            Less than zero		x is less than y. 
+            Zero				x equals y. 
+            Greater than zero	x is greater than y. 
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.PageObject">
+            <summary>
+            Summary description for PageObject.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.PageObject.itemLen">
+            string length for type 0
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.#ctor(GrapeCity.ActiveReports.Export.Word.Section.PageObjectEnum)">
+            <summary>
+            PageObject
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.Overlap(GrapeCity.ActiveReports.Export.Word.Section.PageObject)">
+            <summary>
+            Overlap
+            </summary>
+            <param name="p"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.width">
+            <summary>
+            Width
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.maxy">
+            <summary>
+            maxy
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.height">
+            <summary>
+            height
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.TestMergeOnLine(GrapeCity.ActiveReports.Export.Word.Section.PageObject)">
+            <summary>
+            TestMergeOnLine
+            </summary>
+            <param name="pPrevious"></param>
+            <returns></returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByHeightDecending">
+            <summary>
+            Used for sorting PageObjects in a collection by height descending.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByHeightDecending.Singleton">
+            <summary>
+            Provides a single instance of SortPageObjectsByHeightDecending to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByHeightDecending.#ctor">
+            <summary>
+            Initializes a new instance of the SortPageObjectsByHeightDecending class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByHeightDecending.Compare(System.Object,System.Object)">
+            <summary>
+            Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.
+            </summary>
+            <param name="x">First object to compare. </param>
+            <param name="y">Second object to compare. </param>
+            <returns>
+            Less than zero		x is less than y. 
+            Zero				x equals y. 
+            Greater than zero	x is greater than y. 
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByBottomAscending">
+            <summary>
+            Used for sorting PageObjects in a collection by their bounds' bottom value in asscending order.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByBottomAscending.Singleton">
+            <summary>
+            Provides a single instance of SortPageObjectsByBottomAscending to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByBottomAscending.#ctor">
+            <summary>
+            Initializes a new instance of the SortPageObjectsByBottomAscending class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByBottomAscending.Compare(System.Object,System.Object)">
+            <summary>
+            Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.
+            </summary>
+            <param name="x">First object to compare. </param>
+            <param name="y">Second object to compare. </param>
+            <returns>
+            Less than zero		x is less than y. 
+            Zero				x equals y. 
+            Greater than zero	x is greater than y. 
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByBottomDecending">
+            <summary>
+            Used for sorting PageObjects in a collection by their bounds' bottom value in descending order.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByBottomDecending.Singleton">
+            <summary>
+            Provides a single instance of SortPageObjectsByBottomDecending to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByBottomDecending.#ctor">
+            <summary>
+            Initializes a new instance of the SortPageObjectsByBottomDecending class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByBottomDecending.Compare(System.Object,System.Object)">
+            <summary>
+            Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.
+            </summary>
+            <param name="x">First object to compare. </param>
+            <param name="y">Second object to compare. </param>
+            <returns>
+            Less than zero		x is less than y. 
+            Zero				x equals y. 
+            Greater than zero	x is greater than y. 
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByLeftAscending">
+            <summary>
+            Used for sorting PageObjects in a collection by their left value in ascending order.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByLeftAscending.Singleton">
+            <summary>
+            Provides a single instance of SortPageObjectsByBottomDecending to be used.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByLeftAscending.#ctor">
+            <summary>
+            Initializes a new instance of the SortPageObjectsByBottomDecending class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.PageObject.SortPageObjectsByLeftAscending.Compare(System.Object,System.Object)">
+            <summary>
+            Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.
+            </summary>
+            <param name="x">First object to compare. </param>
+            <param name="y">Second object to compare. </param>
+            <returns>
+            Less than zero		x is less than y. 
+            Zero				x equals y. 
+            Greater than zero	x is greater than y. 
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.PageObjectEnum">
+            <summary>
+            enum to determine (text, shapes etcs)
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.RtfExport">
+            <summary>
+            The Rich Text Format (RTF) export component for ActiveReports for .NET.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.enableShapes">
+            <summary>
+            Setting this value to true will export the Shapes and Lines to RTF Format.
+            You will require Microsoft Word to view it correctly.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.isInTable">
+            <summary>
+            Determines if current canvas item being handled is table.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.TWIPSPERINCH">
+            <summary>
+            The number of twips per inch.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Word.Section.RtfExport"/> class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.Export(GrapeCity.ActiveReports.Document.SectionDocument,System.String,System.String)">
+            <summary>
+            Exports the specified document to a Rich Text Format (RTF) file.
+            </summary>
+            <param name="document">The ActiveReports Document object to export.</param>
+            <param name="filePath">The file name and path to save the main html file to.</param>
+            <param name="pageRange">A range of page numbers to export seperated by a comma.  Between each comma can have a single page number, or range of pages with a hyphen between the starting and ending page numbers in the range.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.Export(GrapeCity.ActiveReports.Document.SectionDocument,System.String)">
+            <summary>
+            Exports the specified document to a Rich Text Format (RTF) file.
+            </summary>
+            <param name="document">
+            The ActiveReports Document object to export.
+            </param>
+            <param name="filePath">
+            The file name and path to save the main html file to.
+            </param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.Export(GrapeCity.ActiveReports.Document.SectionDocument,System.IO.Stream)">
+            <summary>
+            Exports the specified document to the specified stream in Rich Text Format (RTF).
+            </summary>
+            <param name="document">
+            The ActiveReports Document object to export.
+            </param>
+            <param name="outputStream">The Stream to write the RTF to.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.Export(GrapeCity.ActiveReports.Document.SectionDocument,System.IO.Stream,System.String)">
+            <summary>
+            Exports the specified document to the specified stream in Rich Text Format (RTF).
+            </summary>
+            <param name="document">
+            The ActiveReports Document object to export.
+            </param>
+            <param name="outputStream">The Stream to write the RTF to.</param>
+            <param name="pageRange">
+            A range of page numbers to export seperated by a comma.  Between each comma can have a single page number, or range of pages with a hyphen between the starting and ending page numbers in the range.
+            </param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.CommonExport(GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredDocument,System.Drawing.Graphics,System.Drawing.StringFormat,GrapeCity.ActiveReports.Core.Document.FontsCollection,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Performs the export logic for a document that is common to all of the export method overloads.
+            </summary>
+            <param name="referenceGraphics">A graphics used for measuring text. Passed in for performance optimization.</param>
+            <param name="stringFormat">A StringFormat used for measuring text. Passed in for performance optimization.</param>
+            <param name="fonts">The font collection if initial SectionDocument</param>
+            <returns>
+            Returns a <see cref="T:System.Text.StringBuilder"/> containing the raw RTF output.
+            </returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.GenExport(GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage,System.Boolean,GrapeCity.ActiveReports.Export.Word.Section.RtfHelper,System.Drawing.Graphics,System.Drawing.StringFormat,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Generates pages and them exports them to rtf.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.GenPage(System.Boolean,GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage,GrapeCity.ActiveReports.Export.Word.Section.RtfHelper,System.Drawing.Graphics,System.Drawing.StringFormat,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Exports the specified page to the specified RtfHelper.
+            </summary>
+            <param name="page"></param>
+            <param name="rtfGen"></param>
+            <param name="referenceGraphics">A graphics used for measuring text. Passed in for performance optimization.</param>
+            <param name="stringFormat">A StringFormat used for measuring text. Passed in for performance optimization.</param>
+            <param name="isLastPage">True if this page is the last page to be exported.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.DisposeElements(System.Collections.IEnumerable)">
+            <summary>
+            Enumerates the elments in the specified <see cref="T:System.Collections.IEnumerable"/> object and each elment that implements <see cref="T:System.IDisposable"/> is disposed.
+            </summary>
+            <param name="enumerable">The <see cref="T:System.Collections.IEnumerable"/> whose elements are to be disposed.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.BuildTextWidths(System.Collections.Generic.IEnumerable{GrapeCity.ActiveReports.Export.Word.Section.PageObject},System.Drawing.Graphics)">
+            <summary>
+            Enumerates PageObject elemnts of specified ArrayList and sets the m_textwidthtwips property to the actual width of it's contained text.
+            </summary>
+            <param name="pageObjects">The collection of pageobjects the text width is to be set for.</param>
+            <param name="referenceGraphics">The <see cref="T:System.Drawing.Graphics"/> used for measuring.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.PixelsToTwips(System.Single,System.Single)">
+            <summary>
+            Converts pixels to twips with the specified dpi.
+            </summary>
+            <param name="dpi">The pixels/dots per inch value to be used for the conversion.</param>
+            <param name="pixels">The value in pixels to convert.</param>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.pageCellFontOffSet">
+            <summary>
+            keeps track of offsets for items in pageCell.
+            since pageCellFonts are not part of the entire document fonts collection
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.AddEvaluationMessage(GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage,GrapeCity.ActiveReports.Export.Word.Section.RtfHelper,System.Drawing.Graphics,System.Drawing.StringFormat,System.Collections.Generic.ICollection{GrapeCity.ActiveReports.Export.Word.Section.PageObject})">
+            <summary>
+            Adds the Evaluation message the list of PageObject for rtf rendering
+            </summary>
+            <param name="page"></param>
+            <param name="rtfGen"></param>
+            <param name="referenceGraphics"></param>
+            <param name="stringFormat"></param>
+            <param name="pageList"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.InchesToTwips(System.Single)">
+            <summary>
+            Converts the specified inches value to twips units.
+            </summary>
+            <param name="inches">The value in inches to be converted.</param>
+            <returns>The equivelent value in twips.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.TwipsToInches(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="twips"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.InchesBoundsToTwipsBounds(System.Drawing.RectangleF)">
+            <summary>
+            Converts the specified RectangleF in inches units to a Rectangle with twips units.
+            </summary>
+            <param name="boundsInInches">A RecantleF using inches for it's measurement units.</param>
+            <returns>A Recangle using twips for units.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.TwipsBoundsToInchesBounds(System.Drawing.Rectangle)">
+            <summary>
+            Converts the specified Rectangle in twips units to a RectangleF with inches units.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.InitPageMargins(GrapeCity.ActiveReports.Export.Word.Section.RtfHelper,GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage)">
+            <summary>
+            Genrates the page margins; 
+            Should be the first thing called before any controls are being rendered.
+            </summary>
+            <param name="rtfGen"></param>
+            <param name="page"></param>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.colorTableInsertOffSet">
+            <summary>
+            need this to offset the image inserts
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.imagePosList">
+            <summary>
+            to implement image caching when pictures get written out to rtf file
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.imageCache">
+            <summary>
+            stores image once
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.rand">
+            <summary>
+            To create random numbers for hashing the images
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.BuildImageInfo(System.Drawing.Image,System.String@,System.Int32@)">
+            <summary>
+            Used to cache the image from the canvasitems. Worst case scenario: we got n NEW images :(
+            </summary>
+            <param name="sourceImage">Image to be Cached</param>
+            <param name="hashValue">Unique has value created for image</param>
+            <param name="pictIndex">Index of the image in the list of images.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.SetImageOffSets(System.Int32,System.Int32,System.Int32,System.Drawing.Size)">
+            <summary>
+            Sets the offsets for each images when we are contructing teh rtf strings for the images		
+            </summary>
+            <param name="curPos"></param>
+            <param name="picOffSet"></param>
+            <param name="imageIndex"></param>
+            <param name="pictSize"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.UpdateStreamWithBytes(System.Byte[],System.IO.Stream)">
+            <summary>
+            This is the final insert for all the images in the rtf stream.
+            </summary>
+            <param name="rtfBytes"></param>
+            <param name="mms"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.GetPosOffSetsAt(System.Int32)">
+            <summary>
+            Returns the offset at specified index; if not found retirns struct with (-1,-1)
+            </summary>
+            <param name="i"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.GetBorderWidth(GrapeCity.ActiveReports.BorderLineStyle)">
+            <summary>
+            Get the border's width by its style
+            </summary>
+            <param name="style"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.StartGenShapeRTF(GrapeCity.ActiveReports.Export.Word.Section.RtfHelper,GrapeCity.ActiveReports.Export.Word.Section.PageObject)">
+            <summary>
+            Generate shape control words if there is a backcolor and border
+            \shp
+            \shpinst
+            \shptxt
+            </summary>
+            <param name="rtfGen"></param>
+            <param name="pObject"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.EndGenShapeRTF(GrapeCity.ActiveReports.Export.Word.Section.RtfHelper)">
+            <summary>
+            Close the shape control words with }; I need a space before the } for shptxt; Do I also need a /par ????
+            </summary>
+            <param name="rtfGen"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.StartGenLineRTF(GrapeCity.ActiveReports.Export.Word.Section.RtfHelper,GrapeCity.ActiveReports.Export.Word.Section.PageObject,System.Int32)">
+            <summary>
+            This one is for generating lines
+            </summary>
+            <param name="rtfGen"></param>
+            <param name="pObject"></param>
+            <param name="shapeType"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.StartGenImageRTF(GrapeCity.ActiveReports.Export.Word.Section.RtfHelper,GrapeCity.ActiveReports.Export.Word.Section.PageObject,System.Int32)">
+            <summary>
+            Start Image 
+            </summary>
+            <param name="rtfGen"></param>
+            <param name="pObject"></param>
+            <param name="shapeType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.EndGenImageRTF">
+            <summary>
+            End Image
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.GenerateSpacingControlWords(GrapeCity.ActiveReports.Export.Word.Section.RtfHelper,GrapeCity.ActiveReports.Export.Word.Section.PageObject)">
+            <summary>
+            GenerateSpacingControlWords
+            Generates control words for character spacing and line spacing
+            </summary>
+            <param name="rtfGen"></param>
+            <param name="pageObject">pageObject with character spacing and line spacing information</param>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.EnableShapes">
+            <summary>
+            Setting this value to true will export the Shapes and Lines to RTF Format.
+            You will require Microsoft Word to view it correctly.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.Pagination">
+            <summary>
+            Gets or sets the value indicates should pagination be used for resulted RTF document or not
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.ProcessContextItem(DataDynamics.ActiveReports.Export.InternalC.ExportContext,GrapeCity.ActiveReports.Document.Section.CanvasItem)">
+            <summary>
+            Processes all CanvasItem's with contextual information only.
+            </summary>
+            <param name="canvasItem"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.ProcessImageItem(GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage,DataDynamics.ActiveReports.Export.InternalC.ExportContext,System.Collections.Generic.ICollection{GrapeCity.ActiveReports.Export.Word.Section.PageObject},GrapeCity.ActiveReports.Document.Section.CanvasItem,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Process the specified CanvasItem to create an image <see cref="T:GrapeCity.ActiveReports.Export.Word.Section.PageObject"/> and add it to the current <see cref="!:pageObjects"/> collection.
+            </summary>
+            <param name="pageObjects"> </param>
+            <param name="canvasItem">Must be <see cref="F:GrapeCity.ActiveReports.Document.Section.CanvasType.EnhMeta"/>, <see cref="F:GrapeCity.ActiveReports.Document.Section.CanvasType.EnhMetaLink"/>, <see cref="F:GrapeCity.ActiveReports.Document.Section.CanvasType.JPEG"/>, <see cref="F:GrapeCity.ActiveReports.Document.Section.CanvasType.JPEGLink"/>, <see cref="F:GrapeCity.ActiveReports.Document.Section.CanvasType.PING"/>, or <see cref="F:GrapeCity.ActiveReports.Document.Section.CanvasType.PINGLink"/>.</param>
+            <param name="page"> </param>
+            <param name="outputContext"> </param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.ColorTools">
+            <summary>
+            Provides utilities for working with colors.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExport.ColorTools.ColorsAreEqual(System.Drawing.Color,System.Drawing.Color)">
+            <summary>
+            Compares the two specified colors for equalitiy soley based on them have equal <see cref="P:System.Drawing.Color.A"/>, <see cref="P:System.Drawing.Color.R"/>, <see cref="P:System.Drawing.Color.G"/>, and <see cref="P:System.Drawing.Color.B"/> values.
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns>
+            I've experienced some problems comparing colors. I think the way we initialize colors in the canvas is not working well with the public static readonly fields on the Color object such as Color.Black.
+            </returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.RtfExportException">
+            <summary>
+            Thrown when a general RTF export specific error occurs.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExportException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Word.Section.RtfExportException"/> class with a specified error message.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExportException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Word.Section.RtfExportException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The Exception instance that caused the current exception.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfExportException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Word.Section.RtfExportException"/> class with serialized data.
+            </summary>
+            <param name="info"></param>
+            <param name="context"></param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper">
+            <summary>
+            Writes text and RTF codes.
+            </summary>
+            <remarks>
+            This class implements IDisposable as it creates a collection of font objects that need disposed.
+            
+            The c++ class used a CSource stream/memory manager thing to output to. I switched to StringBuilder.  
+            The only tricky thing about this change appears to be that CSource had this InsertBlock method that inserted data at speicifc postions in the output stream.  It was used only to allow GenColorTable() to insert data into the middle of the stream in the header area.
+            </remarks>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.DefaultOutputCapacity">
+            <summary>
+            The oputput StringBuilder's default initial capacity.  
+            The current value is really just a shot in the dark.
+            The capacity is the number of characters.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.NewLine">
+            <summary>
+            Constant new line characters "\r\n".
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.CharNewLine">
+            <summary>
+            Constant new line character '\n'.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.LineBreak">
+            <summary>
+            RTF Special Characters: line break.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.CharTabulation">
+            <summary>
+            Constant new line character '\t'.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.Tabulation">
+            <summary>
+            RTF Special Characters: tabulation
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.Dpi">
+            <summary>
+            DPI used for font height calculations.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.sysColorTableRGB">
+            <summary>
+            System color table in RGB values. Used by MapToSysColor.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.HlsItem.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance o the HlsItem class with the specified hue, saturation and lightnes/brightness.
+            </summary>
+            <param name="h"></param>
+            <param name="l"></param>
+            <param name="s"></param>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.HlsItem.H">
+            <summary>
+            Returns the Hue value.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.HlsItem.L">
+            <summary>
+            Returns the lighness value.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.HlsItem.S">
+            <summary>
+            Returns the saturation value.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.sysColorTableHLS">
+            <summary>
+            System color table in HLS values. Used by MapToSysColor.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.INCHTOPOINT">
+            <summary>
+            Constant for inch to point
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.output">
+            <summary>
+            The buffer that all RTF output is written to and stored in.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.curFontIndex">
+            <summary>
+            The current index into the RTF font table.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.foreColor">
+            <summary>
+            The Current foreground color;
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.backColor">
+            <summary>
+            The current background color.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.curCharSet">
+            <summary>
+            The current character set.  The current character set, this is set each time OutputFont is called.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.codePage">
+            <summary>
+            The code page used for the entire document. This is set to the system's default code page, this is used in GenHeader().
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.fontList">
+            <summary>
+            Contains a collection of fonts used in the RTF document.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.fontInfoArray">
+            <summary>
+            ??
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.disposed">
+            <summary>
+            Tracks whether Dispose has been called.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.controlWordNeedsDelimiter">
+            <summary>
+            Tracks whether the last output was a control word. Indicating that the next output needs prfixed with a space.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.colorTableInsertPos">
+            <summary>
+            Used by GenHeader and GenColorTable to store where the colortable should be inserted at.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.colorTable">
+            <summary>
+            The table of colors used in this document.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.colortableRTF">
+            <summary>
+            ??
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.marginRect">
+            <summary>
+            stores the margin information.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.FontList">
+            <summary>
+            fontList 
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.#ctor">
+            <summary>
+            Initializes an instance of the RtfHelper class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.ResetFontProperties">
+            <summary>
+            Resets the font properties. called from rtfTablehelper
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.Finalize">
+            <summary>
+            Destructor used to ensure any unmanaged resources (fonts) are properly disposed.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.Dispose">
+            <summary>
+            IDisposable implementation.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.Dispose(System.Boolean)">
+            <summary>
+            The main disposable implementation is implemented here.
+            </summary>
+            <param name="disposing">
+            If disposing equals true, the method has been called directly or indirectly by a user's code.  Managed and unmanaged resources will be disposed.
+            If disposing equals false, the method as been called by the runtime from inside the finalizer (destructor) and "other objects" should not be referenced.
+            </param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.ThrowOnDisposed">
+            <summary>
+            Throws an <see cref="T:System.ObjectDisposedException"/> if this object has been disposed.
+            This method should be called before each instance member is executed.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.ResetFonts">
+            <summary>
+            Disposes and removes any existing fonts in <see cref="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.fontList"/>.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.Reset">
+            <summary>
+            Resets the object to it's default state.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.Delimit">
+            <summary>
+            If the last output was a control word, this method outputs a space delimitor and resets the controlWordNeedsDelimiter tracking varaible.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.AddCenterTabStop(System.Int32)">
+            <summary>
+            Adds a center tab stop at the specified position?
+            </summary>
+            <param name="val"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.AddRightTabStop(System.Int32)">
+            <summary>
+            Adds a right tab stop at the specified position?
+            </summary>
+            <param name="val"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.EndDocument">
+            <summary>
+            Inserts the color table back at the begining of the header. and closes the document with a final closing brace.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.GenCellFonts">
+            <summary>
+            Generates font information for cells.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.GenColorTable">
+            <summary>
+            Outputs the color table at the character position specifed in <see cref="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.colorTableInsertPos"/>.  
+            GenHeader must be called before this method is called.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.colorTableInsertOffSet">
+             <summary>
+            used in image inserts, in rtfExport.cs
+             </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.GenEnd">
+            <summary>
+            Adds a single closing brace (}) to the output.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.GenHeader(System.Collections.IList)">
+            <summary>
+            Generates the RTF header section which includes locale information, page setup information, a font table and a color table.
+            This method does not actualy generate the color table. It records an insertion position for where the colortable should be inserted.  As we need to do all output to determine which colors should be in the color table.  
+            The Font table must be provided to this method..
+            </summary>
+            <param name="fontTable">
+            A collection of System.Drawing.Font objects that will be used in this document.
+            </param>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.existingFontCollection">
+            <summary>
+            contains list of fonts that needs to be written to rtf, makes sure it is written only once
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.fontToIndexTable">
+            <summary>
+            mapping for indexes for same font names, but diff in styles.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.OutputFontTableEntry(System.Int32,System.Drawing.Font)">
+            <summary>
+            Outputs a single entry for the font table in the RTF document's header section.
+            </summary>
+            <param name="fontNumber">The font number used to reference the font later in the document.</param>
+            <param name="font">The <see cref="T:System.Drawing.Font"/> object representing the font information to be outputted.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.BuildFontString(System.Drawing.Font)">
+            <summary>
+            Build font string using fontamily, charSet and encoding
+            trying to avaoid multiple writing of same foints that differ by styles only
+            </summary>
+            <param name="font"></param>
+            <returns></returns>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.cellFontsBuilder">
+            <summary>
+            Build Cell font String for text ouput
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.OutputFontTableEntry(System.Int32,System.Drawing.Font,System.Boolean)">
+            <summary>
+            This overload if for building the cell font table
+            </summary>
+            <param name="fontNumber"></param>
+            <param name="font"></param>
+            <param name="buildCellFont">boolis just a hack, used in rtfTableHelper</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.FontFamilyControlWordFromFont(System.Drawing.Font)">
+            <summary>
+            Returns the RTF font family control word most appropriate for the specified font.  This needs improved.
+            </summary>
+            <param name="font"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.GetColorIndex(System.Drawing.Color)">
+            <summary>
+            Returns the index in the color table to the specified color.
+            </summary>
+            <param name="color"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.GetFontHeight(System.Int32)">
+            <summary>
+            Returns the height of the font at the specified index in twips.
+            </summary>
+            <param name="index">The font index the height will be returned for.</param>
+            <returns>The font height in twips.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.PushCharFormatting(System.Boolean@)">
+            <summary>
+            Resets underline to none pdw will have the current underline value when returned
+            </summary>
+            <param name="pdw">Contains the current underline value upon return.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.PopCharFormatting(System.Boolean)">
+            <summary>
+            Sets the current underline style to the specified dw value.
+            </summary>
+            <param name="dw"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.ResetFont">
+            <summary>
+            Changes the current output font to the default (first) font.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.ResetParagraph">
+            <summary>
+            Starts a new paragraph in the output.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.ResetUnderline">
+            <summary>
+            Sets the output's underline style to none.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.GenMetafileHeader(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Outputs the RTF pict control word header for enhanced metafiles.
+            </summary>
+            <param name="dpi">Dots per inch of the image.</param>
+            <param name="h">The actual hieght of the iamge.</param>
+            <param name="pichgoal">The height of the image in the outputted RTF.</param>
+            <param name="picwgoal">The width of the iamge in the outputted RTF.</param>
+            <param name="w">The actual width of the image.</param>
+            <remarks>The arguments to this method are not used.</remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.WriteMetafile(System.Drawing.Image,System.Drawing.Size)">
+            <summary>
+            Writes the specified metafile's binary data to the RTF output with the pict/emf header and the data.
+            </summary>
+            <param name="img">The image that should outputted to RTF as a metafile.</param>
+            <param name="goalSizeInTwips">The width of the iamge in the outputted RTF.</param>
+            <remarks>This is more like the c++ WriteMeta than Metafile. If you review the old code the C++ WriteMetafile did allot of calculating to determine width and height in various units, and pass those units to GenMetaFileHeader, and GenMetafileHeader did not use the arguments. So it was kinda wasteful.</remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.StreamFromImage(System.Drawing.Image,System.Drawing.Imaging.EmfType,System.Drawing.Graphics)">
+            <summary>
+            Creates a MemoryStream containing the specified type of EMF data and returns that stream.  
+            The resultant stream will contain only the metafile data.
+            </summary>
+            <param name="img"></param>
+            <param name="metafileType">
+            Use EmfType.EmfOnly for GDI or Win32 compatable metafile data.
+            Other EmfTypes might only be decodable by GDI+ / .NET.
+            </param>
+            <param name="aGraphics">
+            This is a graphics that will be used to construct a Metafile instance. 
+            It will NOT be disposed.  
+            Caller is responsable for calling the Dispose() method on the supplied graphics.
+            </param>
+            <returns>
+            A memory Stream containing the graphics.
+            </returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.StreamFromImage(System.IO.MemoryStream,System.Drawing.Image,System.Drawing.Imaging.EmfType,System.Drawing.Graphics)">
+            <summary>
+            Overload to handle rtf expot for images. Only diff being the fact that i pass in a stream for metafile construction.
+            </summary>
+            <param name="memStream"></param>
+            <param name="img"></param>
+            <param name="metafileType"></param>
+            <param name="aGraphics"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.WritePng(System.Drawing.Image)">
+            <summary>
+            Writes the specified image to the rtf output in the PNG format.
+            </summary>
+            <param name="image"></param>
+            <remarks>NOT IMPLEMENTED.</remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.ToString">
+            <summary>
+            Returns a string of the rtf data.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.ToStringBuilder">
+            <summary>
+            Returns the underlying StringBuilder containing the raw RTF data.
+            </summary>
+            <returns>
+            A <see cref="T:System.Text.StringBuilder"/> containing the raw RTF data.  
+            </returns>
+            <remarks>
+            If you make further calls to methods on this class they will use the returned StringBuilder. So be careful with it.
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.OutputText(System.String)">
+            <summary>
+            Escapes {, }, \ and character points above 128dec (non ascii).
+            </summary>
+            <param name="text"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.OutputFont(System.Int32)">
+            <summary>
+            Outputs font information for the font at the specified index.
+            Essentially it selects a font for the upcoming text.
+            </summary>
+            <param name="fontIndex"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.OutputTextRaw(System.String)">
+            <summary>
+            Outputs the specified text without escaping any special RTF characters and all text is assumed 7 bit ASCII.
+            This is useful if you ever want to output RTF control codes manually outside of this class.
+            </summary>
+            <param name="rawAsciiText"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.OutputTextRaw(System.Char)">
+            <summary>
+            Outputs the specified character without escaping any special RTF characters and the character is assumed 7 bit ASCII.
+            This is useful if you ever want to output RTF control codes manually outside of this class.
+            </summary>
+            <param name="rawAsciiChar">The character to be directly outputted with no escaping or conversion.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.Win32CharSet">
+            <summary>
+            Enumeration of Win32 Charsets from the wingdi.h PSDK header.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.Win32CodePageDefault">
+            <summary>
+            Default code page values from the winnls.h PSDK header.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.GetCharSetFromCodePage(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="codePage"></param>
+            <returns>The characterset coorisponding to the specified codepage.</returns>
+            <remarks>
+            This function was created by basically creating the inverse of the GetCodePageFromCharSet function found in AR2 code.
+            This return value can be cast directly to int.
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.GenIntableControlWord">
+            <summary>
+            Writes/Appends \intbl control word
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.GenSPValue(System.String,System.Int32)">
+            <summary>
+            does {\sp{\sn shapeType}{\sv 202}}
+            </summary>
+            <param name="snValue"></param>
+            <param name="svValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.GenSHPINSTValue(GrapeCity.ActiveReports.Export.Word.Section.Shpinst,GrapeCity.ActiveReports.Export.Word.Section.SpDetail)">
+            <summary>
+            does \shpleft1440 \shptop-489\shpright1800\shpbottom0\shpfhdr0\shpbxcolumn\shpbxignore
+            \shpbypara\shpbyignore\shpwr3\shpwrk0\shpfblwtxt0\shpz0\shplid1026
+            </summary>
+            <param name="s"></param>
+            <param name="sp"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfHelper.GenSpacingControlWords(System.Single,System.Single)">
+            <summary>
+            \expndN : 
+            \expndtwN
+            </summary>
+            <param name="charSpacing">in inch</param>
+            <param name="lineSpacing">in inch</param>
+            <returns></returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.MarginInfo">
+            <summary>
+            Holds the margins for the RTF document.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.MarginInfo.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Initialies a new instance of the MarginInfo class with the specified initial values.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.MarginInfo.Top">
+            <summary>
+            Sets or returns the top margin value.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.MarginInfo.Left">
+            <summary>
+            Sets or returns the left margin value.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.MarginInfo.Right">
+            <summary>
+            Sets or returns the right margin value.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Section.MarginInfo.Bottom">
+            <summary>
+            Sets or returns the bottom margin value.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper">
+            <summary>
+            Writes RTF table codes.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.#ctor(GrapeCity.ActiveReports.Document.Section.Table,GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage,GrapeCity.ActiveReports.Export.Word.Section.RtfExport,GrapeCity.ActiveReports.Export.Word.Section.RtfHelper,System.Drawing.PointF)">
+            <summary>
+            Constructs table helper with table -> from canvasItem, page-> page containg the table
+            rtfExport-> the current export, rtfhelper-> helper from rtfExport 
+            offSet -> tables offSet in the page.
+            </summary>
+            <param name="table"></param>
+            <param name="page"></param>
+            <param name="rtfExport"></param>
+            <param name="rtfHelper"></param>
+            <param name="offSet"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.GetRowColumnCount">
+            <summary>
+            Computes the layout of table based on row spans of the cell.
+            1. Populates a 2 dimensional int[,] with size = [rowCount,maxCellCount], 
+            where maxCellCount = MAx(number of cells in all the rows)
+            2. Then,
+            if the cell is where the merge BEGINS, sets the value[rowIndex,colIndex] = 1
+            if the cell is a merged cell, sets the value[rowIndex,colIndex] = -1
+            if the cell.rowspan = 1, sets the value[rowIndex,colIndex] = 0, 
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.Render(GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Renders the table, goes thru all the rows in a table and renders the table for rtf output
+            </summary>		
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.RenderRow(GrapeCity.ActiveReports.Core.Document.DDLib.Table.Row,System.Int32,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Renders the row; Generates the content of the cell;
+            The loop runs thru the int[,] of rows and cells.
+            and based on the value@[rowIndex,colIndex], genrated the rtf codes. 
+            see <see cref="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.GetRowColumnCount"/>
+            </summary>
+            <param name="row"></param>
+            <param name="rowIndex"></param>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.docFontsCount">
+            <summary>
+            initial count of fonts from the document
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.RenderCell(GrapeCity.ActiveReports.Core.Document.DDLib.Table.ITableCell,System.Int32,System.Int32,GrapeCity.ActiveReports.Core.Document.IImagePersistenceService)">
+            <summary>
+            Renders the cell; Generates the content of the cell; the codes are ouputted to rtfHelper of the export
+            </summary>
+            <param name="cell"></param>
+            <param name="rowIndex"></param>
+            <param name="cellIndex"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.BuildCellFonts(System.Collections.ArrayList)">
+            <summary>
+            Builds fonts from cell and update teh helper fontList, and teh indexes
+            </summary>
+            <param name="fonts"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.RemoveCellFonts">
+            <summary>
+            Remove the cell fonts added to the helper's fontslist
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.WriteCellAlignment(GrapeCity.ActiveReports.Core.Document.DDLib.Table.ITableCell)">
+            <summary>
+            writes Cell Alignment
+            </summary>
+            <param name="cell"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.InitRowRtf(GrapeCity.ActiveReports.Core.Document.DDLib.Table.Row,System.Int32)">
+            <summary>
+            Inits the rtf per row
+            this method runs thru all the cells and outputs the cell and row info for the row. 
+            Note: i dont need contents of the cell as yet.
+            follows the same logic as in this.RenderRow() method
+            </summary>
+            <param name="row">Current row</param>
+            <param name="rowIndex">Curretn row index</param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.BeginWriteRowRtf">
+            <summary>
+            Begins the rtf for row, all the info for the row is comin from the table and its attributes
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.EndWriteRowRtf">
+            <summary>
+            Ends the rtf for row
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.BeginWriteCellRtf(GrapeCity.ActiveReports.Core.Document.DDLib.Table.ITableCell,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Writes the rtf for a cell
+            </summary>
+            <param name="cell">current cell; can be an actual cell, or a merged cell)</param>
+            <param name="rowIndex">row index</param>
+            <param name="cellIndex">cell index</param>
+            <param name="isFakeCell">true, if the cell is a merged cell</param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.EndWriteCellRtf">
+            <summary>
+            Ends the cell
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.GetMergeCellRowIndex(System.Int32,System.Int32)">
+            <summary>
+            Gets the cell index where the merge started; 
+            looks for this._rowColspans[row, col ] == 1, in the same column of the cell.
+            </summary>
+            <param name="rowIndex"></param>
+            <param name="colIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.GetBorderInfo(GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.TLBR,GrapeCity.ActiveReports.Border,System.Boolean)">
+            <summary>
+            Gets the rtf control words for border 
+            I need to figure out the border color, style and width
+            </summary>
+            <param name="tlbr">enum for top, left, bottom, right</param>
+            <param name="border"></param>
+            <param name="isCell"></param>
+            <returns>string containg rtfcontrol words with border info</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.GetBorderStyle(GrapeCity.ActiveReports.BorderLineStyle)">
+            <summary>
+            gets the border styles from the bordeLineStyles
+            </summary>
+            <param name="borderLineStyle"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.GetRowHeight(System.Int32)">
+            <summary>
+            Gets the height of the row;
+            TODO: this needs some thinkin , i think
+            </summary>
+            <param name="rowIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.GetRtfBorderWidth(System.Int32)">
+            <summary>
+            Return the rtf value from our values of border thicknes.
+            </summary>
+            <param name="val">value in twips of the border thickness as obtained from OUR border</param>
+            <returns></returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.RtfTableHelper.TLBR">
+            <summary>
+            Enum for Top, left, bottom Right
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Section.Span">
+            <summary>
+            Used as a logical vertical span of intersecting items in the layout algorithm.  
+            It is a vertical span that no horizontal gaps between PageObjects occur in.
+            It is a raw port of c++.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.Span.GetPageObject(System.Int32)">
+            <summary>
+            Returns the PageObject at the specified index in <see cref="F:GrapeCity.ActiveReports.Export.Word.Section.Span.objects"/>.
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Section.Span.sortPageObjectsBottmDescending">
+            <summary>
+            Sorts the PageObject elements in <see cref="F:GrapeCity.ActiveReports.Export.Word.Section.Span.objects"/> by their BOTTOM value in descending order.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.AR.RtfResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.AR.RtfResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.AR.RtfResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.AR.RtfResources.ArgumentCannotBeEmpty">
+            <summary>
+              Looks up a localized string similar to Argument cannot be empty..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.AR.RtfResources.BadRelativePath">
+            <summary>
+              Looks up a localized string similar to There was a problem converting the specified file path to an absolute file path..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.AR.RtfResources.CreatedBy">
+            <summary>
+              Looks up a localized string similar to Created by GrapeCity, inc..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.AR.RtfResources.Description_RtfExport">
+            <summary>
+              Looks up a localized string similar to ActiveReports Rich Text Format (RTF) Export Component.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.AR.RtfResources.ErrorPreparingDocument">
+            <summary>
+              Looks up a localized string similar to An unexpected error occurred preparing the Document object for export..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.AR.RtfResources.ErrorUnexpectedCommon">
+            <summary>
+              Looks up a localized string similar to An unexpected error has occurred in while exporting the specified document.  Additional information. Please see the inner exception for additional information..
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.AR.RtfResources.NoPages">
+            <summary>
+              Looks up a localized string similar to The document contains no pages to export..
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.AssemblyResources.Resources">
+            <summary>
+            Provides assembly resources to the containing assembly.
+            </summary>
+            <remarks>
+            The most common use of this class is to provide localized string resources for exception messages and other messages displayed to the user.
+            </remarks>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Page.AssemblyResources.Resources._stringsManager">
+            <summary>
+            Use the <see cref="P:GrapeCity.ActiveReports.Export.Word.Page.AssemblyResources.Resources.StringsManager"/> property.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.AssemblyResources.Resources.#ctor">
+            <summary>
+            Prevents external callers from creating instances of this class.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.AssemblyResources.Resources.StringsManager">
+            <summary>
+            Returns the resource manager that string values are stored in.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.AssemblyResources.Resources.GetString(GrapeCity.ActiveReports.Export.Word.Page.AssemblyResources.ResourceKey)">
+            <summary>
+            Returns the string resource identified by the specified key.
+            </summary>
+            <param name="key">The <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.AssemblyResources.ResourceKey"/> to use to obtain the resource.</param>
+            <returns>The string resource.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.AssemblyResources.Resources.GetString(GrapeCity.ActiveReports.Export.Word.Page.AssemblyResources.ResourceKey,System.Object[])">
+            <summary>
+            Returns the formatted string resource identified by the specified key.
+            </summary>
+            <param name="key">The <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.AssemblyResources.ResourceKey"/> to use to obtain the resource.</param>
+            <param name="args">Any arguments that the string resource is expecting (resource string values should be fitted with one or more "{n}" format specifier place holder(s)).</param>
+            <returns>The formatted string resource.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.AssemblyResources.ResourceKey">
+            <summary>
+            Defines the keys used to return resources.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ChartRenderer">
+            <summary>
+            Renders chart report item.
+            </summary>
+            <remarks>Chart report item is converted to image and rendered the same way</remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ChartRenderer.Render(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Renders specified <see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> using specified <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter"/>.
+            </summary>
+            <param name="item"><see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> to render.</param>
+            <param name="context">Rendering context.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Renderers.CheckBoxRenderer">
+            <summary>
+            Represents checkbox RI renderer
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ContainerRenderer">
+            <summary>
+            Renderer for composite report items - rectangle, list, matrix, banded list.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ContainerRenderer.Render(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Renders composite report item to word output.
+            </summary>
+            <param name="item"><see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> of composite report item to render.</param>
+            <param name="context">The current report context.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Renderers.FormattedTextRenderer">
+            <summary>
+            Renderer of formattedtext report item.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Renderers.HeaderFooterRenderer">
+            <summary>
+            Creates page headers and footers definition.
+            </summary>
+            <remarks>
+            Saving document to web page(not single), Word creates new file and dumps header and footer
+            styles and content to it. This class responsibility is doing the same based on report layout.
+            </remarks>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Renderers.HeaderFooterRenderer.HeaderFooterExists">
+            <summary>
+            Gets value indicates that there is page header/footer to render;
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.HeaderFooterRenderer.#ctor(GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Allows internal consumers(WordRenderingExtension) to initialize new instance.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.HeaderFooterRenderer.CreateHeaderFooterDefinition(GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Dumps header and footer information to the file.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ImageRenderer">
+            <summary>
+            Renderers Image report item to output word html document.
+            </summary>
+            <remarks>
+            Word causes the following limitation to image rendering due to use VML:
+            1. This is not possible to specify border settings for left, top, right, bottom borders. Only single border style can be used.
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ImageRenderer.Render(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Renders specified <see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> using specified <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter"/>.
+            </summary>
+            <param name="item"><see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> to render.</param>
+            <param name="context">Word renderer context.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ImageRenderer.RenderImage(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Extensibility.Rendering.ImageInfo,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext,System.Boolean)">
+            <summary>
+            Allows chart renderer to render chart as image.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Renderers.LineRenderer">
+            <summary>
+            Renderer of line report item to word output format.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.LineRenderer.Render(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Renders specified <see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> using specified <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter"/>.
+            </summary>
+            <param name="item"><see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> to render.</param>
+            <param name="context">Rendering context.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.RenderersFactory.GetRenderer(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.PageReportModel.TargetDeviceKind)">
+            <summary>
+            Returns appropriate renderer for given report item.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemImageRenderer">
+            <summary>
+            Renders an image representation of an report item.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemImageRenderer.Render(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Renders specified <see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> using specified <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter"/>.
+            </summary>
+            <param name="layoutArea"><see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> to render.</param>
+            <param name="context">Rendering context.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer">
+            <summary>
+            Base abstract class for report items renderers.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer.GetReportItem(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea)">
+            <summary>
+            The common method for report items renderers. 
+            Return <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReportItem"/> of rendered layout area.
+            </summary>
+            <param name="area"><see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> to render.</param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer.GetLocationStyle(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Gets the location style string for specified layout area.
+            </summary>
+            <param name="layoutArea"><see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> to get context for.</param>
+            <param name="context">The current rendering context.</param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer.GetLocationStyle(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext,System.Single,System.Single)">
+            <summary>
+            Gets the location style string for specified layout area, with an adjustment.
+            </summary>
+            <param name="layoutArea"><see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> to get context for.</param>
+            <param name="context">The current rendering context.</param>
+            <param name="offsetX">Horizontal adjustment.</param>
+            <param name="offsetY">Vertical adjustment.</param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer.GetSizeStyle(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,System.Nullable{System.Single})">
+            <summary>
+            Gets the size style string for specified layout area.
+            </summary>
+            <param name="layoutArea"><see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> to get context for.</param>
+            <param name="borderWidthInPoints"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer.RenderBackgroundImage(System.String,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Renders background image info for specified layout area to specified context.
+            </summary>
+            <param name="imgKey"></param>
+            <param name="layoutArea"></param>
+            <param name="context"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer.RenderContainer(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext,System.String,System.Boolean)">
+            <summary>
+            Renders rectangle, list, subreport, banded list, etc.
+            </summary>
+            <param name="layoutArea"></param>
+            <param name="context"></param>
+            <param name="internalContent">Content to insert to container. Used for rendering of formattedtext exclusively.</param>
+            <param name="renderStyle">Indicates whether render the style of "container report item or not". In the case ListContent rendered, we do not need to write it's style. This is virtual report item.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer.GetTableStyle(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.TableItem,System.Single@)">
+            <summary>
+            Gets the common style of table and matrix report items - they are rendered to table item in word document.
+            </summary>
+            <param name="area"></param>
+            <param name="tableItem"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer.GetTextJustifyValue(System.String)">
+            <summary>
+            Gets the proper css value for the text justify style.
+            </summary>
+            <param name="textJustify">the text decoration string to transform</param>
+            <returns>the css text decoration value.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer.GetFontLineSpacing(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IStyle)">
+            <summary>
+            Get default line spacing for a font. In points.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer.WriteTocBookmark(GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea)">
+            <summary>
+            Write the toc bookmark in place.
+            This version preserves old format with self-closed span tag.
+            </summary>
+            <param name="context">Rendering context</param>
+            <param name="layoutArea">Layout area for which bookmark should be written</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer.WriteTocBookmark(GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,System.Boolean)">
+            <summary>
+            HACK version of writing bookmark, which allow to specify how to render span
+            tag with bookmark style. The possible ways are self-closed tag and full tag
+            (i.e. opening and closing tags). This is needed since bookmarks with 
+            self-closed tags do not work in containers.
+            </summary>
+            <param name="context">Rendering context</param>
+            <param name="layoutArea">Layout area for which bookmark should be written</param>
+            <param name="forceFullTag">Forces the function to use full tag instead of self-closed</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer.WrapAndExecuteAction(GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext,System.String,System.Action{GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext})">
+            <summary>
+            Create wrapping with specified tag and execute action, which write the content
+            into wrapper tag.
+            </summary>
+            <param name="context">Rendering context</param>
+            <param name="wrapperTag">Tag which wraps the content</param>
+            <param name="contentWriter">Action, performing writing of the content</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.ReportItemRenderer.Render(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Renders specified <see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> using specified <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter"/>.
+            </summary>
+            <param name="layoutArea"><see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> to render.</param>
+            <param name="context">Rendering context.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Renderers.TableRenderer">
+            <summary>
+            Renders table report item to the Word document.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.TableRenderer.GetRowHeightFromMinSpan(GrapeCity.ActiveReports.Extensibility.Layout.IGrid,System.Int32,System.Collections.Generic.HashSet{GrapeCity.ActiveReports.Export.Word.Page.Renderers.TableRenderer.CellCoordinate})">
+            <summary>
+            Get specified row height of matrix with row spans.
+            </summary>
+            <param name="grid">Matrix item.</param>
+            <param name="rowIndex">Row index</param>
+            <returns>Row height, in twips.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Renderers.TextBoxRenderer">
+            <summary>
+            Renderer of textbox report item to Word document.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Renderers.TextBoxRenderer.Id">
+            <summary>
+            Gets Id of currently rendered textbox shape.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.TextBoxRenderer.Render(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Renders specified <see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> using specified <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter"/>.
+            </summary>
+            <param name="layoutArea"><see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> to render.</param>
+            <param name="context">Rendering context.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.TextBoxRenderer.RenderWithId(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext,System.String)">
+            <summary>
+            Renders given textBox with given id.
+            </summary>
+            <param name="layoutArea"></param>
+            <param name="context"></param>
+            <param name="id"></param>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Page.Renderers.TextBoxRenderer.UseLinkStyle">
+            <summary>
+            If false, the link text color will be as simple text color.
+            If true, the link color will be as true link (blue, underlined etc...)
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.TextBoxRenderer.GetNearestAngle(System.Single)">
+            <summary>
+            Returns a Word supported angle based on an angle value that could be negative or positive.
+            </summary>
+            <remarks>Word only supports 0, 90 and 270 degree rotation. 180 is treated as 0 since
+            both are horizontal.</remarks>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Renderers.WordRenderer">
+            <summary>
+            'Root' renderer of word rendering extension.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.WordRenderer.#ctor(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider,GrapeCity.ActiveReports.Export.Word.Page.Settings,GrapeCity.ActiveReports.Extensibility.Rendering.IRenderersFactory,GrapeCity.ActiveReports.Drawing.ITextMetricsProvider)">
+            <summary>
+            Allows internal callers to initialize the instance of class.
+            </summary>
+            <param name="report">A <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport"/> to render.</param>
+            <param name="streams"><see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider"/> to render report to.</param>
+            <param name="wordSettings"><see cref="T:GrapeCity.ActiveReports.Export.Word.Page.Settings"/> of rendering settings.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.WordRenderer.Render">
+            <summary>
+            Renders report layout to output stream.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Renderers.WordRenderer.RenderEval(System.Single,System.Single,System.String,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter)">
+            <summary>
+            Adds the eval banner div section to a report at the specified location
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Settings">
+            <summary>
+            <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.ISettings"/> implementation for Word Rendering Extension. 
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.SecuritySettings">
+            <summary>
+            Gets or sets the settings of document encryption and security.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.PageSettings">
+            <summary>
+            Gets or sets the settings of page size and orientation.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.CompanyName">
+            <summary>
+            Gets or sets the company name used for exported file document properties.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.TOCAutoUpdate">
+            <summary>
+            If true in the document will be  inserted macros that automatically updates ToC control on opening.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.DocumentCompatibilityVersion">
+            <summary>
+            Gets or sets the word version which should open the exported document.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.DpiX">
+            <summary>
+            Adjust the horizontal resolution of custom report items. The default value is 96.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.DpiY">
+            <summary>
+            Adjust the vertical resolution of custom report items. The default value is 96.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.FileFormat">
+            <summary>
+            Indicates whether to use WordHtml or OpenXml format for the output file. WordHtml is default.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.WebViewer">
+            <summary>
+            Indicates whether WordRe is invoked by WebViewer.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.Author">
+            <summary>
+            Gets or sets the name of the author of document.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.Generator">
+            <summary>
+            Gets or sets identity of the generator of the document.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.Title">
+            <summary>
+            Gets or sets the title of the document.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.PageWidth">
+            <summary>
+            Gets or sets the width of the page of rendered document. 
+            Value corresponds to values passed in <see cref="T:GrapeCity.ActiveReports.PageReportModel.Length"/> class("8.5in", "11cm", etc.).
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.PageHeight">
+            <summary>
+            Gets or sets the height of the page of rendered document. 
+            Value corresponds to values passed in <see cref="T:GrapeCity.ActiveReports.PageReportModel.Length"/> class("8.5in", "11cm", etc.).
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.BaseUrl">
+            <summary>
+            Gets or sets the base Url used for hyperlinks on the document.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Settings.UseMhtOutput">
+            <summary>
+            Gets or sets the value indicates should Mht output be used for resulted word document or not.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Settings.#ctor(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Allows internal consumers to initialize new instance the class passing 
+            settings values via NameValueCollection.
+            </summary>
+            <param name="settings"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Settings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.Settings"/> class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Settings.SerializeSettings">
+            <summary>
+            Gets <see cref="T:System.Collections.Specialized.NameValueCollection"/> of the settings of the class instance.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Settings.DeserializeSettings(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Sets values of the class instance properties using values passed via <see cref="T:System.Collections.Specialized.NameValueCollection"/>.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Settings.op_Implicit(GrapeCity.ActiveReports.Export.Word.Page.Settings)~System.Collections.Specialized.NameValueCollection">
+            <summary>
+            Performs an implicit conversion from <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.Settings"/> to <see cref="T:System.Collections.Specialized.NameValueCollection"/>.
+            </summary>
+            <param name="settings">The settings.</param>
+            <returns>The result of the conversion.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.FileFormat">
+            <summary>
+            Specifies the output format of Word document.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Page.FileFormat.HTML">
+            <summary>
+            Word html format.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Page.FileFormat.OOXML">
+            <summary>
+            Word Open XML format.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.DocumentCompatibilityVersion">
+            <summary>
+            Specifies whe word document compatibility version
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Page.DocumentCompatibilityVersion.Word2007">
+            <summary>
+            Word 2007
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Page.DocumentCompatibilityVersion.Word2010">
+            <summary>
+            Word 2010
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Page.DocumentCompatibilityVersion.Word2013">
+            <summary>
+            Word 2013
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.WordSettingsConverter">
+            <summary>
+            Type converter for Word settings. Shows\Hides various properties depending on report type.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.Constants">
+            <summary>
+            Provides various constants values for internal callers.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.DocumentNamespaces">
+            <summary>
+            Provides list of namespaces should be set for output Word HTML document.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.DocumentProperties">
+            <summary>
+            Provides list of document properties should be written to output HTML document.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.ImageManager">
+            <summary>
+            This class manages a lookup between image keys and src IDs so multiple images will not be saved.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.ImageManager.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.ImageManager"/> class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.ImageManager.GetBackgroundImageKey(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Gets an image from the layoutArea and creates a seconday stream for it. The images key is returned.
+            If the image being asked for has already been created the the existing key is returned.
+            </summary>
+            <param name="layoutArea">The <see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea"/> containing the image</param>
+            <param name="context">The <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext"/> containing the shared information for rendering</param>
+            <returns>A string value representing key id for the image.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.ImageManager.GetResourceImageKey(System.String,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Gets an image from the AssemblyResources and creates a seconday stream for it. The images key is returned.
+            If the image being asked for has already been created the the existing key is returned.
+            </summary>
+            <param name="fileName">name of the resource in the AssemblyResources</param>
+            <param name="context">The <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext"/> containing the shared information for rendering</param>
+            <returns>A string value representing key id for the image.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.ImageManager.GetResource(System.String)">
+            <summary>
+            Gets the embedded resource from the assembly based off of the passed in filename 
+            </summary>
+            <param name="fileName">the simple file name of the resource to get.</param>
+            <returns>A Stream containing the resource requested.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.ImageManager.CreateImageKey(GrapeCity.ActiveReports.Extensibility.Rendering.ImageInfo)">
+            <summary>
+            Create new key by hash.
+            </summary>
+            <param name="drawImage">Image info</param>
+            <returns>New key.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.ImageManager.CacheImage(System.String,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext,GrapeCity.ActiveReports.Extensibility.Rendering.ImageInfo)">
+            <summary>
+            Cache image.
+            </summary>
+            <param name="key">Key.</param>
+            <param name="context">The <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext"/> for shared information.</param>
+            <param name="drawImage">The image to add to the secondary stream array.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.ImageManager.GetStreamInfo(GrapeCity.ActiveReports.Extensibility.Rendering.ImageInfo,GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider)">
+            <summary>
+            Get stream info.
+            </summary>
+            <param name="drawImage">The image to add to the secondary stream array.</param>
+            <param name="streamProvider">Stream provider</param>
+            <returns>Stream info.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.ImageManager.GetImageSrc(System.String)">
+            <summary>
+            Gets the relaive uri for the image based off of the key.
+            </summary>
+            <param name="key">The key for the image to look up.</param>
+            <returns>A string value for the relavie uri for the image stream.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.ImageManager.GetImageSize(System.String)">
+            <summary>
+            Gets the size of the image based off of the key. Allows for setting the imagesizing modes to clip.
+            </summary>
+            <param name="key">A string value representing the image key to look for.</param>
+            <returns>The <see cref="T:System.Drawing.Size"/> of the found image.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.ImageManager.SaveImage(GrapeCity.ActiveReports.Extensibility.Rendering.ImageInfo,System.String,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Saves image and returns image file name.
+            </summary>
+            <param name="image">Image to save.</param>
+            <param name="name">Image name to save.</param>
+            <param name="context">The current rendering context.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils">
+            <summary>
+            Provides helper methods for internal callers.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.None">
+            <summary>
+            string for empty values of styles attributes.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.ConvertStringToLength(System.String)">
+            <summary>
+            Converts specified string to <see cref="T:GrapeCity.ActiveReports.PageReportModel.Length"/> instance.
+            </summary>
+            <remarks>Returns null if <see cref="T:GrapeCity.ActiveReports.PageReportModel.Length"/> created from specified string is not valid.</remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.ObtainLayoutTree(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Extensibility.Layout.ITargetDevice,GrapeCity.ActiveReports.Drawing.ITextMetricsProvider)">
+            <summary>
+            Build layout of specified report applying specified settings.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.GetDashStyle(System.String,System.Boolean@,System.Boolean)">
+            <summary>
+            Gets VML border style from Stryker border style.
+            </summary>
+            <remarks>
+            VML does not support Groove, Ridge, Inset, Outset and WindowInset styles.
+            Solid style is used instead here.
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.GetFontWeight(System.String)">
+            <summary>
+            Returns HTML font weight value from it's name.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.GetCSSColor(System.String)">
+            <summary>
+            Gets #rrggbb color representation from it's name.
+            </summary>
+            <param name="colorName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.IsNoneOrEmpty(System.String)">
+            <summary>
+            returns true if given string equal to "none" or empty.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.GetContainerBackcolor(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea)">
+            <summary>
+            Gets the background color of container layout area.
+            </summary>
+            <param name="area"></param>
+            <returns></returns>
+            <remarks>Fix for CR#23257.</remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.GetActionLink(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IAction)">
+            <summary>
+            Returns empty string if the passed action is drillthrough,
+            returns hyperlink or bookmark link otherwise.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.GetZIndex(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext)">
+            <summary>
+            Gets ZIndex of specified layout area taking zIndex of parent components into account.
+            </summary>
+            <param name="layoutArea"></param>
+            <param name="context"></param>
+            <returns></returns>
+            <remarks>We use kind of hack here. Accomodate child over of parent. That's the only way to do it for Word.</remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.IsNumeric(System.Object)">
+            <summary>
+            Checks if the specified value is numeric
+            </summary>
+            <remarks>
+            This is different from VB IsNumeric, as we are not trying to convert
+            and byte, sbyte and boolean are not considered to be numeric
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.IsDate(System.Object)">
+            <summary>
+            Checks if the specified value data type is date/time
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.HtmlEncode(System.String,System.IO.TextWriter)">
+            <summary>
+            Encodes the specified string to be suitable for puttin into an HTML document. 
+            So that unicode characters and characters like &gt;, &lt;, and " are properly displayed in HTML browsers.
+            </summary>
+            <param name="s"></param>
+            <param name="output"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.Utils.IsZero(System.Double)">
+            <summary>
+            Check if a number is zero.
+            </summary>
+            <param name="value">The number to check.</param>
+            <returns>True if the number is zero, false otherwise.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.PageSize">
+            <summary>
+            Allows internal callers to get rendered page width and height values.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.TableItem">
+            <summary>
+            Represents the table entities.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Page.Tools.TableItem.Table">
+            <summary>
+            The table itself.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.Page.Tools.TableItem.Cell">
+            <summary>
+            The cell of the table.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter">
+            <summary>
+            Provides additional functionality to <see cref="T:System.Xml.XmlTextWriter"/> allowing to output WordHtml format specific tags.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.StartHtmlDocument">
+            <summary>
+            Writes beginning html tag with Word Html format required namespaces attributes.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.EndHtmlDocument">
+            <summary>
+            Writes ending html tag.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.StartHead">
+            <summary>
+            Writes beginning Head tag adding required meta tags.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.StartBody">
+            <summary>
+            Writes beginning Body tag.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.StartStyle">
+            <summary>
+            Writes beginning Style tag.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.StartDivTag(System.String,System.Boolean)">
+            <summary>
+            Writes beginning Div tag appending style attribute and optionaly close the tag.
+            </summary>
+            <param name="style">Style value to set attribute to.</param>
+            <param name="close">If true, close opening tag.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.WriteLink(System.String,System.String,System.String)">
+            <summary>
+            Writes tag like "link id=Main-File rel=Main-File href = "../MainFile.htm""
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.CloseTag">
+            <summary>
+            Closes opened tag and adds line break.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.EndTag">
+            <summary>
+            Writes " />" string to end the current tag.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.WriteStartIf(System.String)">
+            <summary>
+            Writes beginnig tag like "![if !condition]"
+            </summary>
+            <param name="condition"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.WriteEndIf">
+            <summary>
+            Writes end of if tag.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.WriteStyle(System.String)">
+            <summary>
+            Writes style attribute like style='style'
+            </summary>
+            <param name="style"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.WriteBeginShape">
+            <summary>
+            Opens shape tag;
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.WriteEndShape">
+            <summary>
+            Closes shape tag.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.WriteBookmark(System.String)">
+            <summary>
+            Writes anchor to output html document.
+            </summary>
+            <param name="bookmark">Anchor name.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.WriteBeginHref(System.String)">
+            <summary>
+            Writes hyperlink to output html document.
+            </summary>
+            <param name="href">hyperlink to write.</param>
+            <returns>false if hyperlink is empty and there is no need to close "a" tag.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.WriteEndHref">
+            <summary>
+            Closes hyperlink tag.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordHtmlWriter.EscapeCssString(System.String)">
+            <summary>
+            Escapes and quotes given string if needed.
+            </summary>
+            <param name="s">The string to escape.</param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext">
+            <summary>
+            Incapsulates rendering content.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext.StreamProvider">
+            <summary>
+            Gets <see cref="P:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext.StreamProvider"/> used to save rendered context.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext.WordHtmlWriter">
+            <summary>
+            Gets word html writer used while write output document.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext.WordSettings">
+            <summary>
+            Gets rendering settings.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext.Layout">
+            <summary>
+            Gets the layout of the rendered report.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext.ImageLocator">
+            <summary>
+            Gets the <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.IImageLocatorService"/>.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext.ImageManager">
+            <summary>
+            Gets the <see cref="P:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext.ImageManager"/> linked to this context.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext.ZIndexes">
+            <summary>
+            Returns the collection of the re-based z-indexes.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext.GetRelativeUri(System.Uri)">
+            <summary>
+            Gets a relative Uri based off of the primary stream's uri.
+            </summary>
+            <param name="toUri">The Uri to make relative</param>
+            <returns>A string value for the relative Uri.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordRendererContext.#ctor(GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider,GrapeCity.ActiveReports.Export.Word.Page.Settings,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutTree,GrapeCity.ActiveReports.Extensibility.Rendering.IRenderersFactory,GrapeCity.ActiveReports.Drawing.ITextMetricsProvider)">
+            <summary>
+            Allows internal callers to initialize the instance of class.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordTargetDevice">
+            <summary>
+            Represents features of Word Device.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordTargetDevice.#ctor(GrapeCity.ActiveReports.Export.Word.Page.Settings,GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport)">
+            <summary>
+            Allows internal callers to initialize new instance of the class.
+            </summary>
+            <param name="report">Rendered <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport"/>.</param>
+            <param name="settings"><see cref="T:System.Collections.Specialized.NameValueCollection"/> of the Word Rendering Extension settings.</param>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.Page.Tools.WordTargetDevice.Item(GrapeCity.ActiveReports.Extensibility.Layout.Features)">
+            <summary>
+            Gets <see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.DeviceCapabilities"/> for specified <see cref="T:GrapeCity.ActiveReports.Extensibility.Layout.Features"/>.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.Page.WordRenderingExtension">
+            <summary>
+            Implementes <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.IRenderingExtension" />. Allows to render <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport" /> to Word Html document.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.WordRenderingExtension.#ctor">
+            <summary>
+            Initializes a new instance of the WordRenderingExtension class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.WordRenderingExtension.Render(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider)">
+            <summary>
+            Renders specified <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReportItem" /> to specified <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider" /> in Word Html format.
+            </summary>
+            <param name="report">
+            <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReportItem" /> to render.</param>
+            <param name="streams">
+            <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider" /> render to.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.WordRenderingExtension.Render(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Renders specified <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReportItem" /> to specified <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider" /> in Word Html format using specified <see cref="T:System.Collections.Specialized.NameValueCollection" /> of settings.
+            </summary>
+            <param name="report">
+            <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReportItem" /> to render.</param>
+            <param name="streams">
+            <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider" /> render to.</param>
+            <param name="settings">
+            <see cref="T:System.Collections.Specialized.NameValueCollection" /> of rendering settings.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.WordRenderingExtension.GetSupportedSettings">
+            <summary>
+            Gets specific settings of <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.WordRenderingExtension" />.
+            </summary>
+            <returns>
+            <see cref="T:System.Collections.Specialized.NameValueCollection" /> of the settings.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.Page.WordRenderingExtension.GetSupportedSettings(System.Boolean)">
+            <summary>
+            Gets specific settings of <see cref="T:GrapeCity.ActiveReports.Export.Word.Page.WordRenderingExtension" />.
+            </summary>
+            <returns>
+            <see cref="T:System.Collections.Specialized.NameValueCollection" /> of the settings.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.WordPageSettings">
+            <summary>
+            Encapsulates the information necessary to provide word document print settings.
+            </summary>	
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.WordPageSettings.Orientation">
+            <summary>
+            Gets or sets the print orientation of Word doc.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSize">
+            <summary>
+            Gets or sets the print paper size of Word doc.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PageOrientation">
+            <summary>
+            Valid paper orientation values.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PageOrientation.Default">
+            <summary>
+            Default printer orientation.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PageOrientation.Portrait">
+            <summary>
+            Portrait orientation.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PageOrientation.Landscape">
+            <summary>
+            Landscape orientation.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes">
+            <summary>
+            Valid paper size values.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Default">
+            <summary>
+            The paper size is defined by the user.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Letter">
+            <summary>
+            Letter paper (8.5 in. by 11 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.LetterSmall">
+            <summary>
+            Letter small paper (8.5 in. by 11 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Tabloid">
+            <summary>
+            Tabloid paper (11 in. by 17 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Ledger">
+            <summary>
+            Ledger paper (17 in. by 11 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Legal">
+            <summary>
+            Legal paper (8.5 in. by 14 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Statement">
+            <summary>
+            Statement paper (5.5 in. by 8.5 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Executive">
+            <summary>
+            Executive paper (7.25 in. by 10.5 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A3">
+            <summary>
+            A3 paper (297 mm by 420 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A4">
+            <summary>
+            A4 paper (210 mm by 297 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A4Small">
+            <summary>
+            A4 small paper (210 mm by 297 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A5">
+            <summary>
+            A5 paper (148 mm by 210 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.B4">
+            <summary>
+            B4 paper (250 mm by 353 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.B5">
+            <summary>
+            B5 paper (176 mm by 250 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Folio">
+            <summary>
+            Folio paper (8.5 in. by 13 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Quarto">
+            <summary>
+            Quarto paper (215 mm by 275 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Standard10x14">
+            <summary>
+            Standard paper (10 in. by 14 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Standard11x17">
+            <summary>
+            Standard paper (11 in. by 17 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Note">
+            <summary>
+            Note paper (8.5 in. by 11 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Number9Envelope">
+            <summary>
+            #9 envelope (3.875 in. by 8.875 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Number10Envelope">
+            <summary>
+            #10 envelope (4.125 in. by 9.5 in.)
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Number11Envelope">
+            <summary>
+            #11 envelope (4.5 in. by 10.375 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Number12Envelope">
+            <summary>
+            #12 envelope (4.75 in. by 11 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Number14Envelope">
+            <summary>
+            #14 envelope (5 in. by 11.5 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.CSheet">
+            <summary>
+            C paper (17 in. by 22 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.DSheet">
+            <summary>
+            D paper (22 in. by 34 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.ESheet">
+            <summary>
+            E paper (34 in. by 44 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.DLEnvelope">
+            <summary>
+            DL envelope (110 mm by 220 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.C5Envelope">
+            <summary>
+            C5 envelope (162 mm by 229 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.C3Envelope">
+            <summary>
+            C3 envelope (324 mm by 458 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.C4Envelope">
+            <summary>
+            C4 envelope (229 mm by 324 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.C6Envelope">
+            <summary>
+            C6 envelope (114 mm by 162 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.C65Envelope">
+            <summary>
+            C65 envelope (114 mm by 229 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.B4Envelope">
+            <summary>
+            B4 envelope (250 mm by 353 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.B5Envelope">
+            <summary>
+            B5 envelope (176 mm by 250 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.B6Envelope">
+            <summary>
+            B6 envelope (176 mm by 125 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.ItalyEnvelope">
+            <summary>
+            Italy envelope (110 mm by 230 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.MonarchEnvelope">
+            <summary>
+            Monarch envelope (3.875 in. by 7.5 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PersonalEnvelope">
+            <summary>
+            6 3/4 envelope (3.625 in. by 6.5 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.USStandardFanfold">
+            <summary>
+            US standard fanfold (14.875 in. by 11 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.GermanStandardFanfold">
+            <summary>
+            German standard fanfold (8.5 in. by 12 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.GermanLegalFanfold">
+            <summary>
+            German legal fanfold (8.5 in. by 13 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.IsoB4">
+            <summary>
+            ISO B4 (250 mm by 353 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapanesePostcard">
+            <summary>
+            Japanese postcard (100 mm by 148 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Standard9x11">
+            <summary>
+            Standard paper (9 in. by 11 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Standard10x11">
+            <summary>
+            Standard paper (10 in. by 11 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Standard15x11">
+            <summary>
+            Standard paper (15 in. by 11 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.InviteEnvelope">
+            <summary>
+            Invitation envelope (220 mm by 220 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.LetterExtra">
+            <summary>
+            Letter extra paper (9.275 in. by 12 in.). This value is specific to the PostScript
+            driver and is used only by Linotronic printers in order to conserve paper.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.LegalExtra">
+            <summary>
+            Legal extra paper (9.275 in. by 15 in.). This value is specific to the PostScript
+            driver and is used only by Linotronic printers in order to conserve paper.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.TabloidExtra">
+            <summary>
+            Tabloid extra paper (11.69 in. by 18 in.). This value is specific to the
+            PostScript driver and is used only by Linotronic printers in order to conserve
+            paper.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A4Extra">
+            <summary>
+            A4 extra paper (236 mm by 322 mm). This value is specific to the PostScript
+            driver and is used only by Linotronic printers to help save paper.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.LetterTransverse">
+            <summary>
+            Letter transverse paper (8.275 in. by 11 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A4Transverse">
+            <summary>
+            A4 transverse paper (210 mm by 297 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.LetterExtraTransverse">
+            <summary>
+            Letter extra transverse paper (9.275 in. by 12 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.APlus">
+            <summary>
+            SuperA/SuperA/A4 paper (227 mm by 356 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.BPlus">
+            <summary>
+            SuperB/SuperB/A3 paper (305 mm by 487 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.LetterPlus">
+            <summary>
+            Letter plus paper (8.5 in. by 12.69 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A4Plus">
+            <summary>
+            A4 plus paper (210 mm by 330 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A5Transverse">
+            <summary>
+            A5 transverse paper (148 mm by 210 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.B5Transverse">
+            <summary>
+            JIS B5 transverse paper (182 mm by 257 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A3Extra">
+            <summary>
+            A3 extra paper (322 mm by 445 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A5Extra">
+            <summary>
+            A5 extra paper (174 mm by 235 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.B5Extra">
+            <summary>
+            ISO B5 extra paper (201 mm by 276 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A2">
+            <summary>
+            A2 paper (420 mm by 594 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A3Transverse">
+            <summary>
+            A3 transverse paper (297 mm by 420 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A3ExtraTransverse">
+            <summary>
+            A3 extra transverse paper (322 mm by 445 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapaneseDoublePostcard">
+            <summary>
+            Japanese double postcard (200 mm by 148 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A6">
+            <summary>
+            A6 paper (105 mm by 148 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapaneseEnvelopeKakuNumber2">
+            <summary>
+            Japanese Kaku #2 envelope.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapaneseEnvelopeKakuNumber3">
+            <summary>
+            Japanese Kaku #3 envelope.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapaneseEnvelopeChouNumber3">
+            <summary>
+            Japanese Chou #3 envelope.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapaneseEnvelopeChouNumber4">
+            <summary>
+            Japanese Chou #4 envelope.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.LetterRotated">
+            <summary>
+            Letter rotated paper (11 in. by 8.5 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A3Rotated">
+            <summary>
+            A3 rotated paper (420 mm by 297 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A4Rotated">
+            <summary>
+            A4 rotated paper (297 mm by 210 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A5Rotated">
+            <summary>
+            A5 rotated paper (210 mm by 148 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.B4JisRotated">
+            <summary>
+            JIS B4 rotated paper (364 mm by 257 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.B5JisRotated">
+            <summary>
+            JIS B5 rotated paper (257 mm by 182 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapanesePostcardRotated">
+            <summary>
+            Japanese rotated postcard (148 mm by 100 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapaneseDoublePostcardRotated">
+            <summary>
+            Japanese rotated double postcard (148 mm by 200 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.A6Rotated">
+            <summary>
+            A6 rotated paper (148 mm by 105 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapaneseEnvelopeKakuNumber2Rotated">
+            <summary>
+            Japanese rotated Kaku #2 envelope.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapaneseEnvelopeKakuNumber3Rotated">
+            <summary>
+            Japanese rotated Kaku #3 envelope.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapaneseEnvelopeChouNumber3Rotated">
+            <summary>
+            Japanese rotated Chou #3 envelope.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapaneseEnvelopeChouNumber4Rotated">
+            <summary>
+            Japanese rotated Chou #4 envelope.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.B6Jis">
+            <summary>
+            JIS B6 paper (128 mm by 182 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.B6JisRotated">
+            <summary>
+            JIS B6 rotated paper (182 mm by 128 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Standard12x11">
+            <summary>
+            Standard paper (12 in. by 11 in.).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapaneseEnvelopeYouNumber4">
+            <summary>
+            Japanese You #4 envelope.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.JapaneseEnvelopeYouNumber4Rotated">
+            <summary>
+            Japanese You #4 rotated envelope.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Prc16K">
+            <summary>
+            People's Republic of China 16K paper (146 mm by 215 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Prc32K">
+            <summary>
+            People's Republic of China 32K paper (97 mm by 151 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Prc32KBig">
+            <summary>
+            People's Republic of China 32K big paper (97 mm by 151 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber1">
+            <summary>
+            People's Republic of China #1 envelope (102 mm by 165 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber2">
+            <summary>
+            People's Republic of China #2 envelope (102 mm by 176 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber3">
+            <summary>
+            People's Republic of China #3 envelope (125 mm by 176 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber4">
+            <summary>
+            People's Republic of China #4 envelope (110 mm by 208 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber5">
+            <summary>
+            People's Republic of China #5 envelope (110 mm by 220 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber6">
+            <summary>
+            People's Republic of China #6 envelope (120 mm by 230 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber7">
+            <summary>
+            People's Republic of China #7 envelope (160 mm by 230 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber8">
+            <summary>
+            People's Republic of China #8 envelope (120 mm by 309 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber9">
+            <summary>
+            People's Republic of China #9 envelope (229 mm by 324 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber10">
+            <summary>
+            People's Republic of China #10 envelope (324 mm by 458 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Prc16KRotated">
+            <summary>
+            People's Republic of China 16K rotated paper (146 mm by 215 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Prc32KRotated">
+            <summary>
+            People's Republic of China 32K rotated paper (97 mm by 151 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.Prc32KBigRotated">
+            <summary>
+            People's Republic of China 32K big rotated paper (97 mm by 151 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber1Rotated">
+            <summary>
+            People's Republic of China #1 rotated envelope (165 mm by 102 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber2Rotated">
+            <summary>
+            People's Republic of China #2 rotated envelope (176 mm by 102 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber3Rotated">
+            <summary>
+            People's Republic of China #3 rotated envelope (176 mm by 125 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber4Rotated">
+            <summary>
+            People's Republic of China #4 rotated envelope (208 mm by 110 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber5Rotated">
+            <summary>
+            People's Republic of China Envelope #5 rotated envelope (220 mm by 110 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber6Rotated">
+            <summary>
+            People's Republic of China #6 rotated envelope (230 mm by 120 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber7Rotated">
+            <summary>
+            People's Republic of China #7 rotated envelope (230 mm by 160 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber8Rotated">
+            <summary>
+            People's Republic of China #8 rotated envelope (309 mm by 120 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber9Rotated">
+            <summary>
+            People's Republic of China #9 rotated envelope (324 mm by 229 mm).
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Word.WordPageSettings.PaperSizes.PrcEnvelopeNumber10Rotated">
+            <summary>
+            People's Republic of China #10 rotated envelope (458 mm by 324 mm).
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.WordPageSettings.ToString">
+            <summary>
+            Returns a <see cref="T:System.String" /> that represents this instance.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Word.WordSecurity">
+            <summary>
+            Provides the word security settings.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.WordSecurity.WritePassword">
+            <summary>
+            Gets or sets the password to be required to edit the document.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.WordSecurity.Password">
+            <summary>
+            Gets or sets the password which can be entered to permit to open Word document.
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Word.WordSecurity.ReadOnlyRecommended">
+            <summary>
+            When set to true, Word will recommend opening the document in read-only mode.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Word.WordSecurity.ToString">
+            <summary>
+            Returns a <see cref="T:System.String" /> that represents this instance.
+            </summary>
+        </member>
+        <member name="T:DataDynamics.Diagnostics.InternalTracer">
+            <summary>
+            Provides a common way to trace messages that do not show up easily to our users.
+            Support personel or the developer can use the TraceSwitch in a config file (web.config for exe config) to turn tracing on and off.
+            </summary>
+        </member>
+        <member name="F:DataDynamics.Diagnostics.InternalTracer.traceSwitchString">
+            <summary>
+            Put this string in a config file under configuration\system.diagnostics\switches\add to turn on tracing.
+            Then add a listenter under configuration\system.diagnostics\trace\listeners.
+            </summary>
+        </member>
+        <member name="F:DataDynamics.Diagnostics.InternalTracer.tracingSwitch">
+            <summary>
+            Used with this class's LogMessage method to indicate if tracing is turned on or not. 
+            I'm using guid strings to keep prying eyes from understanding what's going on, and an attempt ot prevent users from easily turning tracing on.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.Diagnostics.InternalTracer.Trace(System.String)">
+            <summary>
+            Provides tracing when defined appropriately in an application configuration file.
+            </summary>
+            <param name="message">The trace message to be written to a trace listener.</param>
+            <remarks>
+            This could be used with support and an appropriate app.config file to implement tracing when output is messed up for unknown reasons.
+            I've applied these debugger attributes to it to attempt to keep it out of call stacks and debuggers stepping though it.
+            If this method is found to be a sevear performance hinderence (presumably via profiling), then we should be able to uncomment the ConditionalAttribute below and only have it included in DEBUG builds only.
+            </remarks>
+        </member>
+        <member name="M:DataDynamics.Diagnostics.InternalTracer.Trace(System.String,System.Object[])">
+            <summary>
+            Provides tracing with string.format like capabilities.
+            </summary>
+        </member>
+        <member name="T:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils">
+            <summary>
+            Provides utility functions useful when parsing CanvasItem records in a Canvas/Page.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.AreBoundsClose(System.Drawing.RectangleF,System.Drawing.RectangleF)">
+            <summary>
+            Returns true if the bounds are within 1000'th of an inch of each other.
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.OutsideRect(System.Drawing.RectangleF,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Returns true if element is entirely outside rectangle. False if inside or intersecting.
+            </summary>
+            <param name="pcr">Clip rect.</param>
+            <param name="elementX">x coordinate for element.</param>
+            <param name="elementY">y coordinate for element.</param>
+            <param name="elementWidth">width for element.</param>
+            <param name="elementHeight">height for element.</param>
+            <returns>True if element is entirely outside rectangle, otherwise returns false.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.InsideRect(System.Drawing.RectangleF,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Returns true if the specified element is entirely inside the specified rectangle (or exactly the same bounds); false if outside or intersecting.
+            </summary>
+            <param name="pcr">Clip rect</param>
+            <param name="x">Line x coordinate.</param>
+            <param name="y">Line y coordinate.</param>
+            <param name="w">Line width.</param>
+            <param name="h">Line height.</param>
+            <returns>True if the specified element is entirely inside the specified rectangle; false if outside or intersecting.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.ClipLine(System.Drawing.RectangleF,GrapeCity.ActiveReports.Document.Section.LineItem@,GrapeCity.ActiveReports.Document.Section.LineItem)">
+            <summary>
+            This function takes a line and a clipping rectangle, and outputs a clipped line in the pNew argument.
+            </summary>
+            <param name="pCR">The clipping rectangle.</param>
+            <param name="pNew">The new, clipped line will be returned in this argument.</param>
+            <param name="pOld">The old line you want clipped.</param>
+            <returns>
+            Returns true when the line is entirely outside of the cliprect and therefore not renderable.  
+            If the line intersects the cliprect, then ClipLine(..) will generate a line that does fit entirely inside the cliprect and set it to pNew, and true will be returned.
+            If the line is entirely inside the cliprect, then ClipLine simply sets pNew to pOld and returns false.
+            </returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.IntersectLines(System.Drawing.PointF@,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Returns true if lines intersect, false if not, sets ppointout to point of intersection.
+            </summary>
+            <param name="ppointout">
+            If lines intersect, this will be the point of intersection.
+            </param>
+            <param name="x1">X1 coordinate for first line.</param>
+            <param name="y1">Y1 coordinate for first line.</param>
+            <param name="x2">X2 coordinate for first line.</param>
+            <param name="y2">Y2 coordinate for first line.</param>
+            <param name="x3">X1 coordinate for second line.</param>
+            <param name="y3">Y1 coordinate for second line.</param>
+            <param name="x4">X2 coordinate for second line.</param>
+            <param name="y4">Y2 coordinate for second line.</param>
+            <returns>True if lines intersect, false if not.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.ClipShapeBounds(System.Drawing.RectangleF@,System.Drawing.RectangleF)">
+            <summary>
+            Clips the specified bounds for a shape based on the specified clipRect.
+            </summary>
+            <param name="itemBounds">The bounds for the item. Upon return of this function this value will have the clipped bounds.</param>
+            <param name="clipRect">The clipping rectangle according to which itemBounds will be clipped.</param>
+            <returns>
+            True if the item should be rendered according to the new bounds, or false if the item should not be rendered at all.
+            </returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.ClipImage(System.Drawing.Image@,System.Drawing.RectangleF@,System.Drawing.RectangleF)">
+            <summary>
+            Clips the specified image if necessary.
+            </summary>
+            <param name="sourceImage"></param>
+            <param name="imageBounds"></param>
+            <param name="clipRect"></param>
+            <returns>
+            True if you should render the specified image.  Note that the location and actual image arguments may have been changed by this function.
+            False, indicates that you should not render the specified image due to the cliprect.  This would normally indicate that the image is entirely outside of the cliprect.
+            </returns>
+        </member>
+        <member name="F:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.DEFAULTPIXELSPERINCH">
+            <summary>
+            Number of pixels per inch used in unit default conversions. 
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.InchesToPixels(System.Single,System.Single)">
+            <summary>
+            Returns the specified inch value in pixel units.
+            </summary>
+            <param name="inches">The value in inches to convert.</param>
+            <param name="dpi">The pixels/dots per inch value to be used for the conversion.</param>
+            <returns>The value in pixels.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.InchesToPixels(System.Single)">
+            <summary>
+            Returns the specifed inch value in pixel units with pixels per inch/dpi value of <see cref="F:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.DEFAULTPIXELSPERINCH"/>.
+            </summary>
+            <param name="inches">The value in inches to convert.</param>
+            <returns>The value in pixels.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.InitStringFormat">
+            <summary>
+            Returns a <see cref="T:System.Drawing.StringFormat"/> initialized for measuring text records in AR.NET.  This is typically what would be used with CanvasUtils.GetClippedTextLines.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.MeasureString(System.Drawing.Graphics,System.String,System.Drawing.Font,System.Drawing.SizeF,System.Drawing.StringFormat,System.Single,GrapeCity.ActiveReports.PaddingEx,System.Int32@,System.Int32@,System.Single)">
+            <summary>
+            RS: CR 23121 - String measurer that takes into account the character spacing
+            </summary>
+            <param name="gRef"></param>
+            <param name="text"></param>
+            <param name="font"></param>
+            <param name="size"></param>
+            <param name="stringFormat"></param>
+            <param name="characterSpacing"></param>
+            <param name="charactersFitted"></param>
+            <param name="padding"></param>
+            <param name="linesFilled"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.GetClippedTextLines(System.String,System.Drawing.Graphics,System.Drawing.StringFormat,System.Drawing.RectangleF@,DataDynamics.ActiveReports.Export.InternalC.ExportContext,System.Single@,System.Func{System.Int32,System.String,DataDynamics.ActiveReports.Export.InternalC.ExportContext,System.Int32})">
+            <summary>
+            Divides the specified text into lines using \n as line dividers.  Also clips the text according to the cliprect specified in context.
+            </summary>
+            <param name="text">The text to be divided into lines and clipped.</param>
+            <param name="referenceGraphics">A graphics used for measuring text. Passed in for performance optimization.</param>
+            <param name="stringFormat">A StringFormat used for measuring text. Passed in for performance optimization.</param>
+            <param name="controlRect">The bounds of the text record from the RDF DrawText2 item.</param>
+            <param name="context">The context providing information such as font, colors, and cliprect.</param>
+            <param name="outLineHeightInches">Since this function has to calculate the line height anyway, it will return the lineheight it calculated.</param>
+            <param name="handleWrapMode">The action for manual WrapMode handling if it was not been performed before.</param>
+            <returns>Null if text is entirely clipped. Or an array of lines of text clipped based on the specified ExportContext.</returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.CanvasUtils.DeflateRect(System.Drawing.RectangleF,GrapeCity.ActiveReports.PaddingEx)">
+            <summary>
+            Deflates the padding from the rect
+            </summary>
+            <param name="rect"></param>
+            <param name="padding"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DataDynamics.ActiveReports.Export.InternalC.ExportContext">
+            <summary>
+            This class is basically the same as RenderContext in ActiveReports, but customized for contextual information specific to Exports and not a Graphics.  
+            Much of the functionality is exactly the same as RenderContext.
+            However, RenderContext is tightly coupled with each of the CanvasItem's and uses CanvasItem.Render to maintain/update RenderContext, which also does rendering to a Grahpics, which is inappropriate and inefficient for Excel or any Export filter. 
+            </summary>
+            <remarks>
+            Differences between ExportContext and RenderContext:
+            - The current cliprect is manged by ExportContext here, not Graphics like RenderContext. 
+            - The ClipStack is a stack of RectangleF structs, and not System.Drawing.Drawing2D.Region.  All our clips are rectangles in RDF and I think regions were only used in RenderContext because that's what Graphics uses and rendercontext stores it's "current cliprect" on the Grahpics, not RenderContext.
+            </remarks>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.#ctor(GrapeCity.ActiveReports.Document.Section.Document.Filters.IFilteredPage)">
+            <summary>
+            Creates an instance of the ExportContext.
+            </summary>
+            <param name="page">The DataDynamics.ActiveReports.Page object that this context is relative to. All fonts (see <see cref="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.SelectFont(System.Int16)"/>) are slected from the Page's Fonts collection.</param>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.GetDefaultFontWithPointUnit">
+            <summary>
+            Clone font for azure while sizeinpoints throw outofmemory exception.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.PushClipRect">
+            <summary>
+            Takes the current clipRect (in CurrentClipRect property) and pushes it onto the ClipStack.  
+            The current cliprect is still maintained as the "current cliprect".
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.PopClipRect">
+            <summary>
+            Takes the last cliprect put onto the stack and sets it as the current cliprect.
+            If there are no cliprects on the stack then the current cliprect is cleared, and IsClipActive is set to false.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.IntersectClipRect(System.Drawing.RectangleF)">
+            <summary>
+            Uses member method RectangleF.Intersect on the currentCliprect to calculate the intersecting clipping rectangle and sets that resulting clip rect as the current clip rect available via the ClipRect property.
+            </summary>
+            <param name="intersectClip">The clipping rectangle to intersect the current clipping rectangle with.</param>
+        </member>
+        <member name="P:DataDynamics.ActiveReports.Export.InternalC.ExportContext.ClipRect">
+            <summary>
+            Returns the current cliprect bounding the output device/surface.
+            </summary>
+        </member>
+        <member name="P:DataDynamics.ActiveReports.Export.InternalC.ExportContext.ClipStack">
+            <summary>
+            Returns the Stack of RectangleF structs.
+            </summary>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.Clone">
+            <summary>
+            Returns an instance of ExportContext that contains an exact replica of the data on this object.
+            ** Note this method does not copy the m_theFonts font follection.  
+            Only .Font/m_theFont. For performance reasons, and because I don't see why it's needed in most cases where you would clone this class.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DataDynamics.ActiveReports.Export.InternalC.ExportContext.SelectFont(System.Int16)">
+            <summary>
+            Sets the Font property's value to the font at the specified Index.
+            </summary>
+            <param name="fontIndex"></param>
+        </member>
+        <member name="P:DataDynamics.ActiveReports.Export.InternalC.ExportContext.CharacterSpacing">
+            <summary>
+            Determines the intercharacter spacing in inches
+            </summary>
+        </member>
+        <member name="P:DataDynamics.ActiveReports.Export.InternalC.ExportContext.LineSpacing">
+            <summary>
+            Determines the interline spacing in inches
+            </summary>
+        </member>
+        <member name="T:AssemblyNames">
+            <summary>
+            Contains strong assembly names and such
+            </summary>
+        </member>
+    </members>
+</doc>

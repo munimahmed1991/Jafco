@@ -1,0 +1,218 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Public Class frmTransactionType
+    Enum Actions As Byte
+        Initial
+        Edit
+        Entry
+    End Enum
+
+    Private Sub frmCategoryFile_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Call SetControls(Actions.Initial)
+        Call ClearControls()
+        Call FormCenter(Me)
+    End Sub
+
+    Private Sub cmdExit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdExit.Click
+        Me.Close()
+    End Sub
+
+    Sub FillCombo()
+        Dim Name As New BindCombo(cmbName, "Select Name From tblTransactionType", "Name", "Name", True, True)
+        Dim Account As New BindCombo(cmbAccount, "Select AccountCode,AccountName From tblAccounts Where AccountLevel = 'Detail' Order By AccountName", "AccountName", "AccountCode", True, True, GLConString)
+    End Sub
+
+    Sub ClearControls()
+        txtCode.Text = ""
+        cmbName.Text = ""
+
+        Call FillCombo()
+    End Sub
+
+    Sub SetControls(ByVal a As Actions)
+        Select Case a
+            Case Actions.Initial
+                Call SetButtons(Actions.Initial)
+
+                txtCode.Enabled = True
+                cmbName.Enabled = False
+                cmbAccount.Enabled = False
+            Case Actions.Edit
+                Call SetButtons(Actions.Edit)
+
+                txtCode.Enabled = False
+                cmbName.Enabled = False
+                cmbAccount.Enabled = False
+            Case Actions.Entry
+                Call SetButtons(Actions.Entry)
+
+                txtCode.Enabled = False
+                cmbName.Enabled = True
+                cmbAccount.Enabled = True
+
+                cmbName.Focus()
+        End Select
+    End Sub
+
+    Public Sub SetButtons(ByVal a As Actions)
+        Select Case a
+            Case Actions.Initial
+                cmdAdd.Enabled = True
+                cmdSearch.Enabled = True
+                cmdEdit.Enabled = False
+                cmdDelete.Enabled = False
+                cmdSave.Enabled = False
+                cmdUndo.Enabled = False
+                cmdExit.Enabled = True
+            Case Actions.Edit
+                cmdAdd.Enabled = False
+                cmdSearch.Enabled = True
+                cmdEdit.Enabled = True
+                cmdDelete.Enabled = True
+                cmdSave.Enabled = False
+                cmdUndo.Enabled = True
+                cmdExit.Enabled = False
+            Case Actions.Entry
+                cmdAdd.Enabled = False
+                cmdSearch.Enabled = False
+                cmdEdit.Enabled = False
+                cmdDelete.Enabled = False
+                cmdSave.Enabled = True
+                cmdUndo.Enabled = True
+                cmdExit.Enabled = False
+        End Select
+    End Sub
+
+    Private Sub cmdUndo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUndo.Click
+        Call ClearControls()
+        Call SetControls(Actions.Initial)
+    End Sub
+
+    Private Sub cmdDelete_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDelete.Click
+        If CheckAccess("DeleteRights", UserId, "TRANSACTION TYPE") = -1 Then
+            If MsgBox("Do You Want to Delete this Record", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+                Dim DB As New dbOperations("Delete From tblTransactionType Where Code = '" & txtCode.Text & "'")
+
+                DB.dbActionQuery()
+
+                DeleteInfo(txtCode.Text, "Delete Record in Transaction Type : " + "" + cmbName.Text)
+
+                Call SetControls(Actions.Initial)
+                Call ClearControls()
+            End If
+        Else
+            MsgBox("Sorry You Dont Have Any Rights to Use This Option", vbInformation, cCompany)
+            Exit Sub
+        End If
+
+    End Sub
+
+    Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
+        If CheckAccess("EditRights", UserId, "TRANSACTION TYPE") = -1 Then
+            Call SetControls(Actions.Entry)
+        Else
+            MsgBox("Sorry You Dont Have Any Rights to Use This Option", vbInformation, cCompany)
+            Exit Sub
+        End If
+
+    End Sub
+
+    Private Sub cmdAdd_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAdd.Click
+        If CheckAccess("AddRights", UserId, "TRANSACTION TYPE") = -1 Then
+            Call DisplayRec()
+        Else
+            MsgBox("Sorry You Dont Have Any Rights to Use This Option", vbInformation, cCompany)
+            Exit Sub
+        End If
+
+    End Sub
+
+    Sub DisplayRec()
+        If txtCode.Text <> "" Then
+            Dim DB As New dbOperations("Select * From tblTransactionType Where Code = '" & txtCode.Text & "'")
+            Dim DR As SqlDataReader
+
+            DR = DB.dbSelectQuery
+
+            If DR.HasRows Then
+                DR.Read()
+
+                txtCode.Text = DR!Code
+                cmbName.Text = RemoveNull(DR!Name, "")
+                cmbAccount.SelectedValue = RemoveNull(DR!Account, "")
+
+                DB.Close()
+
+                Call SetControls(Actions.Edit)
+            Else
+                MsgBox("Transaction Code Does Not Exist")
+                Exit Sub
+            End If
+        Else
+            Call SetControls(Actions.Entry)
+            Call ClearControls()
+        End If
+    End Sub
+
+    Private Sub cmdSave_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdSave.Click
+        Dim Query As New ActionQueryBuilder
+        Dim cAdd As Boolean
+
+        If txtCode.Text = "" Then
+            txtCode.Text = NextSerial("Code", "tblTransactionType", "000", "", "")
+
+            cAdd = True
+        Else
+            cAdd = False
+        End If
+
+        If CheckDuplicate("tblTransactionType", "Name", cmbName.Text, txtCode.Text, "Code") = True Then
+            MsgBox("Already Exist")
+
+            If cAdd = True Then
+                txtCode.Text = ""
+            End If
+
+            Exit Sub
+        End If
+
+
+        Query.Refresh()
+        Query.SetQueryInformation("tblTransactionType", "Code = '" & txtCode.Text & "'")
+        Query.AddFields("Code", txtCode.Text, ActionQueryBuilder.DataType.aString)
+        Query.AddFields("Name", cmbName.Text, ActionQueryBuilder.DataType.aString)
+        Query.AddFields("Account", cmbAccount.SelectedValue, ActionQueryBuilder.DataType.aString)
+
+        If cAdd = True Then
+            Query.ExecuteQuery(ActionQueryBuilder.Actions.Insert)
+
+            AddInfo(txtCode.Text, "Add Record in Transaction Type Name : " + "" + cmbName.Text)
+        Else
+            Query.ExecuteQuery(ActionQueryBuilder.Actions.Update)
+
+            EditInfo(txtCode.Text, "Edit Record in Transaction Type : " + "" + cmbName.Text)
+        End If
+
+        Call SetControls(Actions.Initial)
+        Call ClearControls()
+    End Sub
+
+    Private Sub txtCode_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs)
+        If e.KeyChar = ChrW(Keys.Return) Then
+            Call DisplayRec()
+        End If
+    End Sub
+
+    Private Sub cmdSearch_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdSearch.Click
+        txtCode.Text = ShowList("Select * From tblTransactionType Order By Code", "List of Department", 1, 0)
+
+        If txtCode.Text <> "" Then
+            Call DisplayRec()
+        End If
+    End Sub
+
+    Private Sub cmdAccountList_Click(sender As Object, e As EventArgs) Handles cmdAccountList.Click
+        cmbAccount.SelectedValue = ShowList("Select AccountCode,AccountName From tblAccounts Where AccountLevel = 'Detail' Order By AccountName", "List of Accounts", 0, 0)
+    End Sub
+End Class

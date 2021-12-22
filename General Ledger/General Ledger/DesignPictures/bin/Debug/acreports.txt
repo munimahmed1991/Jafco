@@ -1,0 +1,707 @@
+CREATE Procedure AccountingReports 
+				     @CompanyId Varchar(4),@DateFrom DateTime,@DateUpto DateTime,
+				     @AccountFrom Varchar(14) = '00000000000000',@AccountTo Varchar(14)  = 'zzzzzzzzzzzzzz',
+				     @Project Varchar(3) = 'All',@Location Varchar(4) = 'All',@Sector Varchar(4) = 'All',
+				     @BookType Varchar(20) = 'All',@AccountDigit Numeric(9) = 14,@ReportType Varchar(30) = 'Financial Statements',@ControlAccount Varchar(14) = '',@Employee Varchar(10) = '',@Tag Varchar(4) = ''
+as 
+Set Nocount on 
+
+Select     'CB' as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,BookAccount As AccountCode,AccountCode as OppAccount,
+	 Case When Type = 'C' Then Amount Else 0 End As Debit,
+	 Case When Type = 'D' then Amount else 0 end as Credit,
+	 ChequeNo as ChequeNo,ChequeDate as ChequeDate,Description,ChqClear,ChqClearDate,BankStDate,'S' as EntryType,Tag,EmployeeCode
+	 Into #Temp1
+From       tblCashMst Mst,tblCashDtl Dtl,tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   VoucherDate <= @DateUpto
+	 --and   Mst.Posted = 1
+Union All 
+select     'CB' as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,AccountCode As AccountCode,BookAccount as OppAccount,
+	 Case When Type = 'D' Then Amount Else 0 End As Debit,
+	 Case When Type = 'C' then Amount else 0 end as Credit,
+	 ChequeNo as ChequeNo,ChequeDate as ChequeDate,DescriptionEntry,ChqClear,ChqClearDate,BankStDate,'S' as EntryType,Tag,EmployeeCode
+From     tblCashMst Mst,tblCashDtl Dtl,tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   VoucherDate <= @DateUpto
+	 --and   Mst.Posted = 1
+Union All 
+select     'BB' as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,BookAccount As AccountCode,AccountCode as OppAccount,
+	 Case When Type = 'C' Then Amount Else 0 End As Debit,
+	 Case When Type = 'D' then Amount else 0 end as Credit,
+	 ChequeNo as ChequeNo,ChequeDate as ChequeDate,Description,ChqClear,ChqClearDate,BankStDate,'S' as EntryType,Tag,EmployeeCode
+From     tblBankMst Mst,tblBankDtl Dtl,tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   VoucherDate <= @DateUpto
+               --and   Mst.Posted = 1
+Union All 
+select     'BB' as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,AccountCode As AccountCode,BookAccount as OppAccount,
+	 Case When Type = 'D' Then Amount Else 0 End As Debit,
+	 Case When Type = 'C' then Amount else 0 end as Credit,
+	 ChequeNo as ChequeNo,ChequeDate as ChequeDate,DescriptionEntry,ChqClear,ChqClearDate,BankStDate,'S' as EntryType,Tag,EmployeeCode
+From     tblBankMst Mst,tblBankDtl Dtl,tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   VoucherDate <= @DateUpto
+	 --and   Mst.Posted = 1
+Union All
+select     'PB' as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,BookAccount As AccountCode,AccountCode as OppAccount,
+	 Case When Type = 'C' Then Amount Else 0 End As Debit,
+	 Case When Type = 'D' then Amount else 0 end as Credit,
+	 ChequeNo as ChequeNo,ChequeDate as ChequeDate,Description,0 as ChqClear,Null as ChqClearDate,Null as BankStDate,'S' as EntryType,Tag,EmployeeCode
+From     tblPurMst Mst,tblPurDtl Dtl,tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   VoucherDate <= @DateUpto
+	 --and   Mst.Posted = 1
+Union All 
+select     'PB' as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,AccountCode As AccountCode,BookAccount as OppAccount,
+	 Case When Type = 'D' Then Amount Else 0 End As Debit,
+	 Case When Type = 'C' then Amount else 0 end as Credit,
+	 ChequeNo as ChequeNo,ChequeDate as ChequeDate,DescriptionEntry,0 as ChqClear,Null as ChqClearDate,Null as BankStDate,'S' as EntryType,Tag,EmployeeCode
+From     tblPurMst Mst,tblPurDtl Dtl,tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   VoucherDate <= @DateUpto
+               --and   Mst.Posted = 1
+Union All
+select     'PR' as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,BookAccount As AccountCode,AccountCode as OppAccount,
+	 Case When Type = 'C' Then Amount Else 0 End As Debit,
+	 Case When Type = 'D' then Amount else 0 end as Credit,
+	 ChequeNo as ChequeNo,ChequeDate as ChequeDate,Description,0 as ChqClear,Null as ChqClearDate,Null as BankStDate,'S' as EntryType,Tag,EmployeeCode
+From     tblPurRetMst Mst,tblPurRetDtl Dtl,tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   VoucherDate <= @DateUpto
+	 --and   Mst.Posted = 1
+Union All 
+select     'PR' as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,AccountCode As AccountCode,BookAccount as OppAccount,
+	 Case When Type = 'D' Then Amount Else 0 End As Debit,
+	 Case When Type = 'C' then Amount else 0 end as Credit,
+	 ChequeNo as ChequeNo,ChequeDate as ChequeDate,DescriptionEntry,0 as ChqClear,Null as ChqClearDate,Null as BankStDate,'S' as EntryType,Tag,EmployeeCode
+From     tblPurRetMst Mst,tblPurRetDtl Dtl,tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   VoucherDate <= @DateUpto
+	 --and   Mst.Posted = 1
+Union All
+select     'SB' as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,BookAccount As AccountCode,AccountCode as OppAccount,
+	 Case When Type = 'C' Then Amount Else 0 End As Debit,
+	 Case When Type = 'D' then Amount else 0 end as Credit,
+	 ChequeNo as ChequeNo,ChequeDate as ChequeDate,Description,0 as ChqClear,Null as ChqClearDate,Null as BankStDate,'S' as EntryType,Tag,EmployeeCode
+From     tblSalesMst Mst,tblSalesDtl Dtl,tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   VoucherDate <= @DateUpto
+	 --and   Mst.Posted = 1
+Union All 
+select     'SB' as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,AccountCode As AccountCode,BookAccount as OppAccount,
+	 Case When Type = 'D' Then Amount Else 0 End As Debit,
+	 Case When Type = 'C' then Amount else 0 end as Credit,
+	 ChequeNo as ChequeNo,ChequeDate as ChequeDate,DescriptionEntry,0 as ChqClear,Null as ChqClearDate,Null as BankStDate,'S' as EntryType,Tag,EmployeeCode
+From     tblSalesMst Mst,tblSalesDtl Dtl,tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   VoucherDate <= @DateUpto
+	 --and   Mst.Posted = 1
+Union All
+select     'SR' as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,BookAccount As AccountCode,AccountCode as OppAccount,
+	 Case When Type = 'C' Then Amount Else 0 End As Debit,
+	 Case When Type = 'D' then Amount else 0 end as Credit,
+	 ChequeNo as ChequeNo,ChequeDate as ChequeDate,Description,0 as ChqClear,Null as ChqClearDate,Null as BankStDate,'S' as EntryType,Tag,EmployeeCode
+From     tblSalesRetMst Mst,tblSalesRetDtl Dtl,tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   VoucherDate <= @DateUpto
+	 --and   Mst.Posted = 1
+Union All 
+select     'SR' as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,AccountCode As AccountCode,BookAccount as OppAccount,
+	 Case When Type = 'D' Then Amount Else 0 End As Debit,
+	 Case When Type = 'C' then Amount else 0 end as Credit,
+	 ChequeNo as ChequeNo,ChequeDate as ChequeDate,DescriptionEntry,0 as ChqClear,Null as ChqClearDate,Null as BankStDate,'S' as EntryType,Tag,EmployeeCode
+From     tblSalesRetMst Mst,tblSalesRetDtl Dtl,tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   VoucherDate <= @DateUpto
+	 --and   Mst.Posted = 1
+
+Select    Booktype,VoucherNo,CompanyId,ProjectCode,ProjectName,LocationCode,LocationName,SectorCode,SectorName,VoucherDate,
+	 #Temp1.AccountCode,Account.AccountName as AccountName,
+	 OppAccount,OppAccount.AccountName as OppAccountName,'' as AgainstAccount,
+	 ChequeNo,ChequeDate,Description,Debit,Credit,ChqClear,ChqClearDate,BankStDate,EntryType,Tag,EmployeeCode
+Into #Temp2
+From     #Temp1,tblAccounts Account,tblAccounts OppAccount
+Where    #Temp1.AccountCode = Account.AccountCode 
+	 And #Temp1.OppAccount = OppAccount.AccountCode 
+	 And   SectorCode = Case When @Sector <> 'All' then @Sector else SectorCode end 
+	 And   LocationCode = Case When @Location <> 'All' then @Location else LocationCode end
+ 	 And   ProjectCode = Case When @Project <> 'All' then @Project else ProjectCode end
+Union All 	
+select     'JV' as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,
+	 Dtl.AccountCode,AccountName,'' as OppAccount,'Journal Voucher' as OppAccountName, ' ' as AgainstAccount,
+	 ChqNoMst as ChequeNo,ChequeDate,Case When IsNull(Auto,0) = 1 then Description Else DescriptionEntry End as DescriptionEntry,Debit,Credit,ChqClear,ChqClearDate,BankStDate,'M' as EntryType,Tag,EmployeeCode
+From     tblJvMst Mst,tblJvDtl Dtl,tblAccounts, tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Dtl.AccountCode = tblAccounts.AccountCode 
+	 and   Dtl.Sector = Case When @Sector <> 'All' then @Sector else Dtl.Sector end 
+	 and   S.Location = Case When @Location <> 'All' then @Location else S.Location end
+ 	 and   L.Project = Case When @Project <> 'All' then @Project else L.Project end	
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   IsNull(Dtl.EmployeeCode,'') = Case When @Employee <> '' Then @Employee Else IsNull(Dtl.EmployeeCode,'') End 
+	 and   IsNull(Dtl.Tag,'') = Case When @Tag <> '' Then @Tag Else IsNull(Dtl.Tag,'') End 
+	 --and   Mst.Posted = 1
+Union All
+select     Case When Substring(Mst.VoucherNo,3,1) = 'P' Then 'CBP' Else 'CBR' End  as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,
+	 Dtl.AccountCode,AccountName,'' as OppAccount,'Cash Book Multiple Entry' as OppAccountName,AgainstAccount,
+	 ChqNoMst as ChequeNo,ChequeDate,Case When IsNull(Auto,0) = 1 then Description Else DescriptionEntry End as DescriptionEntry,Debit,Credit,ChqClear,ChqClearDate,BankStDate,'M' as EntryType,Tag,EmployeeCode
+From     tblCbMultiMst Mst,tblCbMultiDtl Dtl,tblAccounts, tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.AccountCode = tblAccounts.AccountCode
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Dtl.Sector = Case When @Sector <> 'All' then @Sector else Dtl.Sector end 
+	 and   S.Location = Case When @Location <> 'All' then @Location else S.Location end
+ 	 and   L.Project = Case When @Project <> 'All' then @Project else L.Project end	
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   IsNull(Dtl.EmployeeCode,'') = Case When @Employee <> '' Then @Employee Else IsNull(Dtl.EmployeeCode,'') End 
+	 and   IsNull(Dtl.Tag,'') = Case When @Tag <> '' Then @Tag Else IsNull(Dtl.Tag,'') End 
+	 --and   Mst.Posted = 1
+Union All
+select     Case When Substring(Mst.VoucherNo,3,1) = 'P' Then 'BBP' Else 'BBR' End  as Booktype,Mst.Voucherno,Mst.CompanyId,P.Code as ProjectCode,P.Name as ProjectName,L.Code as LocationCode,L.Name as LocationName,Dtl.Sector as SectorCode,S.Name as SectorName,Voucherdate,
+	 Dtl.AccountCode,AccountName,'' as OppAccount,'Bank Book Multiple Entry' as OppAccountName,AgainstAccount,
+	 ChqNoMst as ChequeNo,ChequeDate,Case When IsNull(Auto,0) = 1 then Description Else DescriptionEntry End as DescriptionEntry,Debit,Credit,ChqClear,ChqClearDate,BankStDate,'M' as EntryType,Tag,EmployeeCode
+From     	 tblBbMultiMst Mst,tblBbMultiDtl Dtl,tblAccounts, tblProject P, tblLocation L, tblSector S
+Where    Mst.CompanyId = Dtl.CompanyId 
+	 and   Mst.VoucherNo = Dtl.VoucherNo
+	 and   Dtl.AccountCode = tblAccounts.AccountCode 	
+	 and   Dtl.Sector = S.Code
+	 and   S.Location = L.Code
+	 and   L.Project = P.Code
+	 and   Dtl.Sector = Case When @Sector <> 'All' then @Sector else Dtl.Sector end 
+	 and   S.Location = Case When @Location <> 'All' then @Location else S.Location end
+ 	 and   L.Project = Case When @Project <> 'All' then @Project else L.Project end	
+	 and   Mst.CompanyId = Case When @CompanyId <> 'CONS' then @CompanyID else Mst.CompanyId end 
+	 and   IsNull(Dtl.EmployeeCode,'') = Case When @Employee <> '' Then @Employee Else IsNull(Dtl.EmployeeCode,'') End 
+	 and   IsNull(Dtl.Tag,'') = Case When @Tag <> '' Then @Tag Else IsNull(Dtl.Tag,'') End 
+	 --and   Mst.Posted = 1
+
+Select 	'OP' as BookType,CompanyId,' ' as VoucherNo,@DateFrom - 1 as VoucherDate,AccountCode,AccountName,' ' as OppAccount,'Balance B/F' as OppAccountName,' ' as AgainstAccount,
+	' ' as ChequeNo,Null as ChequeDate,' ' as Description,
+	Sum(Debit) as Debit,Sum(Credit) as Credit 
+Into	#Temp3
+From 	#Temp2 
+Where   VoucherDate < @DateFrom
+Group By CompanyId,AccountCode,AccountName
+	
+Select	BookType,CompanyId,VoucherNo,VoucherDate,AccountCode,AccountName,OppAccount,OppAccountName,AgainstAccount,' ' as ChequeNo,ChequeDate,Description,
+	Sum(Debit) as Debit,Sum(Credit) as Credit 
+Into   	#Temp4
+From 	#Temp3
+Group By Booktype,CompanyId,VoucherNo,VoucherDate,AccountCode,AccountName,OppAccount,OppAccountName,AgainstAccount,ChequeNo,ChequeDate,Description
+
+Select	Booktype,CompanyId,VoucherNo,VoucherDate,AccountCode,AccountName,OppAccount,OppAccountName,AgainstAccount,ChequeNo,ChequeDate,Description,
+	Case When Debit - Credit > 0 then Debit - Credit else 0 end as Debit,
+	Case When Credit - Debit > 0 Then Credit - Debit else 0 end as Credit,0 as ChqClear,Null as ChqClearDate,Null as BankStDate,'O' as EntryType,'' as ProjectCode,'' as ProjectName,'' as LocationCode,'' as LocationName,'' as SectorCode,'' as SectorName,'' as Tag,'' as EmployeeCode
+Into   	#MasterData
+From 	#Temp4
+Union All 
+Select	BookType,CompanyId,VoucherNo,VoucherDate,AccountCode,AccountName,OppAccount,OppAccountName,AgainstAccount,ChequeNo,ChequeDate,Description,
+	Debit,Credit,ChqClear,ChqClearDate,BankStDate,EntryType,ProjectCode,ProjectName,LocationCode,LocationName,SectorCode,SectorName,Tag,EmployeeCode
+From 	#Temp2
+Where   VoucherDate Between @DateFrom and @DateUpto 
+
+if @ReportType = 'Audit Trail'
+	Begin
+		Select    @CompanyId as CompanyId,Booktype,VoucherNo,VoucherDate,AccountCode,AccountName,ChequeNo,ChequeDate,Debit,Credit,Description,EntryType,ProjectName,LocationName,SectorName
+		From 	 #MasterData 
+		Where  	 Booktype <> 'OP'
+		And	 AccountCode Between @AccountFrom and @AccountTo 
+		Order By CompanyId,VoucherNo,VoucherDate,Credit,AccountCode
+	End
+
+if @ReportType = 'General Ledger'
+
+	Begin
+		Select   @CompanyId as CompanyId,BookType,VoucherNo,VoucherDate,AccountCode,ltrim(rtrim(AccountName)) + '  (' + AccountCode + ')' as AccountName,OppAccount,OppAccountName,
+			ChequeNo,ChequeDate,Debit,Credit,Debit - Credit as Balance,Description,isnull(ChqClear,0) as ChqClear,ChqClearDate,BankStDate,EntryType
+		From 	#MasterData 
+		Where	 AccountCode Between @AccountFrom and @AccountTo 
+		Order By CompanyId,AccountCode,VoucherDate,VoucherNo
+	End
+
+if @ReportType = 'Trial Balance'
+	Begin
+		Select 	@CompanyId as CompanyId,Left(AccountCode,@AccountDigit) as AccountCode,Case When Sum(Debit) - Sum(Credit) > 0 then Sum(Debit) - Sum(Credit) else 0 end as Debit,
+			Case When Sum(Debit) - Sum(Credit) < 0 then Sum(Credit) - Sum(Debit) else 0 end as Credit 
+			Into #TrialBalance
+			From #MasterData
+		Group By CompanyId,AccountCode
+
+--		Select  @CompanyId as CompanyId,#TrialBalance.AccountCode,tblAccounts.AccountName as AccountName,tblAccounts.GroupAct,A.AccountName as GroupAccountName,
+--			Case When Sum(Debit) - Sum(Credit) > 0 then Sum(Debit) - Sum(Credit) else 0 end as Debit,
+--			Case When Sum(Debit) - Sum(Credit) < 0 then Sum(Credit) - Sum(Debit) else 0 end as Credit 
+--			From #TrialBalance,tblAccounts,tblAccounts as A
+--			Where #TrialBalance.AccountCode = tblAccounts.AccountCode
+--			and	tblAccounts.AccountCode = A.AccountCode
+--			Group By #TrialBalance.CompanyId,#TrialBalance.AccountCode,tblAccounts.AccountName,tblAccounts.GroupAct,A.AccountName
+
+		Select   '0001' as CompanyId,#TrialBalance.AccountCode,A.AccountName as AccountName,A.GroupAct,G.AccountName as GroupAccountName,
+			Case When Sum(Debit) - Sum(Credit) > 0 then Sum(Debit) - Sum(Credit) else 0 end as Debit,
+			Case When Sum(Debit) - Sum(Credit) < 0 then Sum(Credit) - Sum(Debit) else 0 end as Credit 
+		From 	#TrialBalance,tblAccounts A,tblAccounts as G
+		Where 	#TrialBalance.AccountCode = A.AccountCode
+		and	A.GroupAct  = G.AccountCode
+		And	#TrialBalance.AccountCode Between @AccountFrom and @AccountTo 
+		And	A.GroupAct = Case When @ControlAccount <> '' Then @ControlAccount Else A.GroupAct End 
+		Group By #TrialBalance.CompanyId,#TrialBalance.AccountCode,A.AccountName,A.GroupAct,G.AccountName
+		Order By CompanyId,#TrialBalance.AccountCode,AccountName,A.GroupAct,GroupAccountName
+	End
+
+if @ReportType = 'Consolidated Balance'
+	Begin
+		Select 	@CompanyId as CompanyId,Left(AccountCode,@AccountDigit) as AccountCode,
+			Case When BookType = 'OP' Then Sum(Debit) Else 0 End as OPBalDebit,
+			Case When BookType = 'OP' Then Sum(Credit) Else 0 End as OPBalCredit,
+			Case When BookType = 'OP' Then Sum(Debit) - Sum(Credit)  Else 0 End as OPBal,
+			Case When BookType <> 'OP' Then Sum(Debit) Else 0 End as ActBalDebit,
+			Case When BookType <> 'OP' Then Sum(Credit) Else 0 End as ActBalCredit,
+			Case When BookType <> 'OP' Then Sum(Debit) - Sum(Credit)  Else 0 End as ActBal,
+			Sum(Debit) as ClosingBalDebit,Sum(Credit) as ClosingBalCredit,Sum(Debit) - Sum(Credit) as ClosingBal
+		Into 	#ConsolidatedBalance
+		From 	#MasterData
+		Group By CompanyId,AccountCode,BookType
+	
+		Select   @CompanyId as CompanyId,#ConsolidatedBalance.AccountCode,AccountName,tblAccounts.GroupAct,
+			Sum(OPBalDebit) as OPBalDebit,Sum(OPBalCredit) as OPBalCredit,Sum(OPBal) as OPBal,
+			Sum(ActBalDebit) as ActBalDebit,Sum(ActBalCredit) as ActBalCredit,Sum(ActBal) as ActBal,
+			Sum(ClosingBalDebit) as ClosingBalDebit,Sum(ClosingBalCredit) as ClosingBalCredit,Sum(ClosingBal) as ClosingBal
+		Into 	#ConsBal
+		From 	#ConsolidatedBalance,tblAccounts
+		Where 	#ConsolidatedBalance.AccountCode = tblAccounts.AccountCode
+		Group By #ConsolidatedBalance.CompanyId,#ConsolidatedBalance.AccountCode,AccountName,tblAccounts.GroupAct
+		Order By CompanyId,#ConsolidatedBalance.AccountCode,AccountName
+	
+		Select 	@CompanyId as CompanyId,#ConsBal.AccountCode,#ConsBal.AccountName,tblAccounts.AccountName as GroupAccountName,#ConsBal.GroupAct,
+			OPBalDebit,OPBalCredit,OPBal,ActBalDebit,ActBalCredit,ActBal,ClosingBalDebit,ClosingBalCredit,ClosingBal
+		From 	#ConsBal,tblAccounts 
+		Where	#ConsBal.GroupAct = tblAccounts.AccountCode
+		And	#ConsBal.GroupAct = Case When @ControlAccount <> '' Then @ControlAccount Else #ConsBal.GroupAct End 
+		And	 #ConsBal.AccountCode Between @AccountFrom and @AccountTo 
+		Order By CompanyId,#ConsBal.AccountCode,#ConsBal.AccountName
+	End
+
+if @ReportType = 'Periodic Activity'
+	Begin
+
+		Select 	@CompanyId as CompanyId,BookType,case when Booktype <> 'OP' then Month(VoucherDate) else 0 end  as VoucherMonth,Left(AccountCode,@AccountDigit) as AccountCode,Debit - Credit as Balance
+			Into #PeriodActivity1
+			From #MasterData 
+		
+
+		Select   @CompanyId as CompanyId,#PeriodActivity1.AccountCode,AccountName,AccountType,
+			Case When BookType = 'OP' then Balance else 0 end as Opening,
+			Case When VoucherMonth = 1   then Balance else 0 End as January,
+			Case When VoucherMonth = 2   then Balance else 0 End as Febuary,
+			Case When VoucherMonth = 3   then Balance else 0 End as March,		
+			Case When VoucherMonth = 4   then Balance else 0 End as April,
+			Case When VoucherMonth = 5   then Balance else 0 End as May,
+			Case When VoucherMonth = 6   then Balance else 0 End as June,
+			Case When VoucherMonth = 7   then Balance else 0 End as July,
+			Case When VoucherMonth = 8   then Balance else 0 End as August,
+			Case When VoucherMonth = 9   then Balance else 0 End as September,
+			Case When VoucherMonth = 10 then Balance else 0 End as October,
+			Case When VoucherMonth = 11 then Balance else 0 End as November,
+			Case When VoucherMonth = 12 then Balance else 0 End as December,
+			Balance as ClosingBalance				
+			Into #PeriodActivity2
+			From #PeriodActivity1,tblAccounts
+			Where #PeriodActivity1.AccountCode = tblAccounts.AccountCode 
+	
+		Select   @CompanyId as CompanyId,AccountCode,AccountName,AccountType,	
+			Sum(Opening) as Opening,
+			Sum(July) as July,Sum(August) as August,Sum(September) as September,
+			Sum(October) as October,Sum(November) as November,Sum(December) as December,
+			Sum(January) as January,Sum(Febuary) as Febuary,Sum(March) as March,
+			Sum(April) as April,Sum(May) as May,Sum(June) as June,
+			Sum(ClosingBalance) as ClosingBalance
+		From 	#PeriodActivity2
+		Where	 AccountCode Between @AccountFrom and @AccountTo 
+		Group by CompanyId,AccountCode,AccountName,AccountType
+		Order By AccountType,AccountCode
+
+	End
+
+if @ReportType = 'Bank Rec'
+	Begin
+		Select   CompanyId,BookType,VoucherNo,VoucherDate,AccountCode,ltrim(rtrim(AccountName)) + '  (' + AccountCode + ')' as AccountName,OppAccount,OppAccountName,
+			ChequeNo,ChequeDate,Debit,Credit,Description,ChqClear,ChqClearDate,BankStDate,EntryType
+		From 	#MasterData 
+		Where 	BookType <> 'OP' 
+		And	AccountCode Between @AccountFrom and @AccountTo 
+		Order By CompanyId,AccountCode,VoucherDate
+	End 
+
+if @ReportType = 'Bank Rec1'
+	Begin
+		Select   CompanyId,BookType,VoucherNo,VoucherDate,AccountCode,ltrim(rtrim(AccountName)) + '  (' + AccountCode + ')' as AccountName,OppAccount,OppAccountName,
+			ChequeNo,ChequeDate,Debit,Credit,Description,ChqClear,ChqClearDate,BankStDate,EntryType
+		From 	#MasterData 
+		Where 	BookType <> 'OP' 
+		And 	IsNull(chqclear,0) = 0
+		And	AccountCode Between @AccountFrom and @AccountTo 
+		Order By CompanyId,AccountCode,VoucherDate
+	End 
+
+if @ReportType = 'Bank Rec Summ'
+	Begin 
+		Select   AccountCode,AccountName,
+			Case When BookType = 'OP' Then Debit -Credit Else 0 End as OpeningBalance,
+			Case When BookType <> 'OP' then Debit else 0 end as Receipts,
+			Case When BookType <> 'OP' then Credit else 0 end as Payments,
+			Debit - Credit as ClosingBalance,
+			Case When isnull(ChqClear,0) = 0 then Debit else 0 end as ChqNotCleared,
+			Case When isnull(ChqClear,0) = 0 then Debit else 0 end as ChqNotPresent
+		Into #BankRec
+		From #MasterData
+
+		Select   AccountCode,AccountName,
+			Sum(OpeningBalance) as OpeningBalance,Sum(Receipts) as Receipts,
+			Sum(Payments) as Payments,Sum(OpeningBalance) + Sum(Receipts) - Sum(Payments) as ClosingBalance,
+			Sum(ChqNotCleared) as ChqNotCleared,Sum(ChqNotPresent) as ChqNotPresent
+		From #BankRec
+		Where	AccountCode Between @AccountFrom and @AccountTo 
+		Group By AccountCode,AccountName
+			
+	End 
+if @ReportType = 'Liquidity Report'
+	Begin
+		Select 	@CompanyId as CompanyId,#MasterData.AccountCode as AccountCode,tblAccounts.AccountName,GroupAct,
+			Case When BookType = 'OP' then Sum(Debit) - Sum(Credit) else 0 end as OpeningBalance,
+			Sum(Case When Debit > 0  and BookType <> 'OP' then Debit else 0 end) as Debit,
+			Sum(Case When Credit > 0  and BookType <> 'OP' then Credit else 0 end) as Credit,CreditLimit as Limit
+			Into #LiquidityReport
+			From #MasterData,tblAccounts
+			Where GroupAct Between @AccountFrom And @AccountTo 
+			And     #MasterData.AccountCode = tblAccounts.AccountCode 
+			And     (tblAccounts.AccountType = 'Cash Book' or tblAccounts.AccountType = 'Bank Book')
+		Group By CompanyId,#MasterData.AccountCode,tblaccounts.AccountName,Creditlimit,GroupAct,BookType
+
+		Select   #LiquidityReport.AccountCode,#LiquidityReport.AccountName,#LiquidityReport.GroupAct,tblAccounts.AccountName as GroupName,
+			Sum(#LiquidityReport.OpeningBalance) as OpeningBalance,Sum(#LiquidityReport.Debit) as Debit,Sum(#LiquidityReport.Credit) as Credit,
+			Sum(#LiquidityReport.Debit - #LiquidityReport.Credit) as IncDcr,Sum(OpeningBalance + Debit - Credit) as YearToDate,Max(#LiquidityReport.Limit) as Limit,Max(#LiquidityReport.Limit) + Sum(OpeningBalance + Debit - Credit) as Availibility
+		From 	#LiquidityReport,tblAccounts
+		Where 	#LiquidityReport.GroupAct = tblAccounts.AccountCode 
+		And	#LiquidityReport.AccountCode Between @AccountFrom and @AccountTo 
+		Group By #LiquidityReport.AccountCode,#LiquidityReport.AccountName,#LiquidityReport.GroupAct,tblAccounts.AccountName
+	End
+
+if @ReportType = 'Department Report'
+	Begin
+		Select 	@CompanyId as CompanyId,#MasterData.AccountCode as AccountCode,tblAccounts.AccountName,GroupAct,
+			Case When BookType = 'OP' then Sum(Debit) - Sum(Credit) else 0 end as OpeningBalance,
+			Sum(Case When Debit > 0  and BookType <> 'OP' then Debit else 0 end) as Debit,
+			Sum(Case When Credit > 0  and BookType <> 'OP' then Credit else 0 end) as Credit,CreditLimit as Limit
+			Into #DepartmentReport
+			From #MasterData,tblAccounts
+			Where GroupAct Between @AccountFrom And @AccountTo 
+			And     #MasterData.AccountCode = tblAccounts.AccountCode 
+			And     IsNull(tblAccounts.Department,0) = 1
+		Group By CompanyId,#MasterData.AccountCode,tblaccounts.AccountName,Creditlimit,GroupAct,BookType
+
+		Select   #DepartmentReport.AccountCode,#DepartmentReport.AccountName,#DepartmentReport.GroupAct,tblAccounts.AccountName as GroupName,
+			Sum(#DepartmentReport.OpeningBalance) as OpeningBalance,Sum(#DepartmentReport.Debit) as Debit,Sum(#DepartmentReport.Credit) as Credit,
+			Sum(#DepartmentReport.Debit - #DepartmentReport.Credit) as IncDcr,Sum(OpeningBalance + Debit - Credit) as YearToDate,Max(#DepartmentReport.Limit) as Limit,Max(#DepartmentReport.Limit) + Sum(OpeningBalance + Debit - Credit) as Availibility
+		From 	#DepartmentReport,tblAccounts
+		Where 	#DepartmentReport.GroupAct = tblAccounts.AccountCode 
+		And	#DepartmentReport.AccountCode Between @AccountFrom and @AccountTo 
+		Group By #DepartmentReport.AccountCode,#DepartmentReport.AccountName,#DepartmentReport.GroupAct,tblAccounts.AccountName
+	End
+
+if @ReportType = 'Markup Report'
+	Begin
+		Select 	@CompanyId as CompanyId,Case When BookType <> 'OP' Then VoucherDate Else VoucherDate + 1 End as VoucherDate,#MasterData.AccountCode as AccountCode,tblAccounts.AccountName,GroupAct,
+			Case When BookType = 'OP' then Debit - Credit else 0 end as OpeningBalance,
+			Case When Debit > 0  and BookType <> 'OP' then Debit else 0 end as Debit,
+			Case When Credit > 0  and BookType <> 'OP' then Credit else 0 end as Credit
+			Into #Markup
+			From #MasterData,tblAccounts
+			Where GroupAct Between @AccountFrom And @AccountTo 
+			And     #MasterData.AccountCode = tblAccounts.AccountCode 
+			And     IsNull(tblAccounts.Markup,0) = 1
+			And    AccountType <> 'Bank Book'
+		Select 	CompanyId,VoucherDate,AccountCode,AccountName,GroupAct,Sum(OpeningBalance) as OpeningBalance,Sum(Debit) as Debit,Sum(Credit) as Credit,Sum(OpeningBalance+ Debit - Credit) as Balance 
+			into #Markup1
+			From #Markup
+		Group by CompanyId,VoucherDate,AccountCode,AccountName,GroupAct
+		
+		Select 	u.AccountCode, a.AccountName, u.[Date], u.MarkupRate,  isnull((Select sum(balance) from #Markup1 where voucherDate <= u.[Date] and AccountCode = u.AccountCode),0) as cBalance, round(isnull(((((Select sum(balance) from #Markup1 where voucherDate <= u.[Date] and AccountCode = u.AccountCode) * u.MarkupRate) /100)/365),0),2) as Markup
+			
+			From tblMarkupRate as u Left outer join tblAccounts a on u.AccountCode = a.AccountCode
+			where CompanyId = @companyId
+			order by u.[Date]
+				
+	End
+if @ReportType = 'AnalysisOfBudgetAssets'
+	Begin
+		Select 	@CompanyId as CompanyId,A.AccountCode,A.AccountName,A.AccountLevel,
+			Case When Sum(Debit) - Sum(Credit) > 0 then Sum(Debit) - Sum(Credit) else 0 end as Debit,			
+			Case When Sum(Debit) - Sum(Credit) < 0 then Sum(Credit) - Sum(Debit) else 0 end as Credit,
+			Sum(Debit) - Sum(Credit) as Balance, Case When Sum(Debit) - Sum(Credit) > 0 Then 'DR' else 'CR' End As BalType
+		Into #AnalysisOfBudgetAssets			
+		From #MasterData Mst Right Outer Join tblAccounts A
+		On A.AccountCode = Left(Mst.AccountCode,Len( A.AccountCode))
+		Where	A.AccountLevel = 'Control' And Len(A.AccountCode) <= @AccountDigit And AccountNature > 0 And AccountNature < 4
+		Group By A.AccountCode,A.AccountName,A.AccountLevel
+		Union All
+		Select 	@CompanyId as CompanyId,A.AccountCode,A.AccountName,A.AccountLevel,
+			Case When Sum(Debit) - Sum(Credit) > 0 then Sum(Debit) - Sum(Credit) else 0 end as Debit,			
+			Case When Sum(Debit) - Sum(Credit) < 0 then Sum(Credit) - Sum(Debit) else 0 end as Credit,
+			Sum(Debit) - Sum(Credit) as Balance, Case When Sum(Debit) - Sum(Credit) > 0 Then 'DR' else 'CR' End As BalType
+		From #MasterData Mst Right Outer Join tblAccounts A
+		On A.AccountCode = Left(Mst.AccountCode,Len( A.AccountCode))
+		Where	Len(A.AccountCode) <= @AccountDigit And AccountNature > 0 And AccountNature < 4 And A.AccountLevel = 'Detail'
+		Group By A.AccountCode,A.AccountName,A.AccountLevel
+		Order By A.AccountCode
+
+--		Select 	@CompanyId as CompanyId,Left(Mst.AccountCode,@AccountDigit) as AccountCode,A.AccountName,A.AccountLevel,
+--			Case When Sum(Debit) - Sum(Credit) > 0 then Sum(Debit) - Sum(Credit) else 0 end as Debit,			
+--			Case When Sum(Debit) - Sum(Credit) < 0 then Sum(Credit) - Sum(Debit) else 0 end as Credit,
+--			Sum(Debit) - Sum(Credit) as Balance, Case When Sum(Debit) - Sum(Credit) > 0 Then 'DR' else 'CR' End As BalType
+--		Into #AnalysisOfBudgetAssets
+--		From #MasterData Mst Left Outer Join tblAccounts A
+--		On A.AccountCode =Left(Mst.AccountCode,@AccountDigit)
+--		Where	A.AccountNature > 0 And A.AccountNature < 4 --And A.AccountLevel = 'Detail'
+--		Group By Left(Mst.AccountCode,@AccountDigit),A.AccountName,A.AccountLevel
+--		Order By A.AccountCode
+
+		Select 	Mst.CompanyID,Mst.AccountCode,Space(A.ActLevelDigit*2)+Mst.AccountName as AccountName,Mst.AccountLevel,Isnull(A.TobeMaintain,0) as TobeMaintain,Abs(Mst.Balance) as Balance,Mst.BalType,Abs(Mst.Balance) - Isnull(A.TobeMaintain,0)  as [Difference], Case When Abs(Mst.Balance) - Isnull(A.TobeMaintain,0) = 0 Then 'N' Else Case When Abs(Mst.Balance) - Isnull(A.TobeMaintain,0) > 0 Then 'P' Else 'N' End End as Status
+		From #AnalysisOfBudgetAssets Mst,tblAccounts A
+		Where	Mst.AccountCode = A.AccountCode
+		And	Mst.AccountCode Between @AccountFrom and @AccountTo 
+		Order By Mst.AccountCode
+	End
+if @ReportType = 'AnalysisOfBudgetRE'
+	Begin 
+		Select 	@CompanyId as CompanyId,A.AccountCode,A.AccountName,A.AccountLevel,
+			Case When Sum(Debit) - Sum(Credit) > 0 then Sum(Debit) - Sum(Credit) else 0 end as Debit,			
+			Case When Sum(Debit) - Sum(Credit) < 0 then Sum(Credit) - Sum(Debit) else 0 end as Credit,
+			Sum(Debit) - Sum(Credit) as Balance, Case When Sum(Debit) - Sum(Credit) > 0 Then 'DR' else 'CR' End As BalType
+			Into #AnalysisOfBudgetRE
+		From #MasterData Mst Right Outer Join tblAccounts A
+		On A.AccountCode = Left(Mst.AccountCode,Len( A.AccountCode))
+		Where	A.AccountLevel = 'Control' And Len(A.AccountCode) <= @AccountDigit And AccountNature > 3 And AccountNature < 6
+		Group By A.AccountCode,A.AccountName,A.AccountLevel
+		Union All
+		Select 	@CompanyId as CompanyId,A.AccountCode,A.AccountName,A.AccountLevel,
+			Case When Sum(Debit) - Sum(Credit) > 0 then Sum(Debit) - Sum(Credit) else 0 end as Debit,			
+			Case When Sum(Debit) - Sum(Credit) < 0 then Sum(Credit) - Sum(Debit) else 0 end as Credit,
+			Sum(Debit) - Sum(Credit) as Balance, Case When Sum(Debit) - Sum(Credit) > 0 Then 'DR' else 'CR' End As BalType
+		From #MasterData Mst Right Outer Join tblAccounts A
+		On A.AccountCode = Left(Mst.AccountCode,Len( A.AccountCode))
+		Where	A.AccountLevel = 'Detail' And Len(A.AccountCode) <= @AccountDigit And AccountNature > 3 And AccountNature < 6
+		Group By A.AccountCode,A.AccountName,A.AccountLevel
+		Order By A.AccountCode
+		
+		Select 	Mst.CompanyID,Mst.AccountCode,Space(A.ActLevelDigit*2)+Mst.AccountName as AccountName,Mst.AccountLevel,A.BudgetPerYear,
+		Case 	When Month(@DateUpto) = 7 Then July
+			When Month(@DateUpto) = 8 Then July + August
+			When Month(@DateUpto) = 9 Then July + August + September
+			When Month(@DateUpto) = 10 Then July + August + September + October
+			When Month(@DateUpto) = 11 Then July + August + September + October + November
+			When Month(@DateUpto) = 12 Then July + August + September + October + November + December
+			When Month(@DateUpto) = 1 Then July + August + September + October + November + December + January
+			When Month(@DateUpto) = 2 Then July + August + September + October + November + December + January + February
+			When Month(@DateUpto) = 3 Then July + August + September + October + November + December + January + February + March 
+			When Month(@DateUpto) = 4 Then July + August + September + October + November + December + January + February + March + April
+			When Month(@DateUpto) = 5 Then July + August + September + October + November + December + January + February + March + April + May
+			When Month(@DateUpto) = 6 Then July + August + September + October + November + December + January + February + March + April + May + June
+		End as BudgetAmount,Mst.Balance as Balance,isnull(A.BudgetPerYear,0) - isnull(Mst.Balance,0) as [Difference]
+		From #AnalysisOfBudgetRE Mst,tblAccounts A
+		Where	Mst.AccountCode = A.AccountCode		
+		And	Mst.AccountCode Between @AccountFrom and @AccountTo 
+	End
+
+if @ReportType = 'Financial Statements'
+	Begin
+		Select * Into ##FinancialStatement From #MasterData Where #MasterData.AccountCode Between @AccountFrom and @AccountTo 
+	End
+
+if @ReportType = 'Income Statement'
+	Begin
+		Select 	Left(AccountCode,@AccountDigit) as AccountCode,Sum(Credit - Debit) as Amount 
+		Into	#MonthlyIncomeStatement
+		From	#MasterData
+		Group By AccountCode,VoucherDate
+		
+		
+		Select 	#MonthlyIncomeStatement.AccountCode,Account.AccountName,GroupAct.AccountCode as GroupAct,GroupAct.AccountName as GroupName,Case When Account.AccountNature = 4 Then 'INCOME / GRANTS' Else 'EXPENDITURE' End as AccountType,Account.AccountNature,Sum(Amount) as  Amount 
+		Into	#MonthlyIncomeStatement1
+		From	#MonthlyIncomeStatement,tblAccounts Account,tblAccounts GroupAct
+		Where	#MonthlyIncomeStatement.AccountCode = Account.AccountCode
+		And	Account.GroupAct = GroupAct.AccountCode 
+		And	(Account.AccountNature = 4 or Account.AccountNature = 5)
+		Group By #MonthlyIncomeStatement.AccountCode,Account.AccountName,GroupAct.AccountCode,GroupAct.AccountName,Account.AccountNature
+
+		Select * From #MonthlyIncomeStatement1 Order By AccountNature,AccountCode 
+	End
+
+
+if @ReportType = 'Balance Sheet'
+	Begin
+		Select 	Left(AccountCode,@AccountDigit) as AccountCode,Sum(Debit - Credit) as Amount 
+		Into	#BalanceSheet
+		From	#MasterData
+		Group By AccountCode,VoucherDate
+		
+		
+		Select 	#BalanceSheet.AccountCode,Account.AccountName,GroupAct.AccountCode as GroupAct,GroupAct.AccountName as GroupName,Case When Account.AccountNature = 1 Then 'ASSETS' Else Case When Account.AccountNature = 2 Then 'LIABILITIES' Else 'EQUITY' End End as AccountType,Account.AccountNature,Sum(Amount) as  Amount 
+		Into	#BalanceSheet1
+		From	#BalanceSheet,tblAccounts Account,tblAccounts GroupAct
+		Where	#BalanceSheet.AccountCode = Account.AccountCode
+		And	Account.GroupAct = GroupAct.AccountCode 
+		And	(Account.AccountNature = 1 or Account.AccountNature = 2 or Account.AccountNature = 3)
+		Group By #BalanceSheet.AccountCode,Account.AccountName,GroupAct.AccountCode,GroupAct.AccountName,Account.AccountNature
+
+		Select * From #BalanceSheet1 Order By AccountNature,AccountCode 
+	End
+
+if @ReportType = 'EmployeeWiseReport'
+	Begin
+			
+		Select Mst.EmployeeCode,E.EmployeeName,CompanyID,VoucherNo,VoucherDate,Description,Sum(Debit) as Amount 
+		From #MasterData Mst 
+		Left Outer Join PayRoll2009.dbo.tblEmployee E
+		on E.EmployeeCode = Mst.EmployeeCode
+		Where Mst.EmployeeCode <> '' 
+		and isnull(Mst.EmployeeCode,'') <> ''
+		--And Isnull(Mst.Tag,'')<>'' 
+		and Left(AccountCode,Len(@ControlAccount)) =@ControlAccount
+		and Mst.EmployeeCode = Case When @Employee <> '' Then @Employee Else IsNull(Mst.EmployeeCode,'') End 
+		And (BookType = 'BBP' or BookType = 'CBP')
+		Group By Mst.EmployeeCode,E.EmployeeName,CompanyID,VoucherNo,VoucherDate,Description
+		Having Sum(Debit) > 0
+	End
+
+if @ReportType = 'TagWiseReport'
+	Begin
+				
+		Select TF.Code as TagCode,TF.Name as TagName,CompanyID,VoucherNo,VoucherDate,Description,Sum(Debit) as Amount 
+		from tblTagFile TF
+		Left Outer Join #MasterData Mst 
+		On TF.Code = Isnull(Mst.Tag,'') 
+		--And Isnull(Mst.Tag,'')<>'' 
+		Where Mst.Tag = Case When @Tag <> '' Then @Tag Else IsNull(Mst.Tag,'') End 
+		and Left(AccountCode,Len(@ControlAccount)) =@ControlAccount
+		And (BookType = 'BBP' or BookType = 'CBP')
+		Group By TF.Code,TF.Name,CompanyID,VoucherNo,VoucherDate,Description
+		Having Sum(Debit) > 0
+	End
+
+if @ReportType = 'CashFlow'
+	Begin
+
+		Select 	@CompanyId as CompanyId,BookType, case when Booktype <> 'OP' then Month(VoucherDate) else 0 end  as VoucherMonth,AgainstAccount, A.AccountName as AgainstAccountName,Debit - Credit as Balance
+			Into #CashFlow1
+			From #MasterData Mst,tblAccounts a
+			Where isnull(AgainstAccount,' ') <> ' '
+			And a.AccountCode = Mst.AgainstAccount
+		
+			
+		Select   @CompanyId as CompanyId,#CashFlow1.AgainstAccount,AgainstAccountName,Case When Balance < 0 then 'Out Flow' Else 'In Flow' End as Type,
+			Case When BookType = 'OP' then Balance else 0 end as Opening,
+			Case When VoucherMonth = 1   then Balance else 0 End as January,
+			Case When VoucherMonth = 2   then Balance else 0 End as February,
+			Case When VoucherMonth = 3   then Balance else 0 End as March,		
+			Case When VoucherMonth = 4   then Balance else 0 End as April,
+			Case When VoucherMonth = 5   then Balance else 0 End as May,
+			Case When VoucherMonth = 6   then Balance else 0 End as June,
+			Case When VoucherMonth = 7   then Balance else 0 End as July,
+			Case When VoucherMonth = 8   then Balance else 0 End as August,
+			Case When VoucherMonth = 9   then Balance else 0 End as September,
+			Case When VoucherMonth = 10 then Balance else 0 End as October,
+			Case When VoucherMonth = 11 then Balance else 0 End as November,
+			Case When VoucherMonth = 12 then Balance else 0 End as December,
+			Balance as ClosingBalance				
+			Into #CashFlow2
+			From #CashFlow1
+			
+	
+		Select   Type,@CompanyId as CompanyId,AgainstAccount,AgainstAccountName,	
+			Sum(Opening) as Opening,
+			Sum(July) as July,
+			Sum(August) as August,
+			Sum(September) as September,
+			Sum(October) as October,
+			Sum(November) as November,
+			Sum(December) as December,
+			Sum(January) as January,
+			Sum(February) as February,
+			Sum(March) as March,
+			Sum(April) as April,
+			Sum(May) as May,
+			Sum(June) as June,
+			Sum(ClosingBalance) as ClosingBalance
+		From 	#CashFlow2
+	
+		Group by CompanyId,AgainstAccount,AgainstAccountName,Type
+		Order By Type,AgainstAccount
+		
+	End
+Set Nocount Off
+GO

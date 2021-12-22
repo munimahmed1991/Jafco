@@ -1,0 +1,604 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GrapeCity.ActiveReports.Export.Rdf</name>
+    </assembly>
+    <members>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.DocumentExportExtension">
+            <summary>
+            Extension methods.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.DocumentExportExtension.Export(GrapeCity.ActiveReports.Export.IDocumentExport,GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,System.IO.Stream,System.String)">
+            <summary>
+            Renders RDL/Page report to RDF format.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.DocumentExportExtension.Export(GrapeCity.ActiveReports.Export.IDocumentExport,GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,System.String,System.String)">
+            <summary>
+            Renders RDL/Page report to RDF format.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.DocumentExportExtension.Export(GrapeCity.ActiveReports.Export.IDocumentExport,GrapeCity.ActiveReports.Document.PageDocument,System.IO.Stream,System.String)">
+            <summary>
+            Renders RDL/Page report to RDF format.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.DocumentExportExtension.Export(GrapeCity.ActiveReports.Export.IDocumentExport,GrapeCity.ActiveReports.Document.PageDocument,System.String,System.String)">
+            <summary>
+            Renders RDL/Page report to RDF format.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.DocumentExportExtension.Export(GrapeCity.ActiveReports.Export.IDocumentExport,GrapeCity.ActiveReports.Document.PageDocument,GrapeCity.ActiveReports.Export.Html.IOutputHtml,System.String)">
+            <summary>
+            Renders RDL/Page report to RDF format. For internal use only.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.RdfRenderingExtension">
+            <summary>
+            Rdf RE provide the functionality that user can transfer the Page-based report to Section-based report.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.RdfRenderingExtension.Render(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider)">
+            <summary>
+            Implement the render method of IRenderingExtension interface
+            </summary>
+            <param name="report">rendered report.</param>
+            <param name="streams">stream of output file.</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.RdfRenderingExtension.Render(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Extensibility.Rendering.IO.StreamProvider,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Implement the render method of IRenderingExtension interface
+            </summary>
+            <param name="report">rendered report.</param>
+            <param name="streams">stream of output file.</param>
+            <param name="settings">export settings</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.RdfRenderingExtension.TransferToSectionPage(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,System.Int32)">
+            <summary>
+            Transfer tha layout page to section page
+            </summary>
+            <param name="context"></param>
+            <param name="pageIndex"></param>
+            <returns>Section Page</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.RdfRenderingExtension.RenderSection(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Document.Section.Page,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea)">
+            <summary>
+            Transfer the layout section to section-based report section
+            </summary>
+            <param name="context"></param>
+            <param name="sPage"></param>
+            <param name="section"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.RdfRenderingExtension.OnLayoutNotify(GrapeCity.ActiveReports.Extensibility.Layout.LayoutState)">
+            <summary>
+            Callback method that used by the BuildLayout process.
+            </summary>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.RdfRenderingExtension.LayoutComplete">
+            <summary>
+            Process for the whole layout tree has been created.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.RdfRenderingExtension.DrawDelayedText(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Document.SectionDocument,GrapeCity.ActiveReports.Extensibility.Rendering.Components.ToC.IBookmarkService)">
+            <summary>
+            Draw the delayed text
+            </summary>
+            <param name="context"></param>
+            <param name="doc">section document</param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.RdfRenderingExtension.RenderTOC(GrapeCity.ActiveReports.Extensibility.Layout.ILayoutTree,GrapeCity.ActiveReports.Document.SectionDocument)">
+            <summary>
+            Export the document map label from layout tree to section document.
+            </summary>
+            <param name="layoutTree"></param>
+            <param name="doc"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.RdfRenderingExtension.RenderTOCEntry(System.String,GrapeCity.ActiveReports.Extensibility.Rendering.Components.IMetadataDictionaryEntry,GrapeCity.ActiveReports.Document.SectionDocument)">
+            <summary>
+            Export document map label from a toc entry to section document.
+            </summary>
+            <param name="parent"></param>
+            <param name="tocEntry"></param>
+            <param name="doc"></param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Settings">
+            <summary>
+            <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.ISettings"/> implementation for RDF Rendering Extension. 
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Settings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:GrapeCity.ActiveReports.Export.Rdf.Settings"/> class.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Settings.#ctor(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Allows internal consumers to initialize new instance the class passing 
+            settings values via NameValueCollection.
+            </summary>
+            <param name="settings"></param>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Rdf.Settings.Pagination">
+            <summary>
+            Gets or sets the value indicates should pagination be used for resulted rdf document or not.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Settings.SerializeSettings">
+            <summary>
+            Gets <see cref="T:System.Collections.Specialized.NameValueCollection"/> of the settings of the class instance.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Settings.DeserializeSettings(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Sets values of the class instance properties using values passed via <see cref="T:System.Collections.Specialized.NameValueCollection"/>.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Settings.op_Implicit(GrapeCity.ActiveReports.Export.Rdf.Settings)~System.Collections.Specialized.NameValueCollection">
+            <summary>
+            Performs an implicit conversion from <see cref="T:GrapeCity.ActiveReports.Export.Rdf.Settings"/> to <see cref="T:System.Collections.Specialized.NameValueCollection"/>.
+            </summary>
+            <param name="settings">The settings.</param>
+            <returns>The result of the conversion.</returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Renderer.BarcodeRenderer">
+            <summary>
+            This renderer is for exporting of barcode
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.BarcodeRenderer.RenderContents(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Document.Section.Page,System.Drawing.RectangleF)">
+            <summary>
+            Implement the RenderContents method of parent class ReportItemRenderer to draw the barcode control in section page.
+            </summary>
+            <param name="context"></param>
+            <param name="area"></param>
+            <param name="page"></param>
+            <param name="bounds"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.BarcodeRenderer.ColorFromString(System.String)">
+            <summary>
+            Returns a <see cref="T:System.Drawing.Color"/> from the specified string designating the color.
+            </summary>
+            <exception cref="T:System.ArgumentException">Thrown when the value of the color argument is not a valid color.</exception>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.BarcodeRenderer.ColorFromString(System.String,System.Drawing.Color)">
+            <summary>
+            Returns a <see cref="T:System.Drawing.Color"/> from the specified string designating the color.
+            If conversion was failed then returns the default color.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Renderer.ChartRenderer">
+            <summary>
+            This renderer is for exporting Chart control
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.ChartRenderer.RenderContents(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Document.Section.Page,System.Drawing.RectangleF)">
+            <summary>
+            Implement the RenderContents method of parent class ReportItemRenderer to draw the chart control in section page.
+            </summary>
+            <param name="context"></param>
+            <param name="area"></param>
+            <param name="page"></param>
+            <param name="bounds"></param>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Rdf.Renderer.ChartRenderer.IsFullTrust">
+            <summary>
+            Check to see if the calling code is executing with FullTrust
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Renderer.CheckboxRenderer">
+            <summary>
+            This rendere is for checkbox
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.CheckboxRenderer.RenderContents(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Document.Section.Page,System.Drawing.RectangleF)">
+            <summary>
+            Render all the content of checkbox
+            </summary>
+            <param name="context"></param>
+            <param name="area"></param>
+            <param name="page"></param>
+            <param name="bounds"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.CheckboxRenderer.SetTextAlignment(GrapeCity.ActiveReports.PageReportModel.CheckAlignment,GrapeCity.ActiveReports.Document.Section.Page)">
+            <summary>
+            Set text alignment for the text of the checkbox
+            </summary>
+            <param name="checkAlignment"></param>
+            <param name="page"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.CheckboxRenderer.CalcContentAlignment(System.Drawing.RectangleF,GrapeCity.ActiveReports.PageReportModel.CheckAlignment,System.Drawing.SizeF,System.Drawing.RectangleF@,System.Drawing.RectangleF@)">
+            <summary>
+            CalcContentAlignment
+            </summary>
+            <param name="outRect"></param>
+            <param name="align"></param>
+            <param name="contentSize"></param>
+            <param name="contentRect"></param>
+            <param name="blankRect"></param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Renderer.ContainerRenderer">
+            <summary>
+            This renderer is for List and BandedList
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.ContainerRenderer.RenderContents(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Document.Section.Page,System.Drawing.RectangleF)">
+            <summary>
+            Implement the render method of IRdfRenderer interface
+            </summary>
+            <param name="context"></param>
+            <param name="area">area of current control</param>
+            <param name="page">page which current control should render in</param>
+            <param name="bounds"></param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Renderer.CustomItemRenderer">
+            <summary>
+            This renderer is for exporting custom controls (calendar etc.)
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.CustomItemRenderer.RenderContents(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Document.Section.Page,System.Drawing.RectangleF)">
+            <summary>
+            Implement the RenderContents method of parent class ReportItemRenderer to draw the custom control in section page.
+            </summary>
+            <param name="context"></param>
+            <param name="area"></param>
+            <param name="page"></param>
+            <param name="bounds"></param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Renderer.FormattedTextRenderer">
+            <summary>
+            The renderer for Formatted Text report item
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Renderer.ImageRenderer">
+            <summary>
+            This renderer is for exporting image.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.ImageRenderer.RenderContents(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Document.Section.Page,System.Drawing.RectangleF)">
+            <summary>
+            Export the image to section report page.
+            </summary>
+            <param name="context"></param>
+            <param name="area"></param>
+            <param name="page"></param>
+            <param name="bounds"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.ImageRenderer.GetDrawImageCopy(GrapeCity.ActiveReports.Extensibility.Rendering.IImageLocatorService,GrapeCity.ActiveReports.Extensibility.Rendering.Components.IImage,System.Single,System.Single)">
+            <summary>
+            Returns a copy of image data as <see cref="T:System.Drawing.Image"/>
+            </summary>
+            <returns/>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Renderer.IRdfRenderer">
+            <summary>
+            Defines the interface LayoutArea can use to render canvas items output.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.RectangleRenderer.HasSameBorderSettings(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IStyle)">
+            <summary>
+            Check whether the left/top/right/bottom border has the same sytle, color and width.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Renderer.RendererFactory">
+            <summary>
+            Factory to manage all the renderer of the Rdf RE
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.RendererFactory.GetReportItemRenderer(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReportItem,GrapeCity.ActiveReports.PageReportModel.TargetDeviceKind)">
+            <summary>
+            Get proper renderer for specific report item
+            </summary>
+            <param name="reportItem">report item</param>
+            <param name="target">target device on which render report item</param>
+            <returns>control renderer</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.RendererFactory.GetDelayedTextRenderer(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReportItem,GrapeCity.ActiveReports.PageReportModel.TargetDeviceKind)">
+            <summary>
+            get the renderer for delayed text rendering
+            </summary>
+            <returns>delayed text renderer</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.RendererFactory.GetSectionRenderer">
+            <summary>
+            get the renderer for section
+            </summary>
+            <returns>container renderer as section renderer</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.ReportItemRenderer.RenderBorder(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Document.Section.Page,System.Drawing.RectangleF)">
+            <summary>
+            draw borders
+            </summary>
+            <param name="context"> </param>
+            <param name="area"> </param>
+            <param name="page"></param>
+            <param name="bounds"></param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Renderer.SectionRenderer">
+            <summary>
+            This renderer is for section(PageHeader, Body and PageFooter)
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.SectionRenderer.IsSectionHasStyle(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea)">
+            <summary>
+            Check whether section has backgroundcolor, backgroundImage or border.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.SectionRenderer.NeedRenderSectionBackgroundColor(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IStyle)">
+            <summary>
+            Check whether section has background color.  Default color is transparent.
+            </summary>
+            <param name="sectionStyle"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.SectionRenderer.NeedRenderSectionBackgroundImage(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea)">
+            <summary>
+            Check whether section has background image.
+            </summary>
+            <param name="context"></param>
+            <param name="section"></param>
+            <returns></returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Renderer.ShapeRenderer">
+            <summary>
+            The renderer for Shape control.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.ShapeRenderer.RenderRoundRectangle(GrapeCity.ActiveReports.Document.Section.Page,System.Drawing.RectangleF,GrapeCity.ActiveReports.Extensibility.Rendering.Components.IStyle,GrapeCity.ActiveReports.Extensibility.Rendering.Components.IRoundingRadius)">
+            <summary>
+            Render the round rectangle.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Renderer.TableRenderer">
+            <summary>
+            This renderer is for Table and Matrix the controls implement IGrid interface
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.TableRenderer.RenderContents(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Document.Section.Page,System.Drawing.RectangleF)">
+            <summary>
+            Render the contents(backcolor and border) for table
+            </summary>
+            <param name="context"></param>
+            <param name="area"></param>
+            <param name="page"></param>
+            <param name="bounds"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.TableRenderer.RenderChildren(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Document.Section.Page,System.Drawing.RectangleF)">
+            <summary>
+            Render content of each cell in the table. 
+            </summary>
+            <param name="context"></param>
+            <param name="area"></param>
+            <param name="page"></param>
+            <param name="bounds"></param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Renderer.TextBoxRenderer">
+            <summary>
+            This renderer is for TextBox
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.TextBoxRenderer.RenderContents(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Document.Section.Page,System.Drawing.RectangleF)">
+            <summary>
+            Implement the render method of IRdfRenderer interface.
+            </summary>
+            <param name="context"></param>
+            <param name="area"></param>
+            <param name="page"></param>
+            <param name="bounds"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Renderer.TextBoxRenderer.Render(GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext,GrapeCity.ActiveReports.Extensibility.Layout.ILayoutArea,GrapeCity.ActiveReports.Document.Section.Page,System.Drawing.RectangleF,GrapeCity.ActiveReports.Extensibility.Rendering.Components.ITextBox,GrapeCity.ActiveReports.Extensibility.Rendering.Components.ToC.IBookmarkService)">
+            <summary>
+            render the textbox in section page
+            </summary>
+            <param name="context"></param>
+            <param name="area"></param>
+            <param name="page"></param>
+            <param name="bounds"></param>
+            <param name="textbox"></param>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Tools.Constants">
+            <summary>
+            this class define the contant value used in Rdf RE project
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Rdf.Tools.Constants.TWIPSPERINCH">
+            <summary>
+            The number of twips per inch used in conversions.
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Rdf.Tools.Constants.NORMAL_BORDER_WIDTH">
+            <summary>
+            the width value is for the normal border
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Rdf.Tools.Constants.THICK_BORDER_WIDTH">
+            <summary>
+            the width value is for the thick border
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Rdf.Tools.Constants.CHECKBOX_SIZE">
+            <summary>
+            define the size of the rectangle in the checkbox control
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Rdf.Tools.Constants.CHECKBOX_SPACING">
+            <summary>
+            define the spacing with the text and the rectangle in the checkbox control
+            </summary>
+        </member>
+        <member name="F:GrapeCity.ActiveReports.Export.Rdf.Tools.Constants.Pagination">
+            <summary>
+             define the name of pagination setting or Rdf rendering extension
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Tools.DelayedText">
+            <summary>
+            Contains information used to draw string from a textbox that may have a value based on 
+            information that may not be known when initially rendered.  TotalPages, for example.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Tools.RdfTargetDevice">
+            <summary>
+            Encapsulates target rendering devices and its capabilities
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.RdfTargetDevice.#ctor(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Export.Rdf.Settings)">
+            <summary>
+            Allows internal callers to initialize new instance of the class.
+            </summary>
+            <param name="report">Rendered report</param>
+            <param name="settings"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.RdfTargetDevice.Initialize(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Export.Rdf.Settings)">
+            <summary>
+            initialize the capabilities
+            </summary>
+            <param name="report"></param>
+            <param name="settings"></param>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Rdf.Tools.RdfTargetDevice.Item(GrapeCity.ActiveReports.Extensibility.Layout.Features)">
+            <summary>
+            Gets DeviceCapabilities for specified Features.
+            </summary>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext">
+            <summary>
+            Stores the style information during the rendering period
+            </summary>
+        </member>
+        <member name="P:GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext.ImageLocator">
+            <summary>
+            Gets the <see cref="T:GrapeCity.ActiveReports.Extensibility.Rendering.IImageLocatorService"/>.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.RdfRenderContext.ConvertUnitsToInchesX(GrapeCity.ActiveReports.Document.Section.Units,System.Single,GrapeCity.ActiveReports.Core.Document.Drawing.Gdi.Text.GraphicsCache)">
+            <summary>
+            ConvertUnitsToInchesX
+            </summary>
+            <param name="units"></param>
+            <param name="fx"></param>
+            <param name="gCache"></param>
+            <returns></returns>
+        </member>
+        <member name="T:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils">
+            <summary>
+            Provider helper methods for Rdf rendering.
+            </summary>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.GetTargetDevice(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IReport,GrapeCity.ActiveReports.Export.Rdf.Settings)">
+            <summary>
+            Get target rendering device
+            </summary>
+            <param name="report"></param>
+            <param name="settings"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.GetFont(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IStyle)">
+            <summary>
+            Get the system font information by the style
+            </summary>
+            <param name="style"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.GetFontSize(GrapeCity.ActiveReports.PageReportModel.Length)">
+            <summary>
+            Get the fontSize
+            </summary>
+            <param name="fontSize"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.GetFontStyle(System.String,System.String,System.String)">
+            <summary>
+            Get the font style
+            </summary>
+            <param name="strFontStyle"></param>
+            <param name="fontWeight"></param>
+            <param name="textDecoration"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.GetTextAlign(System.String,System.Object)">
+            <summary>
+            Get the section document text alignment
+            </summary>
+            <param name="align"></param>
+            <param name="textValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.GetBorderStyle(System.String,System.Drawing.Color,System.Single)">
+            <summary>
+            Get the section document border style.
+            </summary>
+            <param name="borderStyle">Border style string.</param>
+            <param name="borderColor">Border color.</param>
+            <param name="borderWidth">Border width, in points.</param>
+            <returns>Border line style.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.NeedRenderBorder(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IStyle)">
+            <summary>
+            Check if need render border for specific control.
+            </summary>
+            <param name="style">Control style.</param>
+            <param name="isExcelBorder">Boolean indicate whether is excel border.</param>
+            <returns>True indicate need render border, False indicate do not render border.</returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.ApplyPadding(GrapeCity.ActiveReports.Extensibility.Rendering.Components.IStyle,System.Drawing.RectangleF@)">
+            <summary>
+            Apply the padding info for the bounds of control
+            </summary>
+            <param name="style"></param>
+            <param name="bounds"></param>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.GetColor(System.String)">
+            <summary>
+            Get the color
+            </summary>
+            <param name="color"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.GetPenStyle(System.String)">
+            <summary>
+            Get the pen style
+            </summary>
+            <param name="penstyle"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.GetRoundingRadius(GrapeCity.ActiveReports.PageReportModel.Length)">
+            <summary>
+            Gets the rounding radius in inch.
+            </summary>
+            <param name="radius"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.FontEquals(GrapeCity.ActiveReports.Export.Rdf.Tools.FontEx,GrapeCity.ActiveReports.Extensibility.Rendering.Components.IStyle)">
+            <summary>
+            Check if the system font equals the font info in the style of specific control
+            </summary>
+            <param name="font"></param>
+            <param name="style"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.GetTextJustity(System.String)">
+            <summary>
+            Get the section document TextJustify style.
+            </summary>
+            <param name="textJustify"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.IsNumeric(System.Object)">
+            <summary>
+            Checks if the specified value is numeric
+            </summary>
+            <remarks>
+            This is different from VB IsNumeric, as we are not trying to convert
+            and byte, sbyte and boolean are not considered to be numeric
+            </remarks>
+        </member>
+        <member name="M:GrapeCity.ActiveReports.Export.Rdf.Tools.Utils.IsDate(System.Object)">
+            <summary>
+            Checks if the specified value data type is date/time
+            </summary>
+        </member>
+    </members>
+</doc>
